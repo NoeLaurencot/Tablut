@@ -35,12 +35,45 @@ public class TablutStageFactory extends StageElementsFactory {
         TablutBoard board = new TablutBoard(0, 1, stageModel);
         stageModel.setBoard(board);
 
-        /*
-        TODO :
-            - create the pawns and set them in the stage model
-            - assign the pawns to their positions in the board
-         */
+        setupPawns();
+    }
+
+    private void setupPawns() {
+        Pawn[] pawns = new Pawn[24];
+
+        // Swedish
+        pawns[0] = new Soldier(4, 2, Team.SWEDISH, stageModel);
+        pawns[1] = new Soldier(4, 3, Team.SWEDISH, stageModel);
+        pawns[2] = new Soldier(4, 5, Team.SWEDISH, stageModel);
+        pawns[3] = new Soldier(4, 6, Team.SWEDISH, stageModel);
+        pawns[4] = new Soldier(2, 4, Team.SWEDISH, stageModel);
+        pawns[5] = new Soldier(3, 4, Team.SWEDISH, stageModel);
+        pawns[6] = new Soldier(5, 4, Team.SWEDISH, stageModel);
+        pawns[7] = new Soldier(6, 4, Team.SWEDISH, stageModel);
 
 
+        // Moscovites
+        pawns[8] = new Soldier(3, 0, Team.MUSCOVITES, stageModel);
+        pawns[9] = new Soldier(4, 0, Team.MUSCOVITES, stageModel);
+        pawns[10] = new Soldier(5, 0, Team.MUSCOVITES, stageModel);
+        pawns[11] = new Soldier(4, 1, Team.MUSCOVITES, stageModel);
+        
+        pawns[12] = new Soldier(0, 3, Team.MUSCOVITES, stageModel);
+        pawns[13] = new Soldier(0, 4, Team.MUSCOVITES, stageModel);
+        pawns[14] = new Soldier(0, 5, Team.MUSCOVITES, stageModel);
+        pawns[15] = new Soldier(1, 4, Team.MUSCOVITES, stageModel);
+        
+        pawns[16] = new Soldier(8, 3, Team.MUSCOVITES, stageModel);
+        pawns[17] = new Soldier(8, 4, Team.MUSCOVITES, stageModel);
+        pawns[18] = new Soldier(8, 5, Team.MUSCOVITES, stageModel);
+        pawns[19] = new Soldier(7, 4, Team.MUSCOVITES, stageModel);
+        
+        pawns[20] = new Soldier(3, 8, Team.MUSCOVITES, stageModel);
+        pawns[21] = new Soldier(4, 8, Team.MUSCOVITES, stageModel);
+        pawns[22] = new Soldier(5, 8, Team.MUSCOVITES, stageModel);
+        pawns[23] = new Soldier(4, 7, Team.MUSCOVITES, stageModel);
+
+
+        stageModel.setPawns(pawns);
     }
 }

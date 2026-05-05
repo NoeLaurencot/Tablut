@@ -33,6 +33,7 @@ public class TablutStageModel extends GameStageModel {
 
     // define stage game elements
     private TablutBoard board;
+    private Pawn[] pawns;
     private TextElement playerName;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
@@ -44,6 +45,10 @@ public class TablutStageModel extends GameStageModel {
 
     public TablutBoard getBoard() {
         return board;
+    }
+
+    public Pawn[] getPawns() {
+        return pawns;
     }
 
     public TextElement getPlayerName() {
@@ -59,8 +64,16 @@ public class TablutStageModel extends GameStageModel {
         addContainer(board);
     }
 
-    public void getPlayerName(TextElement pn) {
+    public void setPawns(Pawn[] p) {
+        pawns = p;
+        for (Pawn pawn : pawns) {
+            board.addElement(pawn, (int)pawn.getX(), (int)pawn.getY());
+        }
+    }
+
+    public void setPlayerName(TextElement pn) {
         playerName = pn;
+        addElement(playerName);
     }
 
     private void setupCallbacks() {

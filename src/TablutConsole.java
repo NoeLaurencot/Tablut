@@ -36,8 +36,8 @@ public class TablutConsole {
         }
 
         StageFactory.registerModelAndView("tablut", "model.TablutStageModel", "view.TablutStageView");
-        View holeView = new View(model);
-        TablutController control = new TablutController(model,holeView);
+        View tablutView = new View(model);
+        TablutController control = new TablutController(model, tablutView);
         control.setFirstStageName("tablut");
         try {
             control.startGame();
