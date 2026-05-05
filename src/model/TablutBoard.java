@@ -9,16 +9,16 @@ import java.util.List;
 import java.awt.*;
 
 /**
- * Hole main board represent the element where pawns are put when played
+ * Tablut main board represent the element where pawns are put when played
  * Thus, a simple ContainerElement with 3 rows and 3 column is needed.
  * Nevertheless, in order to "simplify" the work for the controller part,
  * this class also contains method to determine all the valid cells to put a
  * pawn with a given value.
  */
-public class HoleBoard extends ContainerElement {
-    public HoleBoard(int x, int y, GameStageModel gameStageModel) {
-        // call the super-constructor to create a 3x3 grid, named "holeboard", and in x,y in space
-        super("holeboard", x, y, 3 , 3, gameStageModel);
+public class TablutBoard extends ContainerElement {
+    public TablutBoard(int x, int y, GameStageModel gameStageModel) {
+        // call the super-constructor to create a 3x3 grid, named "Tablutboard", and in x,y in space
+        super("tablutboard", x, y, 9 , 9, gameStageModel);
     }
 
     public void setValidCells(int number) {

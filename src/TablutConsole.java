@@ -1,11 +1,11 @@
 import boardifier.model.GameException;
 import boardifier.view.View;
-import control.HoleController;
+import control.TablutController;
 
 import boardifier.control.StageFactory;
 import boardifier.model.Model;
 
-public class HoleConsole {
+public class TablutConsole {
 
     public static void main(String[] args) {
 

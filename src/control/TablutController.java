@@ -9,18 +9,18 @@ import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
-import model.HoleStageModel;
+import model.TablutStageModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class HoleController extends Controller {
+public class TablutController extends Controller {
 
     BufferedReader consoleIn;
     boolean firstPlayer;
 
-    public HoleController(Model model, View view) {
+    public TablutController(Model model, View view) {
         super(model, view);
         firstPlayer = true;
     }
@@ -45,7 +45,7 @@ public class HoleController extends Controller {
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
-            HoleDecider decider = new HoleDecider(model,this);
+            TablutDecider decider = new TablutDecider(model,this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
         }
@@ -72,11 +72,11 @@ public class HoleController extends Controller {
         model.setNextPlayer();
         // get the new player to display its name
         Player p = model.getCurrentPlayer();
-        HoleStageModel stageModel = (HoleStageModel) model.getGameStage();
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
     }
     private boolean analyseAndPlay(String line) {
-        HoleStageModel gameStage = (HoleStageModel) model.getGameStage();
+        TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         // get the pawn value from the first char
         int pawnIndex = (int) (line.charAt(0) - '1');
         if ((pawnIndex<0)||(pawnIndex>3)) return false;
@@ -87,20 +87,13 @@ public class HoleController extends Controller {
         if ((row<0)||(row>2)) return false;
         if ((col<0)||(col>2)) return false;
         // check if the pawn is still in its pot
-        ContainerElement pot = null;
-        if (model.getIdPlayer() == 0) {
-            pot = gameStage.getBlackPot();
-        }
-        else {
-            pot = gameStage.getRedPot();
-        }
-        if (pot.isEmptyAt(pawnIndex,0)) return false;
-        GameElement pawn = pot.getElement(pawnIndex,0);
+    
+        GameElement pawn = null;
         // compute valid cells for the chosen pawn
         gameStage.getBoard().setValidCells(pawnIndex+1);
         if (!gameStage.getBoard().canReachCell(row,col)) return false;
 
-        ActionList actions = ActionFactory.generatePutInContainer(model, pawn, "holeboard", row, col);
+        ActionList actions = ActionFactory.generatePutInContainer(model, pawn, "Tablutboard", row, col);
         actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();

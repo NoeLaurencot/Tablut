@@ -3,63 +3,53 @@ package model;
 import boardifier.model.*;
 
 /**
- * HoleStageModel defines the model for the single stage in "The Hole". Indeed,
+ * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
  *
- * HoleStageModel must define all that is needed to manage a party : state variables and game elements.
+ * TablutStageModel must define all that is needed to manage a party : state variables and game elements.
  * In the present case, there are only 2 state variables that represent the number of pawns to play by each player.
  * It is used to detect the end of the party.
  * For game elements, it depends on what is chosen as a final UI design. For that demo, there are 12 elements used
  * to represent the state : the main board, 2 pots, 8 pawns, and a text for current player.
  *
- * WARNING ! HoleStageModel DOES NOT create itself the game elements because it would prevent the possibility to mock
- * game element classes for unit testing purposes. This is why HoleStageModel just defines the game elements and the methods
+ * WARNING ! TablutStageModel DOES NOT create itself the game elements because it would prevent the possibility to mock
+ * game element classes for unit testing purposes. This is why TablutStageModel just defines the game elements and the methods
  * to set this elements.
- * The instanciation of the elements is done by the HoleStageFactory, which uses the provided setters.
+ * The instanciation of the elements is done by the TablutStageFactory, which uses the provided setters.
  *
- * HoleStageModel must also contain methods to check/modify the game state when given events occur. This is the role of
+ * TablutStageModel must also contain methods to check/modify the game state when given events occur. This is the role of
  * setupCallbacks() method that defines a callback function that must be called when a pawn is put in a container.
  * This is done by calling onPutInContainer() method, with the callback function as a parameter. After that call, boardifier
  * will be able to call the callback function automatically when a pawn is put in a container.
  * NB1: callback functions MUST BE defined with a lambda expression (i.e. an arrow function).
  * NB2:  there are other methods to defines callbacks for other events (see onXXX methods in GameStageModel)
- * In "The Hole", everytime a pawn is put in the main board, we have to check if the party is ended and in this case, who is the winner.
+ * In "The Tablut", everytime a pawn is put in the main board, we have to check if the party is ended and in this case, who is the winner.
  * This is the role of computePartyResult(), which is called by the callback function if there is no more pawn to play.
  *
  */
-public class HoleStageModel extends GameStageModel {
+public class TablutStageModel extends GameStageModel {
 
     // define stage state variables
     private int blackPawnsToPlay;
     private int redPawnsToPlay;
 
     // define stage game elements
-    private HoleBoard board;
-    private HolePawnPot blackPot;
-    private HolePawnPot redPot;
+    private TablutBoard board;
     private Pawn[] blackPawns;
     private Pawn[] redPawns;
     private TextElement playerName;
-    // Uncomment next line if the example with a main container is used. see end of HoleStageFactory and HoleStageView
+    // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
 
-    public HoleStageModel(String name, Model model) {
+    public TablutStageModel(String name, Model model) {
         super(name, model);
         blackPawnsToPlay = 4;
         redPawnsToPlay = 4;
         setupCallbacks();
     }
 
-    public HoleBoard getBoard() {
+    public TablutBoard getBoard() {
         return board;
-    }
-
-    public HolePawnPot getBlackPot() {
-        return blackPot;
-    }
-
-    public HolePawnPot getRedPot() {
-        return redPot;
     }
 
     public Pawn[] getBlackPawns() {
@@ -97,6 +87,8 @@ public class HoleStageModel extends GameStageModel {
         int countRed = 0;
         Pawn p = null;
         int row, col;
+
+        /*
         for (i = 0; i < 9; i+=2) {
             if (board.isEmptyAt(i / 3, i % 3)) break;
         }
@@ -140,6 +132,7 @@ public class HoleStageModel extends GameStageModel {
                 idWinner = 1;
             }
         }
+        */
         System.out.println("nb black: "+nbBlack+", nb red: "+nbRed+", count black: "+countBlack+", count red: "+countRed+", winner is player "+idWinner);
         // set the winner
         model.setIdWinner(idWinner);
@@ -149,6 +142,6 @@ public class HoleStageModel extends GameStageModel {
 
     @Override
     public StageElementsFactory getDefaultElementFactory() {
-        return new HoleStageFactory(this);
+        return new TablutStageFactory(this);
     }
 }

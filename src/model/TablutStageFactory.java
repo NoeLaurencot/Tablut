@@ -6,8 +6,8 @@ import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
 
 /**
- * HoleStageFactory must create the game elements that are defined in HoleStageModel
- * WARNING: it just creates the game element and NOT their look, which is done in HoleStageView.
+ * TablutStageFactory must create the game elements that are defined in TablutStageModel
+ * WARNING: it just creates the game element and NOT their look, which is done in TablutStageView.
  *
  * If there must be a precise position in the display for the look of a game element, then this element must be created
  * with that position in the virtual space and MUST NOT be placed in a container element. Indeed, for such
@@ -21,12 +21,12 @@ import boardifier.model.TextElement;
  * look of the container.
  *
  */
-public class HoleStageFactory extends StageElementsFactory {
-    private HoleStageModel stageModel;
+public class TablutStageFactory extends StageElementsFactory {
+    private TablutStageModel stageModel;
 
-    public HoleStageFactory(GameStageModel gameStageModel) {
+    public TablutStageFactory(GameStageModel gameStageModel) {
         super(gameStageModel);
-        stageModel = (HoleStageModel) gameStageModel;
+        stageModel = (TablutStageModel) gameStageModel;
     }
 
     @Override
