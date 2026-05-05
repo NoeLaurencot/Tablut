@@ -8,14 +8,11 @@ import boardifier.model.GameStageModel;
  * A basic pawn element, with only 2 fixed parameters : number and color
  * There are no setters because the state of a Hole pawn is fixed.
  */
-public class Pawn extends GameElement {
+public abstract class Pawn extends GameElement {
 
-    private int number;
-    private int color;
-    public static int PAWN_BLACK = 0;
-    public static int PAWN_RED = 1;
+    private PawnTeam team;
 
-    public Pawn(int number, int color, GameStageModel gameStageModel) {
+    public Pawn(PawnTeam team, GameStageModel gameStageModel) {
         super(gameStageModel);
         /*
         TO FULFILL:
@@ -24,10 +21,9 @@ public class Pawn extends GameElement {
          */
     }
 
-    public int getNumber() {
-        return number;
-    }
-    public int getColor() {
-        return color;
-    }
+    public abstract int[][] getLegalMoves();
+}
+
+enum PawnTeam {
+    MUSCOVITES,SWEDISH
 }
