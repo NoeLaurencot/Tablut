@@ -39,7 +39,9 @@ public class TablutStageView extends GameStageView {
 
     @Override
     public void createLooks() {
-        HoleStageModel model = (HoleStageModel)gameStageModel;
+        TablutStageModel model = (TablutStageModel)gameStageModel;
+
+        addLook(new ClassicBoardLook(3, 5, model.getBoard(), 1, 1, true));
 
         /*
         TO FULFILL:

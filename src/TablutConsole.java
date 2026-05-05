@@ -19,15 +19,32 @@ public class TablutConsole {
                 mode = 0;
             }
         }
+
         Model model = new Model();
-        /*
-        TO FULFILL:
-            - add both players to model taking mode value into account
-            - register the model and view class names (i.e model.HoleStageModel & view.HoleStageView
-            - create the controller
-            - set the name of the first stage to use when starting the game
-            - start the game
-            - start the stage loop.
-         */
+
+        if (mode == 0) {
+            model.addHumanPlayer("player1");
+            model.addHumanPlayer("player2");
+        }
+        else if (mode == 1) {
+            model.addHumanPlayer("player");
+            model.addComputerPlayer("computer");
+        }
+        else if (mode == 2) {
+            model.addComputerPlayer("computer1");
+            model.addComputerPlayer("computer2");
+        }
+
+        StageFactory.registerModelAndView("tablut", "model.TablutStageModel", "view.TablutStageView");
+        View holeView = new View(model);
+        TablutController control = new TablutController(model,holeView);
+        control.setFirstStageName("tablut");
+        try {
+            control.startGame();
+            control.stageLoop();
+        }
+        catch(GameException e) {
+            System.out.println("Cannot start the game. Abort");
+        }
     }
 }

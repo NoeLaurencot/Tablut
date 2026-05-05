@@ -56,9 +56,10 @@ public class TablutStageModel extends GameStageModel {
 
     public void setBoard(TablutBoard tb) {
         board = tb;
+        addContainer(board);
     }
 
-    public TextElement getPlayerName(TextElement pn) {
+    public void getPlayerName(TextElement pn) {
         playerName = pn;
     }
 

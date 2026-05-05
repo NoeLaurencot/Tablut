@@ -33,6 +33,7 @@ public class TablutStageFactory extends StageElementsFactory {
     public void setup() {
 
         TablutBoard board = new TablutBoard(0, 1, stageModel);
+        stageModel.setBoard(board);
 
         /*
         TODO :
