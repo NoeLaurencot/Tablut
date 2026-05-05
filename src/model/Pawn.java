@@ -1,9 +1,11 @@
 package model;
 
 import boardifier.control.ActionFactory;
+import boardifier.control.ActionPlayer;
 import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
+import boardifier.model.action.ActionList;
 
 import java.util.List;
 
@@ -42,22 +44,15 @@ public abstract class Pawn extends GameElement {
 
     public abstract int[][] getLegalMoves();
 
-    public abstract void checkIfDie(List<GameElement>[][] pawns);
+    protected abstract boolean checkIsMoveValid();
 
-    public void move(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public abstract void checkShouldDie(List<GameElement>[][] pawns);
+
+    public ActionList move(int x, int y) {
+        return ActionFactory.generateMoveWithinContainer(this.getModel(), this, x, y);
     }
 
-    public void die(List<GameElement>[][] pawns) {
-        for (int i = 0; i < pawns.length; i++) {
-            for (int j = 0; j < pawns[i].length; j++) {
-                for (int k = 0; k < pawns[i][j].size(); k++) {
-                    ActionFactory.generateRemoveFromContainer(this.getModel(), this);
-                }
-            }
-        }
+    public ActionList die(Pawn pawn) {
+        return ActionFactory.generateRemoveFromContainer(this.getModel(), this);
     }
-
-
 }
