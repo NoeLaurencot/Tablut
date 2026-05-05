@@ -32,10 +32,14 @@ public class TablutStageFactory extends StageElementsFactory {
     @Override
     public void setup() {
 
+        TablutBoard board = new TablutBoard(0, 1, stageModel);
+
         /*
-        TO FULFILL:
-            - create the board, pots, pawns and set them in the stage model
-            - assign the pawns to their cells in the pots
+        TODO :
+            - create the pawns and set them in the stage model
+            - assign the pawns to their positions in the board
          */
+
+
     }
 }
