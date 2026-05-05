@@ -10,24 +10,24 @@ import boardifier.model.GameStageModel;
  */
 public class Pawn extends GameElement {
 
-    private int number;
-    private int color;
-    public static int PAWN_BLACK = 0;
-    public static int PAWN_RED = 1;
+    private Team team;
 
-    public Pawn(int number, int color, GameStageModel gameStageModel) {
+    public Pawn(Team team, GameStageModel gameStageModel) {
         super(gameStageModel);
         /*
-        TO FULFILL:
+        TO FULFILL (done?):
             - register a new type of element for the pawns
             - initialize attributes
          */
+
+        this.team = team;
     }
 
-    public int getNumber() {
-        return number;
+    public Team getTeam() {
+        return this.team;
     }
-    public int getColor() {
-        return color;
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
