@@ -30,34 +30,20 @@ import boardifier.model.*;
 public class TablutStageModel extends GameStageModel {
 
     // define stage state variables
-    private int blackPawnsToPlay;
-    private int redPawnsToPlay;
 
     // define stage game elements
     private TablutBoard board;
-    private Pawn[] blackPawns;
-    private Pawn[] redPawns;
     private TextElement playerName;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
-        blackPawnsToPlay = 4;
-        redPawnsToPlay = 4;
         setupCallbacks();
     }
 
     public TablutBoard getBoard() {
         return board;
-    }
-
-    public Pawn[] getBlackPawns() {
-        return blackPawns;
-    }
-
-    public Pawn[] getRedPawns() {
-        return redPawns;
     }
 
     public TextElement getPlayerName() {
@@ -67,6 +53,14 @@ public class TablutStageModel extends GameStageModel {
     TO FULFILL:
         - create setters for all attributes. NB: in setters, do not forget to add elements to the stage (see addGrid() & addElement())
      */
+
+    public void setBoard(TablutBoard tb) {
+        board = tb;
+    }
+
+    public TextElement getPlayerName(TextElement pn) {
+        playerName = pn;
+    }
 
     private void setupCallbacks() {
 
@@ -133,6 +127,7 @@ public class TablutStageModel extends GameStageModel {
             }
         }
         */
+
         System.out.println("nb black: "+nbBlack+", nb red: "+nbRed+", count black: "+countBlack+", count red: "+countRed+", winner is player "+idWinner);
         // set the winner
         model.setIdWinner(idWinner);
