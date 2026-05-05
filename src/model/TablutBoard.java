@@ -17,7 +17,7 @@ import java.awt.*;
  */
 public class TablutBoard extends ContainerElement {
     public TablutBoard(int x, int y, GameStageModel gameStageModel) {
-        // call the super-constructor to create a 3x3 grid, named "Tablutboard", and in x,y in space
+        // call the super-constructor to create a 9x9 grid, named "Tablutboard", and in x,y in space
         super("tablutboard", x, y, 9 , 9, gameStageModel);
     }
 
