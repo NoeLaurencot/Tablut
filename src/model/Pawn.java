@@ -26,6 +26,12 @@ public abstract class Pawn extends GameElement {
         this.team = team;
     }
 
+    public Pawn(double x, double y, Team team, GameStageModel gameStageModel) {
+        super(gameStageModel);
+        setLocation(x, y);
+        this.team = team;
+    }
+
     public Team getTeam() {
         return this.team;
     }
