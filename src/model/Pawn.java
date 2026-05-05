@@ -1,14 +1,17 @@
 package model;
 
+import boardifier.control.ActionFactory;
 import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
+
+import java.util.List;
 
 /**
  * A basic pawn element, with only 2 fixed parameters : number and color
  * There are no setters because the state of a Hole pawn is fixed.
  */
-public class Pawn extends GameElement {
+public abstract class Pawn extends GameElement {
 
     private Team team;
 
@@ -30,4 +33,25 @@ public class Pawn extends GameElement {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    public abstract int[][] getLegalMoves();
+
+    public abstract void checkIfDie(List<GameElement>[][] pawns);
+
+    public void move(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void die(List<GameElement>[][] pawns) {
+        for (int i = 0; i < pawns.length; i++) {
+            for (int j = 0; j < pawns[i].length; j++) {
+                for (int k = 0; k < pawns[i][j].size(); k++) {
+                    ActionFactory.generateRemoveFromContainer(this.getModel(), this);
+                }
+            }
+        }
+    }
+
+
 }

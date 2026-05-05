@@ -10,6 +10,7 @@ import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.TablutStageModel;
+import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,11 +56,11 @@ public class TablutController extends Controller {
                 System.out.print(p.getName()+ " > ");
                 try {
                     String line = consoleIn.readLine();
-                    if (line.length() == 3) {
+                    if (line.length() == 4) {
                         ok = analyseAndPlay(line);
                     }
                     if (!ok) {
-                        System.out.println("incorrect instruction. retry !");
+                        System.out.println("incorrect instruction. retry!");
                     }
                 }
                 catch(IOException e) {}
@@ -77,15 +78,20 @@ public class TablutController extends Controller {
     }
     private boolean analyseAndPlay(String line) {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
-        // get the pawn value from the first char
-        int pawnIndex = (int) (line.charAt(0) - '1');
-        if ((pawnIndex<0)||(pawnIndex>3)) return false;
-        // get the ccords in the board
-        int col = (int) (line.charAt(1) - 'A');
-        int row = (int) (line.charAt(2) - '1');
+        // get the coords for the source pawn in the board
+        int sourceCol = (int) (line.charAt(0) - 'A');
+        int sourceRow = (int) (line.charAt(1) - '1');
         // check coords validity
-        if ((row<0)||(row>2)) return false;
-        if ((col<0)||(col>2)) return false;
+        if ((sourceRow<0)||(sourceRow>9)) return false;
+        if ((sourceCol<0)||(sourceCol>9)) return false;
+
+        // get the ccords for the destination pawn in the board
+        int destCol = (int) (line.charAt(3) - 'A');
+        int destRow = (int) (line.charAt(4) - '1');
+        // check coords validity
+        if ((destRow<0)||(destRow>9)) return false;
+        if ((destCol<0)||(destCol>9)) return false;
+
         // check if the pawn is still in its pot
     
         GameElement pawn = null;
