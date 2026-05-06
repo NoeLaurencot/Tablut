@@ -39,7 +39,7 @@ public class TablutStageFactory extends StageElementsFactory {
     }
 
     private void setupPawns() {
-        Pawn[] pawns = new Pawn[24];
+        Pawn[] pawns = new Pawn[25];
 
         // Swedish
         pawns[0] = new Soldier(4, 2, Team.SWEDISH, stageModel);
@@ -73,6 +73,9 @@ public class TablutStageFactory extends StageElementsFactory {
         pawns[22] = new Soldier(5, 8, Team.MUSCOVITES, stageModel);
         pawns[23] = new Soldier(4, 7, Team.MUSCOVITES, stageModel);
 
+        // King
+
+        pawns[24] = new King(4, 4, stageModel);
 
         stageModel.setPawns(pawns);
     }

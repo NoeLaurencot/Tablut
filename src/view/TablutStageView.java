@@ -46,9 +46,10 @@ public class TablutStageView extends GameStageView {
         addLook(boardLook);
 
         Pawn[] pawns = model.getPawns();
-        for (int i = 0; i < pawns.length; i++) {
+        for (int i = 0; i < pawns.length-1; i++) {
             boardLook.addInnerLook(new SoldierLook(pawns[i]), (int)pawns[i].getY(), (int)pawns[i].getX());
         }
+        boardLook.addInnerLook(new KingLook(pawns[pawns.length-1]), (int)pawns[pawns.length-1].getY(), (int)pawns[pawns.length-1].getX());
         /*
         TO FULFILL:
             using the model of the board, pots and pawns
