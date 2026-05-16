@@ -10,6 +10,7 @@ import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.TablutStageModel;
+import model.TablutBoard;
 import view.TablutStageView;
 
 import java.io.BufferedReader;
@@ -70,14 +71,28 @@ public class TablutController extends Controller {
 
     public void endOfTurn() {
 
+
         model.setNextPlayer();
         // get the new player to display its name
         Player p = model.getCurrentPlayer();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
+        /*
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (stageModel.getBoard().isEmptyAt(i, j)) {
+                    System.out.print(1);
+                } else {
+                System.out.print(0);
+                }
+            }
+            System.out.println();
+        }*/
     }
     private boolean analyseAndPlay(String line) {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
+        TablutBoard board = gameStage.getBoard();
+
         // get the coords for the source pawn in the board
         int sourceCol = (int) (line.charAt(0) - 'A');
         int sourceRow = (int) (line.charAt(1) - '1');
@@ -86,23 +101,25 @@ public class TablutController extends Controller {
         if ((sourceCol<0)||(sourceCol>9)) return false;
 
         // get the ccords for the destination pawn in the board
-        int destCol = (int) (line.charAt(3) - 'A');
-        int destRow = (int) (line.charAt(4) - '1');
+        int destCol = (int) (line.charAt(2) - 'A');
+        int destRow = (int) (line.charAt(3) - '1');
         // check coords validity
         if ((destRow<0)||(destRow>9)) return false;
         if ((destCol<0)||(destCol>9)) return false;
 
-        // check if the pawn is still in its pot
-    
-        GameElement pawn = null;
-        // compute valid cells for the chosen pawn
-        gameStage.getBoard().setValidCells(pawnIndex+1);
-        if (!gameStage.getBoard().canReachCell(row,col)) return false;
+        if (board.isEmptyAt(sourceRow, sourceCol)) return false;
+        // TODO : check if the pawn belongs to the right team
 
-        ActionList actions = ActionFactory.generatePutInContainer(model, pawn, "Tablutboard", row, col);
+        GameElement pawn = board.getElement(sourceRow, sourceCol);
+        // compute valid cells for the chosen pawn
+        //gameStage.getBoard().setValidCells(1-1);
+        //if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
+
+        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
         actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
+        
         return true;
     }
 }

@@ -31,6 +31,9 @@ public class TablutStageFactory extends StageElementsFactory {
 
     @Override
     public void setup() {
+        TextElement text = new TextElement(stageModel.getCurrentPlayerName(), stageModel);
+        text.setLocation(0,0);
+        stageModel.setPlayerName(text);
 
         TablutBoard board = new TablutBoard(0, 1, stageModel);
         stageModel.setBoard(board);

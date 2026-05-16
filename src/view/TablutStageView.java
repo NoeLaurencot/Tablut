@@ -46,6 +46,9 @@ public class TablutStageView extends GameStageView {
         TablutStageModel model = (TablutStageModel)gameStageModel;
         TablutBoard board = model.getBoard();
 
+        TextLook text = new TextLook(model.getPlayerName());
+        addLook(text);
+
         ClassicBoardLook boardLook = new ClassicBoardLook(2, 4, board, 1, 1, true);
         addLook(boardLook);
 
@@ -56,11 +59,13 @@ public class TablutStageView extends GameStageView {
             for (int j = 0; j < c; j++) {
                 if (i == r/2 && j == c/2) { // king position
                     King king = (King)board.getElement(i, j);
-                    boardLook.addInnerLook(new KingLook(king), (int)king.getY(), (int)king.getX());
+                    KingLook look = new KingLook(king);
+                    addLook(look);
                 }
                 else if (!board.isEmptyAt(i, j)) {
                     Soldier soldier = (Soldier)board.getElement(i, j);
-                    boardLook.addInnerLook(new SoldierLook(soldier), (int)soldier.getY(), (int)soldier.getX());
+                    SoldierLook look = new SoldierLook(soldier);
+                    addLook(look);
                 }
             }
         }

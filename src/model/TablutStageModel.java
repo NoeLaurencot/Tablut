@@ -54,10 +54,6 @@ public class TablutStageModel extends GameStageModel {
     public TextElement getPlayerName() {
         return playerName;
     }
-    /*
-    TO FULFILL:
-        - create setters for all attributes. NB: in setters, do not forget to add elements to the stage (see addGrid() & addElement())
-     */
 
     public void setBoard(TablutBoard tb) {
         board = tb;
@@ -68,6 +64,7 @@ public class TablutStageModel extends GameStageModel {
         pawns = p;
         for (Pawn pawn : pawns) {
             board.addElement(pawn, (int)pawn.getX(), (int)pawn.getY());
+            addElement(pawn);
         }
     }
 
