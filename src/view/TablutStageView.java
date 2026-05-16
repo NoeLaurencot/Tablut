@@ -8,7 +8,10 @@ import boardifier.view.GameStageView;
 
 import boardifier.view.TextLook;
 import model.TablutStageModel;
+import model.TablutBoard;
 import model.Pawn;
+import model.Soldier;
+import model.King;
 
 /**
  * HoleStageView has to create all the looks for all game elements created by the HoleStageFactory.
@@ -41,21 +44,25 @@ public class TablutStageView extends GameStageView {
     @Override
     public void createLooks() {
         TablutStageModel model = (TablutStageModel)gameStageModel;
+        TablutBoard board = model.getBoard();
 
-        ClassicBoardLook boardLook = new ClassicBoardLook(2, 4, model.getBoard(), 1, 1, true);
+        ClassicBoardLook boardLook = new ClassicBoardLook(2, 4, board, 1, 1, true);
         addLook(boardLook);
 
-        Pawn[] pawns = model.getPawns();
-        for (int i = 0; i < pawns.length-1; i++) {
-            boardLook.addInnerLook(new SoldierLook(pawns[i]), (int)pawns[i].getY(), (int)pawns[i].getX());
+        int r = board.getNbRows();
+        int c = board.getNbCols();
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (i == r/2 && j == c/2) { // king position
+                    King king = (King)board.getElement(i, j);
+                    boardLook.addInnerLook(new KingLook(king), (int)king.getY(), (int)king.getX());
+                }
+                else if (!board.isEmptyAt(i, j)) {
+                    Soldier soldier = (Soldier)board.getElement(i, j);
+                    boardLook.addInnerLook(new SoldierLook(soldier), (int)soldier.getY(), (int)soldier.getX());
+                }
+            }
         }
-        boardLook.addInnerLook(new KingLook(pawns[pawns.length-1]), (int)pawns[pawns.length-1].getY(), (int)pawns[pawns.length-1].getX());
-        /*
-        TO FULFILL:
-            using the model of the board, pots and pawns
-            - create & add the look of the main board using an instance of ClassicBoardLook, with cells of size 4x2
-            - create & add the look of the two pots using instances of PawnPotLook with cells of size 4x2
-            - crate & add the look of the 8 pawns
-         */
     }
 }
