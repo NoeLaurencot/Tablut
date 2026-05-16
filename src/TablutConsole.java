@@ -1,3 +1,4 @@
+import boardifier.control.Logger;
 import boardifier.model.GameException;
 import boardifier.view.View;
 import control.TablutController;
@@ -8,7 +9,9 @@ import boardifier.model.Model;
 public class TablutConsole {
 
     public static void main(String[] args) {
-
+        // Debug
+        Logger.setLevel(Logger.LOGGER_TRACE);
+        Logger.setVerbosity(Logger.VERBOSE_HIGH);
         int mode = 0;
         if (args.length == 1) {
             try {
