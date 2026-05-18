@@ -115,7 +115,6 @@ public class TablutController extends Controller {
 
         // compute valid cells for the chosen pawn
         gameStage.getBoard().setValidCells(sourceCol, sourceRow);
-        System.out.println(destRow + " " + destCol);
         if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
@@ -162,7 +161,7 @@ public class TablutController extends Controller {
                 continue;
             }
             Pawn otherPawn = (Pawn)board.getElement(position[0], position[1]);
-            if (otherPawn.getTeam() == pawn.getTeam()) {
+            if (otherPawn.getTeam() == pawn.getTeam() && ennemyPawn.shouldDie()) {
                 ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
                 ActionPlayer play = new ActionPlayer(model, this, actions);
                 play.start();

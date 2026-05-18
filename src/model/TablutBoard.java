@@ -30,6 +30,7 @@ public class TablutBoard extends ContainerElement {
             }
         }
 
+        /*
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (reachableCells[i][j]) {
@@ -40,7 +41,7 @@ public class TablutBoard extends ContainerElement {
             }       
             System.out.println();
 
-        }
+        }*/
         
     }
     public List<Point> computeValidCells(int sourceRow, int sourceCol) {

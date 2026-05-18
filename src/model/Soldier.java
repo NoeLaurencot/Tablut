@@ -31,7 +31,7 @@ public class Soldier extends Pawn {
     }
 
     @Override
-    public void checkShouldDie(List<GameElement>[][] pawns) {
-
+    public boolean shouldDie() {
+        return true;
     }
 }

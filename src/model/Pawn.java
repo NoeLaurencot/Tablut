@@ -42,11 +42,37 @@ public abstract class Pawn extends GameElement {
         this.team = team;
     }
 
+    protected int getXInBoard() {
+        TablutBoard board = ((TablutStageModel)getGameStage()).getBoard();
+        
+        for (int i = 0; i < board.getNbRows(); i++) {
+            for (int j = 0; j < board.getNbCols(); j++) {
+                if (board.getElement(i, j) == this) {
+                    return i;
+                }
+            }
+        } 
+        return -1;
+    }
+
+    protected int getYInBoard() {
+        TablutBoard board = ((TablutStageModel)getGameStage()).getBoard();
+        
+        for (int i = 0; i < board.getNbRows(); i++) {
+            for (int j = 0; j < board.getNbCols(); j++) {
+                if (board.getElement(i, j) == this) {
+                    return j;
+                }
+            }
+        } 
+        return -1;
+    }
+
     public abstract int[][] getLegalMoves();
 
     protected abstract boolean checkIsMoveValid();
 
-    public abstract void checkShouldDie(List<GameElement>[][] pawns);
+    public abstract boolean shouldDie();
 
     public ActionList move(int x, int y) {
         return ActionFactory.generateMoveWithinContainer(this.getModel(), this, x, y);
