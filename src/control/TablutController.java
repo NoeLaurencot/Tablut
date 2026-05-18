@@ -99,6 +99,7 @@ public class TablutController extends Controller {
         int sourceCol = (int) (line.charAt(0) - 'A');
         int sourceRow = (int) (line.charAt(1) - '1');
         // check coords validity
+
         if ((sourceRow<0)||(sourceRow>9)) return false;
         if ((sourceCol<0)||(sourceCol>9)) return false;
 
@@ -108,15 +109,15 @@ public class TablutController extends Controller {
         // check coords validity
         if ((destRow<0)||(destRow>9)) return false;
         if ((destCol<0)||(destCol>9)) return false;
-
         if (board.isEmptyAt(sourceRow, sourceCol)) return false;
 
         Pawn pawn = (Pawn)board.getElement(sourceRow, sourceCol);
         if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
 
         // compute valid cells for the chosen pawn
-        gameStage.getBoard().setValidCells(1-1);
-        //if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
+        gameStage.getBoard().setValidCells(sourceCol, sourceRow);
+
+        if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
         actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.

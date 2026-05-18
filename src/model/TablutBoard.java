@@ -21,18 +21,52 @@ public class TablutBoard extends ContainerElement {
         super("tablutboard", x, y, 9 , 9, gameStageModel);
     }
 
-    public void setValidCells(int number) {
+    public void setValidCells(int sourceRow, int sourceCol) {
         resetReachableCells(false);
-        List<Point> valid = computeValidCells(number);
+        List<Point> valid = computeValidCells(sourceRow, sourceCol);
         if (valid != null) {
             for(Point p : valid) {
                 reachableCells[p.y][p.x] = true;
             }
         }
+        /*
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (reachableCells[i][j]) {
+                    System.out.print(1);
+                } else {
+                    System.out.print(0);
+                }
+            }       
+            System.out.println();
+
+        }
+        */
     }
-    public List<Point> computeValidCells(int number) {
+    public List<Point> computeValidCells(int sourceRow, int sourceCol) {
         List<Point> lst = new ArrayList<>();
+
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        for (int[] vect : directions) {
+            int inc = 1;
+            int[] position = {sourceRow + vect[0]*inc, sourceCol + vect[1]*inc};
+            //System.out.println(position[0] + " " + position[1]);
+
+
+            while (position[0] >= 0 && position[0] < 9
+                && position[1] >= 0 && position[1] < 9
+                && isEmptyAt(position[0], position[1])) {
+                lst.add(new Point(position[0], position[1]));
+                inc++;
+                position[0] = sourceRow + vect[0]*inc; 
+                position[1] = sourceCol + vect[1]*inc;
+            }
+        }
+
+
+
          /*
+        }
         TO FULFILL:
             - compute the list of cells that are valid to play taking the pawn value (i.e. number) into account.
             each Point in this list consists in couple x,y, where x is a column and y a row in the board.
