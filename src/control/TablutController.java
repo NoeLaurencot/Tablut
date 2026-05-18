@@ -9,8 +9,10 @@ import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
+import model.Pawn;
 import model.TablutStageModel;
 import model.TablutBoard;
+import model.Team;
 import view.TablutStageView;
 
 import java.io.BufferedReader;
@@ -108,11 +110,12 @@ public class TablutController extends Controller {
         if ((destCol<0)||(destCol>9)) return false;
 
         if (board.isEmptyAt(sourceRow, sourceCol)) return false;
-        // TODO : check if the pawn belongs to the right team
 
-        GameElement pawn = board.getElement(sourceRow, sourceCol);
+        Pawn pawn = (Pawn)board.getElement(sourceRow, sourceCol);
+        if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
+
         // compute valid cells for the chosen pawn
-        //gameStage.getBoard().setValidCells(1-1);
+        gameStage.getBoard().setValidCells(1-1);
         //if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
