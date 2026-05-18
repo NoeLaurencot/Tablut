@@ -110,20 +110,64 @@ public class TablutController extends Controller {
         if ((destRow<0)||(destRow>9)) return false;
         if ((destCol<0)||(destCol>9)) return false;
         if (board.isEmptyAt(sourceRow, sourceCol)) return false;
-
         Pawn pawn = (Pawn)board.getElement(sourceRow, sourceCol);
         if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
 
         // compute valid cells for the chosen pawn
         gameStage.getBoard().setValidCells(sourceCol, sourceRow);
-
+        System.out.println(destRow + " " + destCol);
         if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
         actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
+        afterPlay(destRow, destCol);
         
         return true;
+    }
+
+    /**
+     * Checks for captures and wins
+     */
+    private void afterPlay(int destRow, int destCol) {
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
+        TablutBoard board = gameStage.getBoard();
+        Pawn pawn = (Pawn)board.getElement(destRow, destCol);
+
+        for (int[] vect : directions) {
+
+            // first check if the next cell is an ennemy pawn
+            int[] position = {destRow + vect[0], destCol + vect[1]};
+            
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+            
+            if (board.isEmptyAt(position[0], position[1])) {
+                continue;
+            }
+            Pawn ennemyPawn = (Pawn)board.getElement(position[0], position[1]);
+            if (ennemyPawn.getTeam() == pawn.getTeam()) {
+                continue;
+            }
+
+            // checks the further cell if it is a ally pawn (capture)
+            position[0] += vect[0];
+            position[1] += vect[1];
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+            if (board.isEmptyAt(position[0], position[1])) {
+                continue;
+            }
+            Pawn otherPawn = (Pawn)board.getElement(position[0], position[1]);
+            if (otherPawn.getTeam() == pawn.getTeam()) {
+                ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
+                ActionPlayer play = new ActionPlayer(model, this, actions);
+                play.start();
+                ennemyPawn.setVisible(false);
+            }
+        }
     }
 }

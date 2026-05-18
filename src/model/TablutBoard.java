@@ -29,7 +29,7 @@ public class TablutBoard extends ContainerElement {
                 reachableCells[p.y][p.x] = true;
             }
         }
-        /*
+
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (reachableCells[i][j]) {
@@ -41,7 +41,7 @@ public class TablutBoard extends ContainerElement {
             System.out.println();
 
         }
-        */
+        
     }
     public List<Point> computeValidCells(int sourceRow, int sourceCol) {
         List<Point> lst = new ArrayList<>();
@@ -55,7 +55,7 @@ public class TablutBoard extends ContainerElement {
 
             while (position[0] >= 0 && position[0] < 9
                 && position[1] >= 0 && position[1] < 9
-                && isEmptyAt(position[0], position[1])) {
+                && isEmptyAt(position[1], position[0])) {
                 lst.add(new Point(position[0], position[1]));
                 inc++;
                 position[0] = sourceRow + vect[0]*inc; 
