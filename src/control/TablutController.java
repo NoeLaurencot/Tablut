@@ -127,7 +127,7 @@ public class TablutController extends Controller {
     }
 
     /**
-     * Checks for captures and wins
+     * Checks for captures
      */
     private void afterPlay(int destRow, int destCol) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};

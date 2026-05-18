@@ -38,7 +38,6 @@ public class King extends Pawn {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
-            System.out.println(position[0] + " " + position[1]);
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
             }
@@ -48,9 +47,5 @@ public class King extends Pawn {
             }
         }
         return ennemyNeighbors >= solidersToCapture;
-    }
-
-    public void update() {
-        System.out.println(getX() + " " + getY());
     }
 }
