@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class King extends Pawn {
 
-    private static int solidersToCapture = 3;
+    private static int solidersToCapture = 4;
 
     public King(GameStageModel gameStageModel) {
         super(Team.SWEDISH, gameStageModel);
@@ -21,27 +21,27 @@ public class King extends Pawn {
         super(x, y, Team.SWEDISH, gameStageModel);
         ElementTypes.register("king", 200);
     }
-    
+
 
     @Override
     public List<Point> getLegalMoves() {
         List<Point> lst = new ArrayList<>();
-        TablutBoard board = (TablutBoard)getContainer();
+        TablutBoard board = (TablutBoard) getContainer();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
-            int[] position = {getXInBoard() + vect[0]*inc, getYInBoard() + vect[1]*inc};
+            int[] position = {getXInBoard() + vect[0] * inc, getYInBoard() + vect[1] * inc};
             //System.out.println(position[0] + " " + position[1]);
 
             while (position[0] >= 0 && position[0] < 9
-                && position[1] >= 0 && position[1] < 9
-                && board.isEmptyAt(position[0], position[1])) {
-                
+                    && position[1] >= 0 && position[1] < 9
+                    && board.isEmptyAt(position[0], position[1])) {
+
                 lst.add(new Point(position[0], position[1]));
                 inc++;
-                position[0] = getXInBoard() + vect[0]*inc; 
-                position[1] = getYInBoard() + vect[1]*inc;
+                position[0] = getXInBoard() + vect[0] * inc;
+                position[1] = getYInBoard() + vect[1] * inc;
             }
         }
 
@@ -55,7 +55,7 @@ public class King extends Pawn {
 
     @Override
     public boolean shouldDie() {
-        TablutBoard board = (TablutBoard)getContainer();
+        TablutBoard board = (TablutBoard) getContainer();
         TablutStageModel model = board.getGameStage();
 
         int ennemyNeighbors = 0;
@@ -63,17 +63,17 @@ public class King extends Pawn {
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
             if (model.isFortressAt(position[0], position[1])) {
-                ennemyNeighbors ++;
+                ennemyNeighbors++;
             }
 
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
             }
-            Pawn pawn = (Pawn)board.getElement(position[0], position[1]);
-            System.out.println(position[0] + " " + position[1]);
-        
+            Pawn pawn = (Pawn) board.getElement(position[0], position[1]);
+//            System.out.println(position[0] + " " + position[1]);
+
             if (pawn.getTeam() != getTeam()) {
-                ennemyNeighbors ++;
+                ennemyNeighbors++;
             }
         }
         return ennemyNeighbors >= solidersToCapture;
