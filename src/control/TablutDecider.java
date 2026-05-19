@@ -19,22 +19,32 @@ public class TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
 
+    private List<TablutBoard> seenBoards;
+
     public TablutDecider(Model model, Controller control) {
         super(model, control);
     }
 
     @Override
     public ActionList decide() {
-        // do a cast get a variable of the real type to get access to the attributes of TablutStageModel
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
-        TablutBoard board = stage.getBoard(); // get the board
-        GameElement pawn = null; // the pawn that is moved
-        int rowDest = 0; // the dest. row in board
-        int colDest = 0; // the dest. col in board
+        TablutBoard board = stage.getBoard();
+        GameElement pawn = null;
+        int rowDest = 0;
+        int colDest = 0;
+
+
 
         ActionList actions = ActionFactory.generatePutInContainer( model, pawn, "tablutboard", rowDest, colDest);
-        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
+        actions.setDoEndOfTurn(true);
 
         return actions;
+    }
+
+    public int evaluate(TablutBoard board) {
+        if (board.areSwedishWinning()) return 1000;
+        if (board.areMuscovitesWinning()) return -1000;
+    
+        return 0;
     }
 }

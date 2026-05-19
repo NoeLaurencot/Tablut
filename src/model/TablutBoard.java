@@ -50,7 +50,7 @@ public class TablutBoard extends ContainerElement {
             }
         }
 
-        
+        /*
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (reachableCells[i][j]) {
@@ -61,25 +61,36 @@ public class TablutBoard extends ContainerElement {
             }       
             System.out.println();
 
-        }*/
+        }
+        */
         
     }
 
     public List<Point> computeValidCells(int sourceRow, int sourceCol) {
-        List<Point> lst = new ArrayList<>();
+        
+        List<Point> lst = new ArrayList<Point>();
+        if (isEmptyAt(sourceRow, sourceCol)) return lst;
 
-        boolean isKing = getElement(sourceCol, sourceRow) instanceof King;
+        Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);    
+        lst = pawn.getLegalMoves();
+
+        return lst;
+        
+
+        /*
+        List<Point> lst = new ArrayList<>();
+        TablutBoard board = (TablutBoard)getContainer();
+
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
             int[] position = {sourceRow + vect[0]*inc, sourceCol + vect[1]*inc};
-            //System.out.println(position[0] + " " + position[1]);
-
+            System.out.println(position[0] + " " + position[1]);
 
             while (position[0] >= 0 && position[0] < 9
                 && position[1] >= 0 && position[1] < 9
                 && isEmptyAt(position[1], position[0])
-                && (!(getGameStage().isFortressAt(position[0], position[1])) || isKing)) {
+                && !getGameStage().isFortressAt(position[0], position[1])) {
                 
                 lst.add(new Point(position[0], position[1]));
                 inc++;
@@ -89,6 +100,7 @@ public class TablutBoard extends ContainerElement {
         }
 
         return lst;
+        */
     }
 
     public Coordinate getKingPosition() {
