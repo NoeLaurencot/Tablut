@@ -47,6 +47,7 @@ public class TablutBoard extends ContainerElement {
     public List<Point> computeValidCells(int sourceRow, int sourceCol) {
         List<Point> lst = new ArrayList<>();
 
+        boolean isKing = getElement(sourceCol, sourceRow) instanceof King;
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
@@ -56,7 +57,9 @@ public class TablutBoard extends ContainerElement {
 
             while (position[0] >= 0 && position[0] < 9
                 && position[1] >= 0 && position[1] < 9
-                && isEmptyAt(position[1], position[0])) {
+                && isEmptyAt(position[1], position[0])
+                && (!(getGameStage().isFortressAt(position[0], position[1])) || isKing)) {
+                
                 lst.add(new Point(position[0], position[1]));
                 inc++;
                 position[0] = sourceRow + vect[0]*inc; 
@@ -64,14 +67,12 @@ public class TablutBoard extends ContainerElement {
             }
         }
 
-
-
-         /*
-        }
-        TO FULFILL:
-            - compute the list of cells that are valid to play taking the pawn value (i.e. number) into account.
-            each Point in this list consists in couple x,y, where x is a column and y a row in the board.
-         */
         return lst;
+    }
+
+    
+    @Override
+    public TablutStageModel getGameStage() {
+        return (TablutStageModel)gameStageModel;
     }
 }

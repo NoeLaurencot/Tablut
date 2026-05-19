@@ -34,6 +34,8 @@ public class King extends Pawn {
     @Override
     public boolean shouldDie() {
         TablutBoard board = (TablutBoard)getContainer();
+        TablutStageModel model = board.getGameStage();
+
         int ennemyNeighbors = 0;
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -42,7 +44,7 @@ public class King extends Pawn {
                 continue;
             }
             Pawn pawn = (Pawn)board.getElement(position[0], position[1]);
-            if (pawn.getTeam() != getTeam()) {
+            if (pawn.getTeam() != getTeam() || model.isFortressAt(position[0], position[1])) {
                 ennemyNeighbors ++;
             }
         }
