@@ -105,32 +105,28 @@ public class TablutController extends Controller {
         // get the coords for the source pawn in the board
         if (Character.isUpperCase(line.charAt(0))) {
             sourceCol = (int) (line.charAt(0) - 'A');
-            System.out.println(sourceCol);
         }
         else {
             sourceCol = (int) (line.charAt(0) - 'a');
-            System.out.println(sourceCol);
         }
 
         sourceRow = (int) (line.charAt(1) - '1');
         // check coords validity
 
-        if ((sourceRow<0)||(sourceRow>9)) return false;
-        if ((sourceCol<0)||(sourceCol>9)) return false;
+        if ((sourceRow<0)||(sourceRow>8)) return false;
+        if ((sourceCol<0)||(sourceCol>8)) return false;
 
         // get the ccords for the destination pawn in the board
         if (Character.isUpperCase(line.charAt(2))) {
             destCol = (int) (line.charAt(2) - 'A');
-            System.out.println(destCol);
         }
         else {
             destCol = (int) (line.charAt(2) - 'a');
-            System.out.println(destCol);
         }
         destRow = (int) (line.charAt(3) - '1');
         // check coords validity
-        if ((destRow<0)||(destRow>9)) return false;
-        if ((destCol<0)||(destCol>9)) return false;
+        if ((destRow<0)||(destRow>8)) return false;
+        if ((destCol<0)||(destCol>8)) return false;
         if (board.isEmptyAt(sourceRow, sourceCol)) return false;
         Pawn pawn = (Pawn)board.getElement(sourceRow, sourceCol);
         if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
