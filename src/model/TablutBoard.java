@@ -2,7 +2,7 @@ package model;
 
 import boardifier.model.ContainerElement;
 import boardifier.model.GameStageModel;
-import boardifier.control.Logger
+import boardifier.control.Logger;
 
 import java.awt.*;
 import java.util.ArrayList;
