@@ -46,11 +46,11 @@ public class TablutBoard extends ContainerElement {
         List<Point> valid = computeValidCells(sourceRow, sourceCol);
         if (valid != null) {
             for (Point p : valid) {
-                reachableCells[p.y][p.x] = true;
+                reachableCells[p.x][p.y] = true;
             }
         }
 
-        /*
+        
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (reachableCells[i][j]) {

@@ -132,7 +132,7 @@ public class TablutController extends Controller {
         if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
 
         // compute valid cells for the chosen pawn
-        gameStage.getBoard().setValidCells(sourceCol, sourceRow);
+        gameStage.getBoard().setValidCells(sourceRow, sourceCol);
         if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
