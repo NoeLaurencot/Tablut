@@ -91,21 +91,43 @@ public class TablutController extends Controller {
             System.out.println();
         }*/
     }
+
     private boolean analyseAndPlay(String line) {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
 
+        int sourceCol;
+        int sourceRow;
+
+        int destRow;
+        int destCol;
+
         // get the coords for the source pawn in the board
-        int sourceCol = (int) (line.charAt(0) - 'A');
-        int sourceRow = (int) (line.charAt(1) - '1');
+        if (Character.isUpperCase(line.charAt(0))) {
+            sourceCol = (int) (line.charAt(0) - 'A');
+            System.out.println(sourceCol);
+        }
+        else {
+            sourceCol = (int) (line.charAt(0) - 'a');
+            System.out.println(sourceCol);
+        }
+
+        sourceRow = (int) (line.charAt(1) - '1');
         // check coords validity
 
         if ((sourceRow<0)||(sourceRow>9)) return false;
         if ((sourceCol<0)||(sourceCol>9)) return false;
 
         // get the ccords for the destination pawn in the board
-        int destCol = (int) (line.charAt(2) - 'A');
-        int destRow = (int) (line.charAt(3) - '1');
+        if (Character.isUpperCase(line.charAt(2))) {
+            destCol = (int) (line.charAt(2) - 'A');
+            System.out.println(destCol);
+        }
+        else {
+            destCol = (int) (line.charAt(2) - 'a');
+            System.out.println(destCol);
+        }
+        destRow = (int) (line.charAt(3) - '1');
         // check coords validity
         if ((destRow<0)||(destRow>9)) return false;
         if ((destCol<0)||(destCol>9)) return false;
@@ -122,7 +144,7 @@ public class TablutController extends Controller {
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
         afterPlay(destRow, destCol);
-        
+
         return true;
     }
 
