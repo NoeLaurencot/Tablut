@@ -1,12 +1,12 @@
 package model;
 
-import boardifier.model.ContainerElement;
-import boardifier.model.GameStageModel;
 import boardifier.control.Logger;
+import boardifier.model.GameStageModel;
+import boardifier.model.ContainerElement;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.*;
 
 /**
  * Tablut main board represent the element where pawns are put when played
@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class TablutBoard extends ContainerElement {
     private ArrayList<Coordinate> winCoords;
+
 
     public TablutBoard(int x, int y, GameStageModel gameStageModel) {
         // call the super-constructor to create a 9x9 grid, named "Tablutboard", and in x,y in space
@@ -71,7 +72,7 @@ public class TablutBoard extends ContainerElement {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
-            int[] position = {sourceRow + vect[0] * inc, sourceCol + vect[1] * inc};
+            int[] position = {sourceRow + vect[0]*inc, sourceCol + vect[1]*inc};
             //System.out.println(position[0] + " " + position[1]);
 
 
@@ -79,17 +80,47 @@ public class TablutBoard extends ContainerElement {
                 && position[1] >= 0 && position[1] < 9
                 && isEmptyAt(position[1], position[0])
                 && (!(getGameStage().isFortressAt(position[0], position[1])) || isKing)) {
-
+                
                 lst.add(new Point(position[0], position[1]));
                 inc++;
-                position[0] = sourceRow + vect[0] * inc;
-                position[1] = sourceCol + vect[1] * inc;
+                position[0] = sourceRow + vect[0]*inc; 
+                position[1] = sourceCol + vect[1]*inc;
             }
         }
 
         return lst;
     }
 
+    public Coordinate getKingPosition() {
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                if (getElement(i, j) instanceof King) {
+                    return new Coordinate(i, j);
+                }
+            }
+        }
+        return new Coordinate(-1, -1);
+    }
+
+    public boolean areSwedishWinning() {
+        Coordinate kingPos = getKingPosition();
+
+        for (Coordinate coord : getWinCoords()) {
+            if (coord.getX() == kingPos.getX() && coord.getY() == kingPos.getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean areMuscovitesWinning() {
+        Coordinate kingPos = getKingPosition();
+
+        if (kingPos.getX() == -1 && kingPos.getY() == -1) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public TablutStageModel getGameStage() {

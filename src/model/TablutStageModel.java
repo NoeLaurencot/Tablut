@@ -88,17 +88,11 @@ public class TablutStageModel extends GameStageModel {
 
             // TODO : do something to check for raichi and tuichi
             
-            if (element instanceof King) {
-                for (Coordinate coord : board.getWinCoords()) {
-                    if (coord.getX() == rowDest && coord.getY() == colDest) {
-                        showGameResult(true);
-                    }
-                }
-            }    
+            if (getBoard().areSwedishWinning()) showGameResult(true);
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
-            if (element instanceof King) showGameResult(false);
+            if (getBoard().areMuscovitesWinning()) showGameResult(false);
         });
     }
 
