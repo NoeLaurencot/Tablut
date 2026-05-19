@@ -2,6 +2,10 @@ package model;
 
 import boardifier.model.*;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
@@ -86,9 +90,37 @@ public class TablutStageModel extends GameStageModel {
         onMoveInContainer( (element, containerDest, rowDest, colDest) -> {
             if (containerDest != board) return;
 
+
             // TODO : do something to check for raichi and tuichi
+
+            // Checks if the team that just played put the opposite team in stalemate
+            Team pawnTeam = ((Pawn) element).getTeam();
+            if (board.isStalemate(pawnTeam.oppositeTeam()))
+                showGameResult(pawnTeam == Team.SWEDISH);
+            else {
+                // print pour debug
+                System.out.println(pawnTeam + " didn't put " + pawnTeam.oppositeTeam() + " into a stalemate");
+                System.out.println(pawnTeam.oppositeTeam() + " can still play :");
+
+                List<List<Point>> listList = board.computeAllValidCells(pawnTeam.oppositeTeam());
+
+                for (List<Point> pointList : listList) {
+                    if (!pointList.isEmpty()) {
+                        System.out.print("[");
+                        for (Point point : pointList) {
+                            System.out.print(" [");
+                            System.out.print(" x : " + point.getX() + " y : " + point.getY());
+                            System.out.print(" ] ");
+                        }
+                        System.out.println(" ]");
+                    }
+                }
+                //
+            }
+
             
-            if (getBoard().areSwedishWinning()) showGameResult(true);
+            if (board.areSwedishWinning())
+                showGameResult(true);
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {

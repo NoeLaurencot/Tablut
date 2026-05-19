@@ -1,12 +1,14 @@
 package model;
 
 import boardifier.control.Logger;
+import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.ContainerElement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
+import java.awt.Point;
 
 /**
  * Tablut main board represent the element where pawns are put when played
@@ -63,44 +65,52 @@ public class TablutBoard extends ContainerElement {
 
         }
         */
-        
+
     }
+    public List<List<Point>> computeAllValidCells(Team team) {
+        List<List<Point>> list = new ArrayList<>();
 
-    public List<Point> computeValidCells(int sourceRow, int sourceCol) {
-        
-        List<Point> lst = new ArrayList<Point>();
-        if (isEmptyAt(sourceRow, sourceCol)) return lst;
+        for (int i = 0; i < this.grid.length; i++) {
+            for (int j = 0; j < this.grid[i].length; j++) {
+                List<GameElement> cell = grid[i][j];
+                if (!cell.isEmpty()) {
+                    Pawn pawn = (Pawn) grid[i][j].getFirst();
+                    if (pawn.getTeam() == team) {
+                        list.add(pawn.getLegalMoves());
+                    }
+                }
 
-        Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);    
-        lst = pawn.getLegalMoves();
-
-        return lst;
-        
-
-        /*
-        List<Point> lst = new ArrayList<>();
-        TablutBoard board = (TablutBoard)getContainer();
-
-        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-        for (int[] vect : directions) {
-            int inc = 1;
-            int[] position = {sourceRow + vect[0]*inc, sourceCol + vect[1]*inc};
-            System.out.println(position[0] + " " + position[1]);
-
-            while (position[0] >= 0 && position[0] < 9
-                && position[1] >= 0 && position[1] < 9
-                && isEmptyAt(position[1], position[0])
-                && !getGameStage().isFortressAt(position[0], position[1])) {
-                
-                lst.add(new Point(position[0], position[1]));
-                inc++;
-                position[0] = sourceRow + vect[0]*inc; 
-                position[1] = sourceCol + vect[1]*inc;
             }
         }
 
+        return list;
+    }
+
+    /**
+     * Checks if the team is in a stalemate, if so, they lose
+     * @param team The team to check if in stalemate
+     * @return If the team is in stalemate and thus, should lose
+     */
+    public boolean isStalemate(Team team) {
+        List<List<Point>> lists = computeAllValidCells(team);
+        for (List<Point> pointList : lists) {
+            if (!pointList.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public List<Point> computeValidCells(int sourceRow, int sourceCol) {
+
+        List<Point> lst = new ArrayList<Point>();
+        if (isEmptyAt(sourceRow, sourceCol)) return lst;
+
+        Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);
+        lst = pawn.getLegalMoves();
+
         return lst;
-        */
     }
 
     public Coordinate getKingPosition() {
@@ -136,6 +146,6 @@ public class TablutBoard extends ContainerElement {
 
     @Override
     public TablutStageModel getGameStage() {
-        return (TablutStageModel)gameStageModel;
+        return (TablutStageModel) gameStageModel;
     }
 }
