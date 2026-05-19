@@ -39,6 +39,7 @@ public class TablutStageFactory extends StageElementsFactory {
         stageModel.setBoard(board);
 
         setupPawns();
+        setupFortresses();
     }
 
     private void setupPawns() {
@@ -81,5 +82,20 @@ public class TablutStageFactory extends StageElementsFactory {
         pawns[24] = new King(4, 4, stageModel);
 
         stageModel.setPawns(pawns);
+    }
+
+    private void setupFortresses() {
+        Fortress[] fortresses = new Fortress[5];
+
+        int x = stageModel.getBoard().getNbCols();
+        int y = stageModel.getBoard().getNbRows();
+
+        fortresses[0] = new Fortress(0, 0, stageModel);
+        fortresses[1] = new Fortress(y, 0, stageModel);
+        fortresses[2] = new Fortress(0, x, stageModel);
+        fortresses[3] = new Fortress(y, x, stageModel);
+        fortresses[4] = new Fortress(y/2, x/2, stageModel);
+    
+        stageModel.setFortresses(fortresses);
     }
 }
