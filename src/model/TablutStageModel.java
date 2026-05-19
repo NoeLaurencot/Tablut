@@ -34,6 +34,7 @@ public class TablutStageModel extends GameStageModel {
     // define stage game elements
     private TablutBoard board;
     private Pawn[] pawns;
+    private Fortress[] fortresses;
     private TextElement playerName;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
@@ -51,6 +52,10 @@ public class TablutStageModel extends GameStageModel {
         return pawns;
     }
 
+    public Fortress[] getFortesses() {
+        return fortresses;
+    }
+
     public TextElement getPlayerName() {
         return playerName;
     }
@@ -66,6 +71,10 @@ public class TablutStageModel extends GameStageModel {
             board.addElement(pawn, (int)pawn.getX(), (int)pawn.getY());
             addElement(pawn);
         }
+    }
+
+    public void setFortresses(Fortress[] f) {
+        fortresses = f;
     }
 
     public void setPlayerName(TextElement pn) {
@@ -115,5 +124,14 @@ public class TablutStageModel extends GameStageModel {
     @Override
     public StageElementsFactory getDefaultElementFactory() {
         return new TablutStageFactory(this);
+    }
+ 
+    public boolean isFortressAt(int x, int y) {
+        for (Fortress fortress : fortresses) {
+            if (fortress.getX() == x && fortress.getY() == y) {
+                return true;
+            }
+        }
+        return false;
     }
 }
