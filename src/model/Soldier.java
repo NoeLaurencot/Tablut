@@ -25,23 +25,23 @@ public class Soldier extends Pawn {
     @Override
     public List<Point> getLegalMoves() {
         List<Point> lst = new ArrayList<>();
-        TablutBoard board = (TablutBoard)getContainer();
+        TablutBoard board = (TablutBoard) getContainer();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
-            int[] position = {getXInBoard() + vect[0]*inc, getYInBoard() + vect[1]*inc};
-            System.out.println(position[0] + " " + position[1]);
+            int[] position = {getXInBoard() + vect[0] * inc, getYInBoard() + vect[1] * inc};
+//            System.out.println(position[0] + " " + position[1]);
 
             while (position[0] >= 0 && position[0] < 9
-                && position[1] >= 0 && position[1] < 9
-                && board.isEmptyAt(position[0], position[1])
-                && !board.getGameStage().isFortressAt(position[0], position[1])) {
-                
+                    && position[1] >= 0 && position[1] < 9
+                    && board.isEmptyAt(position[0], position[1])
+                    && !board.getGameStage().isFortressAt(position[0], position[1])) {
+
                 lst.add(new Point(position[0], position[1]));
                 inc++;
-                position[0] = getXInBoard() + vect[0]*inc; 
-                position[1] = getYInBoard() + vect[1]*inc;
+                position[0] = getXInBoard() + vect[0] * inc;
+                position[1] = getYInBoard() + vect[1] * inc;
             }
         }
 
