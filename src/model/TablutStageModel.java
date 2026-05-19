@@ -80,9 +80,10 @@ public class TablutStageModel extends GameStageModel {
             // TODO : do something to check for raichi and tuichi
             
             if (element instanceof King) {
-                if (rowDest == 0 || colDest == 0 || 
-                    rowDest == board.getNbRows()-1 || colDest == board.getNbCols()-1) {
-                    showGameResult(true);
+                for (Coordinate coord : board.getWinCoords()) {
+                    if (coord.getX() == rowDest && coord.getY() == colDest) {
+                        showGameResult(true);
+                    }
                 }
             }    
         });
