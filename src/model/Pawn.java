@@ -7,6 +7,7 @@ import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.action.ActionList;
 
+import java.awt.Point;
 import java.util.List;
 
 /**
@@ -43,32 +44,32 @@ public abstract class Pawn extends GameElement {
     }
 
     protected int getXInBoard() {
-        TablutBoard board = ((TablutStageModel)getGameStage()).getBoard();
-        
+        TablutBoard board = ((TablutStageModel) getGameStage()).getBoard();
+
         for (int i = 0; i < board.getNbRows(); i++) {
             for (int j = 0; j < board.getNbCols(); j++) {
                 if (board.getElement(i, j) == this) {
                     return i;
                 }
             }
-        } 
+        }
         return -1;
     }
 
     protected int getYInBoard() {
-        TablutBoard board = ((TablutStageModel)getGameStage()).getBoard();
-        
+        TablutBoard board = ((TablutStageModel) getGameStage()).getBoard();
+
         for (int i = 0; i < board.getNbRows(); i++) {
             for (int j = 0; j < board.getNbCols(); j++) {
                 if (board.getElement(i, j) == this) {
                     return j;
                 }
             }
-        } 
+        }
         return -1;
     }
 
-    public abstract int[][] getLegalMoves();
+    public abstract List<Point> getLegalMoves();
 
     protected abstract boolean checkIsMoveValid();
 

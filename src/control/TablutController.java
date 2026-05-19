@@ -18,6 +18,7 @@ import view.TablutStageView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class TablutController extends Controller {
 
@@ -36,7 +37,7 @@ public class TablutController extends Controller {
     public void stageLoop() {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
         update();
-        while(! model.isEndStage()) {
+        while (!model.isEndStage()) {
             playTurn();
             endOfTurn();
             update();
@@ -49,14 +50,13 @@ public class TablutController extends Controller {
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
-            TablutDecider decider = new TablutDecider(model,this);
+            TablutDecider decider = new TablutDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
-        }
-        else {
+        } else {
             boolean ok = false;
             while (!ok) {
-                System.out.print(p.getName()+ " > ");
+                System.out.print(p.getName() + " > ");
                 try {
                     String line = consoleIn.readLine();
                     if (line.length() == 4) {
@@ -65,8 +65,8 @@ public class TablutController extends Controller {
                     if (!ok) {
                         System.out.println("incorrect instruction. retry!");
                     }
+                } catch (IOException e) {
                 }
-                catch(IOException e) {}
             }
         }
     }
@@ -105,30 +105,29 @@ public class TablutController extends Controller {
         // get the coords for the source pawn in the board
         if (Character.isUpperCase(line.charAt(0))) {
             sourceCol = (int) (line.charAt(0) - 'A');
-        }
-        else {
+        } else {
             sourceCol = (int) (line.charAt(0) - 'a');
         }
 
         sourceRow = (int) (line.charAt(1) - '1');
         // check coords validity
 
-        if ((sourceRow<0)||(sourceRow>8)) return false;
-        if ((sourceCol<0)||(sourceCol>8)) return false;
+        if ((sourceRow < 0) || (sourceRow > 8)) return false;
+        if ((sourceCol < 0) || (sourceCol > 8)) return false;
 
         // get the ccords for the destination pawn in the board
         if (Character.isUpperCase(line.charAt(2))) {
             destCol = (int) (line.charAt(2) - 'A');
-        }
-        else {
+        } else {
             destCol = (int) (line.charAt(2) - 'a');
         }
         destRow = (int) (line.charAt(3) - '1');
+
         // check coords validity
-        if ((destRow<0)||(destRow>8)) return false;
-        if ((destCol<0)||(destCol>8)) return false;
+        if ((destRow < 0) || (destRow > 8)) return false;
+        if ((destCol < 0) || (destCol > 8)) return false;
         if (board.isEmptyAt(sourceRow, sourceCol)) return false;
-        Pawn pawn = (Pawn)board.getElement(sourceRow, sourceCol);
+        Pawn pawn = (Pawn) board.getElement(sourceRow, sourceCol);
         if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
 
         // compute valid cells for the chosen pawn
@@ -151,23 +150,22 @@ public class TablutController extends Controller {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
-        Pawn pawn = (Pawn)board.getElement(destRow, destCol);
+        Pawn pawn = (Pawn) board.getElement(destRow, destCol);
 
         for (int[] vect : directions) {
 
             // first check if the next cell is an ennemy pawn
             int[] position = {destRow + vect[0], destCol + vect[1]};
-            
+
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
-            
-            if (board.isEmptyAt(position[0], position[1])) {
+
+            if (board.isEmptyAt(position[0], position[1]))
                 continue;
-            }
-            Pawn ennemyPawn = (Pawn)board.getElement(position[0], position[1]);
-            if (ennemyPawn.getTeam() == pawn.getTeam()) {
+
+            Pawn ennemyPawn = (Pawn) board.getElement(position[0], position[1]);
+            if (ennemyPawn.getTeam() == pawn.getTeam())
                 continue;
-            }
 
             // checks the further cell if it is a ally pawn (capture)
             position[0] += vect[0];
@@ -175,11 +173,13 @@ public class TablutController extends Controller {
 
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
-            if (board.isEmptyAt(position[0], position[1])) {
+
+            if (board.isEmptyAt(position[0], position[1]) && !gameStage.isFortressAt(position[0], position[1]))
                 continue;
-            }
-            Pawn otherPawn = (Pawn)board.getElement(position[0], position[1]);
-            if (otherPawn.getTeam() == pawn.getTeam() && ennemyPawn.shouldDie()) {
+
+            Pawn otherPawn = (Pawn) board.getElement(position[0], position[1]);
+
+            if ((gameStage.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
                 ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
                 ActionPlayer play = new ActionPlayer(model, this, actions);
                 play.start();
