@@ -40,11 +40,17 @@ public class King extends Pawn {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
+            if (model.isFortressAt(position[0], position[1])) {
+                ennemyNeighbors ++;
+            }
+
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
             }
             Pawn pawn = (Pawn)board.getElement(position[0], position[1]);
-            if (pawn.getTeam() != getTeam() || model.isFortressAt(position[0], position[1])) {
+            System.out.println(position[0] + " " + position[1]);
+        
+            if (pawn.getTeam() != getTeam()) {
                 ennemyNeighbors ++;
             }
         }
