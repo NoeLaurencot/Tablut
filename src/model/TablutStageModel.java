@@ -169,7 +169,6 @@ public class TablutStageModel extends GameStageModel {
         this.board.setWinCoords(this.winMode.winCoords(this.board));
     }
 
-    // TODO: implement the king move mode
     public void setKingMoveMode(KingMoveMode kingMoveMode) {
         this.kingMoveMode = kingMoveMode;
     }
