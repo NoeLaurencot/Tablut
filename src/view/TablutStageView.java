@@ -70,6 +70,7 @@ public class TablutStageView extends GameStageView {
         }
     }
 
+    // TODO: use boardifier text renderer?
     public void showOptionsMenu() {
         System.out.print("""
                 1 - King move mode
