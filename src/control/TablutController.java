@@ -55,6 +55,11 @@ public class TablutController extends Controller {
                 System.out.print(p.getName() + " > ");
                 try {
                     String line = consoleIn.readLine();
+
+                    if (line.contains("stop")) {
+                        System.exit(0);
+                    }
+
                     if (line.length() == 4) {
                         ok = analyseAndPlay(line);
                     }
