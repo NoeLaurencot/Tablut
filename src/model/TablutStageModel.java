@@ -4,6 +4,7 @@ import boardifier.model.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -92,40 +93,29 @@ public class TablutStageModel extends GameStageModel {
 
 
             // TODO : do something to check for raichi and tuichi
-
-            // Checks if the team that just played put the opposite team in stalemate
-            Team pawnTeam = ((Pawn) element).getTeam();
-            if (board.isStalemate(pawnTeam.oppositeTeam()))
-                showGameResult(pawnTeam == Team.SWEDISH);
-            else {
-                // print pour debug
-                /*
-                System.out.println(pawnTeam + " didn't put " + pawnTeam.oppositeTeam() + " into a stalemate");
-                System.out.println(pawnTeam.oppositeTeam() + " can still play :");
-
-                List<Move> listList = board.computeAllValidCells(pawnTeam.oppositeTeam());
-
-                for (List<Point> pointList : listList) {
-                    if (!pointList.isEmpty()) {
-                        System.out.print("[");
-                        for (Point point : pointList) {
-                            System.out.print(" [");
-                            System.out.print(" x : " + point.getX() + " y : " + point.getY());
-                            System.out.print(" ] ");
-                        }
-                        System.out.println(" ]");
-                    }
-                }
-                */
-                //
-            }
-
             
             if (board.areSwedishWinning())
                 showGameResult(true);
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
+            // Checks if the team that just played put the opposite team in stalemate
+            Team pawnTeam = ((Pawn) element).getTeam();
+            if (board.isStalemate(pawnTeam))
+                showGameResult(pawnTeam.oppositeTeam() == Team.SWEDISH);
+            else {
+                // print pour debug
+
+                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
+                System.out.println(pawnTeam + " can still play :");
+
+                List<Move> moveList = board.computeAllValidCells(pawnTeam);
+
+                for (Move move : moveList) {
+                    System.out.println("From x:" + move.sourceX + ", y:" + move.sourceY + " to x:" + move.destX + ", y:" + move.destY);
+                }
+            }
+
             if (getBoard().areMuscovitesWinning()) showGameResult(false);
         });
     }
