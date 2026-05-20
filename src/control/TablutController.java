@@ -63,6 +63,17 @@ public class TablutController extends Controller {
                     if (line.length() == 4) {
                         ok = analyseAndPlay(line);
                     }
+
+                    // temporary bypass cheat to test
+                    // use Z as the first char to move a pawn anywhere without check
+//                    if (line.charAt(0) == 'Z') {
+//                        ActionList actions = ActionFactory.generateMoveWithinContainer(model, ((TablutStageModel) model.getGameStage()).getBoard().getElement((int) (line.charAt(2) - '1'), (int) (line.charAt(1) - 'a')), (int) (line.charAt(4) - '1'), (int) (line.charAt(3) - 'a'));
+//                        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
+//                        ActionPlayer play = new ActionPlayer(model, this, actions);
+//                        ok = true;
+//                        play.start();
+//                    }
+
                     if (!ok) {
                         System.out.println("incorrect instruction. retry!");
                     }
@@ -123,6 +134,10 @@ public class TablutController extends Controller {
             destCol = (int) (line.charAt(2) - 'a');
         }
         destRow = (int) (line.charAt(3) - '1');
+
+        if (sourceCol != destCol && sourceRow != destRow) {
+            return false;
+        }
 
         // check coords validity
         if ((destRow < 0) || (destRow > 8)) return false;
