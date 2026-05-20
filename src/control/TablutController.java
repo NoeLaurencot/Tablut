@@ -3,23 +3,17 @@ package control;
 import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.GameElement;
-import boardifier.model.ContainerElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
-import model.Pawn;
-import model.TablutStageModel;
-import model.TablutBoard;
-import model.Team;
+import model.*;
 import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class TablutController extends Controller {
 
@@ -63,6 +57,14 @@ public class TablutController extends Controller {
                     String line = consoleIn.readLine();
                     if (line.length() == 4) {
                         ok = analyseAndPlay(line);
+                    }
+
+                    if (line.equals("options")) {
+                        OptionMenu optionMenu = new OptionMenu();
+                        ((TablutStageView) this.view.getGameStageView()).showOptionsMenu();
+
+                        optionMenu.readMenu(this.model.getGameStage());
+                        continue;
                     }
 
                     // temporary bypass cheat to test

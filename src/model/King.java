@@ -34,15 +34,22 @@ public class King extends Pawn {
             int[] position = {getXInBoard() + vect[0] * inc, getYInBoard() + vect[1] * inc};
             //System.out.println(position[0] + " " + position[1]);
 
-            while (position[0] >= 0 && position[0] < 9
-                    && position[1] >= 0 && position[1] < 9
-                    && board.isEmptyAt(position[0], position[1])) {
+            if (((TablutStageModel) this.gameStageModel).getKingMoveMode() == KingMoveMode.LIMITLESS) {
+                while (position[0] >= 0 && position[0] < 9
+                        && position[1] >= 0 && position[1] < 9
+                        && board.isEmptyAt(position[0], position[1])) {
 
-                lst.add(new Point(position[0], position[1]));
-                inc++;
-                position[0] = getXInBoard() + vect[0] * inc;
-                position[1] = getYInBoard() + vect[1] * inc;
+                    lst.add(new Point(position[0], position[1]));
+                    inc++;
+                    position[0] = getXInBoard() + vect[0] * inc;
+                    position[1] = getYInBoard() + vect[1] * inc;
+                }
+            } else {
+                if (position[0] >= 0 && position[0] < 9 && position[1] >= 0 && position[1] < 9 && board.isEmptyAt(position[0], position[1])) {
+                    lst.add(new Point(position[0], position[1]));
+                }
             }
+
         }
 
         return lst;

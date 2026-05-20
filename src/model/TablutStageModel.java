@@ -35,6 +35,8 @@ import java.util.List;
 public class TablutStageModel extends GameStageModel {
 
     // define stage state variables
+    private WinMode winMode;
+    private KingMoveMode kingMoveMode;
 
     // define stage game elements
     private TablutBoard board;
@@ -106,14 +108,14 @@ public class TablutStageModel extends GameStageModel {
             else {
                 // print pour debug
 
-                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
-                System.out.println(pawnTeam + " can still play :");
-
-                List<Move> moveList = board.computeAllValidCells(pawnTeam);
-
-                for (Move move : moveList) {
-                    System.out.println("From x:" + move.sourceX + ", y:" + move.sourceY + " to x:" + move.destX + ", y:" + move.destY);
-                }
+//                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
+//                System.out.println(pawnTeam + " can still play :");
+//
+//                List<Move> moveList = board.computeAllValidCells(pawnTeam);
+//
+//                for (Move move : moveList) {
+//                    System.out.println("From x:" + move.sourceX + ", y:" + move.sourceY + " to x:" + move.destX + ", y:" + move.destY);
+//                }
             }
 
             if (getBoard().areMuscovitesWinning()) showGameResult(false);
@@ -151,5 +153,24 @@ public class TablutStageModel extends GameStageModel {
             }
         }
         return false;
+    }
+
+    public WinMode getWinMode() {
+        return winMode;
+    }
+
+    public KingMoveMode getKingMoveMode() {
+        return kingMoveMode;
+    }
+
+    public void setWinMode(WinMode winMode) {
+        this.winMode = winMode;
+
+        this.board.setWinCoords(this.winMode.winCoords(this.board));
+    }
+
+    // TODO: implement the king move mode
+    public void setKingMoveMode(KingMoveMode kingMoveMode) {
+        this.kingMoveMode = kingMoveMode;
     }
 }
