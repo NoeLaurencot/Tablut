@@ -1,4 +1,3 @@
-import boardifier.control.Logger;
 import boardifier.model.GameException;
 import boardifier.view.View;
 import control.TablutController;
@@ -48,7 +47,7 @@ public class TablutConsole {
         control.setFirstStageName("tablut");
         try {
             control.startGame();
-            control.stageLoop();
+            control.stageLoop(System.in);
         }
         catch(GameException e) {
             System.out.println("Cannot start the game. Abort");

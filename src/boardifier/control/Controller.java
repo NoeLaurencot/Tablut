@@ -3,6 +3,7 @@ package boardifier.control;
 import boardifier.model.*;
 import boardifier.view.*;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +34,9 @@ public abstract class Controller {
 
     /**
      * defines what must be done during a stage
+     * @param in
      */
-    public abstract void stageLoop();
+    public abstract void stageLoop(InputStream in);
 
     /**
      * Start a stage of the game.

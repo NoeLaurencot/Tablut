@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-public class TablutDecider extends Decider {
+public class  TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;

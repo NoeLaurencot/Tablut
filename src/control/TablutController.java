@@ -17,6 +17,7 @@ import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
@@ -33,10 +34,10 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
+     * @param in
      */
-    public void stageLoop() {
-        consoleIn = new BufferedReader(new InputStreamReader(System.in));
-
+    public void stageLoop(InputStream in) {
+        consoleIn = new BufferedReader(new InputStreamReader(in));
         update();
         while (!model.isEndStage()) {
             playTurn();
@@ -91,7 +92,7 @@ public class TablutController extends Controller {
         Player p = model.getCurrentPlayer();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
-        
+        /*
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (stageModel.getBoard().isEmptyAt(i, j)) {
@@ -101,7 +102,7 @@ public class TablutController extends Controller {
                 }
             }
             System.out.println();
-        }
+        }*/
     }
 
     private boolean analyseAndPlay(String line) {
