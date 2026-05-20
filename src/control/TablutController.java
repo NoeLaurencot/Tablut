@@ -36,6 +36,7 @@ public class TablutController extends Controller {
      */
     public void stageLoop() {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
+
         update();
         while (!model.isEndStage()) {
             playTurn();
@@ -79,7 +80,7 @@ public class TablutController extends Controller {
         Player p = model.getCurrentPlayer();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
-        /*
+        
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (stageModel.getBoard().isEmptyAt(i, j)) {
@@ -89,7 +90,7 @@ public class TablutController extends Controller {
                 }
             }
             System.out.println();
-        }*/
+        }
     }
 
     private boolean analyseAndPlay(String line) {
