@@ -67,17 +67,21 @@ public class TablutBoard extends ContainerElement {
         */
 
     }
-    public List<List<Point>> computeAllValidCells(Team team) {
-        List<List<Point>> list = new ArrayList<>();
+    public List<Move> computeAllValidCells(Team team) {
+        List<Move> list = new ArrayList<>();
 
         for (int i = 0; i < this.grid.length; i++) {
             for (int j = 0; j < this.grid[i].length; j++) {
                 List<GameElement> cell = grid[i][j];
-                if (!cell.isEmpty()) {
-                    Pawn pawn = (Pawn) grid[i][j].getFirst();
-                    if (pawn.getTeam() == team) {
-                        list.add(pawn.getLegalMoves());
-                    }
+                if (cell.isEmpty()) {
+                    continue;
+                }
+
+                Pawn pawn = (Pawn) grid[i][j].getFirst();
+                if (pawn.getTeam() == team) {
+                    List<Point> pawnLegalMoves = pawn.getLegalMoves();
+                    for (Point point : pawnLegalMoves)
+                        list.add(new Move(i, j, point.x, point.y));
                 }
 
             }
@@ -92,13 +96,7 @@ public class TablutBoard extends ContainerElement {
      * @return If the team is in stalemate and thus, should lose
      */
     public boolean isStalemate(Team team) {
-        List<List<Point>> lists = computeAllValidCells(team);
-        for (List<Point> pointList : lists) {
-            if (!pointList.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return computeAllValidCells(team).isEmpty();
     }
 
 

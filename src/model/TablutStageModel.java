@@ -99,10 +99,11 @@ public class TablutStageModel extends GameStageModel {
                 showGameResult(pawnTeam == Team.SWEDISH);
             else {
                 // print pour debug
+                /*
                 System.out.println(pawnTeam + " didn't put " + pawnTeam.oppositeTeam() + " into a stalemate");
                 System.out.println(pawnTeam.oppositeTeam() + " can still play :");
 
-                List<List<Point>> listList = board.computeAllValidCells(pawnTeam.oppositeTeam());
+                List<Move> listList = board.computeAllValidCells(pawnTeam.oppositeTeam());
 
                 for (List<Point> pointList : listList) {
                     if (!pointList.isEmpty()) {
@@ -115,6 +116,7 @@ public class TablutStageModel extends GameStageModel {
                         System.out.println(" ]");
                     }
                 }
+                */
                 //
             }
 
