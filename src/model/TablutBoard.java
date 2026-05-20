@@ -1,14 +1,12 @@
 package model;
 
-import boardifier.control.Logger;
+import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
-import boardifier.model.ContainerElement;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.*;
-import java.awt.Point;
 
 /**
  * Tablut main board represent the element where pawns are put when played
@@ -67,6 +65,7 @@ public class TablutBoard extends ContainerElement {
         */
 
     }
+
     public List<Move> computeAllValidCells(Team team) {
         List<Move> list = new ArrayList<>();
 
@@ -77,21 +76,20 @@ public class TablutBoard extends ContainerElement {
                     continue;
                 }
 
-                Pawn pawn = (Pawn) grid[i][j].getFirst();
+                Pawn pawn = (Pawn) cell.getFirst();
                 if (pawn.getTeam() == team) {
                     List<Point> pawnLegalMoves = pawn.getLegalMoves();
                     for (Point point : pawnLegalMoves)
                         list.add(new Move(i, j, point.x, point.y));
                 }
-
             }
         }
-
         return list;
     }
 
     /**
      * Checks if the team is in a stalemate, if so, they lose
+     *
      * @param team The team to check if in stalemate
      * @return If the team is in stalemate and thus, should lose
      */
