@@ -25,15 +25,15 @@ import model.King;
  *  ╠═══╬═══╬═══╣    ╠═╣    ┣━━━┫
  * 3║   ║   ║   ║    ║4║    ┃ 4 ┃
  *  ╚═══╩═══╩═══╝    ╚═╝    ┗━━━┛
- *
+ * <p>
  * The UI constraints are :
- *   - the main board has double-segments border, coordinates, and cells of size 2x4
- *   - the black pot has double-segments border, will cells that resize to match what is within (or not)
- *   - the red pot has simple-segment border, and cells have a fixed size of 2x4
- *
- *   main board can be instanciated directly as a ClassicBoardLook.
- *   black pot could be instanciated directly as a TableLook, but in this demo a BlackPotLook subclass is created (in case of we want to modifiy the look in some way)
- *   for red pot, a subclass RedPotLook of GridLook is used, in order to override the method that render the borders.
+ * - the main board has double-segments border, coordinates, and cells of size 2x4
+ * - the black pot has double-segments border, will cells that resize to match what is within (or not)
+ * - the red pot has simple-segment border, and cells have a fixed size of 2x4
+ * <p>
+ * main board can be instanciated directly as a ClassicBoardLook.
+ * black pot could be instanciated directly as a TableLook, but in this demo a BlackPotLook subclass is created (in case of we want to modifiy the look in some way)
+ * for red pot, a subclass RedPotLook of GridLook is used, in order to override the method that render the borders.
  */
 
 public class TablutStageView extends GameStageView {
@@ -43,7 +43,7 @@ public class TablutStageView extends GameStageView {
 
     @Override
     public void createLooks() {
-        TablutStageModel model = (TablutStageModel)gameStageModel;
+        TablutStageModel model = (TablutStageModel) gameStageModel;
         TablutBoard board = model.getBoard();
 
         TextLook text = new TextLook(model.getPlayerName());
@@ -57,17 +57,28 @@ public class TablutStageView extends GameStageView {
 
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
-                if (i == r/2 && j == c/2) { // king position
-                    King king = (King)board.getElement(i, j);
+                if (i == r / 2 && j == c / 2) { // king position
+                    King king = (King) board.getElement(i, j);
                     KingLook look = new KingLook(king);
                     addLook(look);
-                }
-                else if (!board.isEmptyAt(i, j)) {
-                    Soldier soldier = (Soldier)board.getElement(i, j);
+                } else if (!board.isEmptyAt(i, j)) {
+                    Soldier soldier = (Soldier) board.getElement(i, j);
                     SoldierLook look = new SoldierLook(soldier);
                     addLook(look);
                 }
             }
         }
+    }
+
+    public void showOptionsMenu() {
+        System.out.print("""
+                1 - King move mode
+                \ta - Without distance limitations
+                \tb - Single square distance limitation
+                2 - Win zone
+                \ta - Borders
+                \tb - Corners
+               
+                Choose an option (ex: 1a) >\s""");
     }
 }
