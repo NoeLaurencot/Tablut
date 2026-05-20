@@ -142,6 +142,31 @@ public class TablutBoard extends ContainerElement {
         return false;
     }
 
+    public short[][] convertGridToInt() {
+        short[][] map = new short[nbRows][];
+
+        for (int i = 0; i < nbRows; i++) {
+            map[i] = new short[nbCols];
+            for (int j = 0; j < nbCols; j++) {
+                Pawn pawn = (Pawn) getElement(i, j);
+
+                if (pawn instanceof Soldier) {
+                    if (pawn.getTeam() == Team.SWEDISH) {
+                        map[i][j] = 1;
+                    } else {
+                        map[i][j] = 2;
+                    }
+                } else if (pawn instanceof King) {
+                    map[i][j] = 3;
+                } else {
+                    map[i][j] = 0;
+                }
+            }
+        }
+
+        return map;
+    }
+
     @Override
     public TablutStageModel getGameStage() {
         return (TablutStageModel) gameStageModel;
