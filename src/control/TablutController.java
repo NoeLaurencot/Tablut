@@ -3,6 +3,8 @@ package control;
 import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
+import boardifier.model.GameElement;
+import boardifier.model.ContainerElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -11,11 +13,13 @@ import model.Pawn;
 import model.TablutStageModel;
 import model.TablutBoard;
 import model.Team;
+import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class TablutController extends Controller {
 

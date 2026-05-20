@@ -33,4 +33,14 @@ public class Move {
         return this.sourceX == m.sourceX && this.sourceY == m.sourceY
         && this.destX == m.destX && this.destY == m.destY;
     }
+
+    @Override
+    public String toString() {
+        return (
+                "sourceX : " + this.sourceX +
+                " sourceY : " + this.sourceY +
+                " destX : " + this.destY +
+                " destY : " + this.destY
+        );
+    }
 }
