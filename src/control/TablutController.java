@@ -8,12 +8,12 @@ import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
-import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class TablutController extends Controller {
 
@@ -28,6 +28,7 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
+     *
      * @param in
      */
     public void stageLoop(InputStream in) {
@@ -66,9 +67,35 @@ public class TablutController extends Controller {
 
                     if (line.equals("options")) {
                         OptionMenu optionMenu = new OptionMenu();
-                        ((TablutStageView) this.view.getGameStageView()).showOptionsMenu();
 
-                        optionMenu.readMenu(this.model.getGameStage());
+                        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+                        MenuElement menuElement = stageModel.getMenuElement();
+
+                        if (menuElement != null) {
+                            menuElement.clearEntries();
+                            menuElement.setVisible(true);
+
+                            menuElement.addEntry(new MenuEntry(0, "King move mode", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
+                            menuElement.addEntry(new MenuEntry(0, "Win zone", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
+
+                            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Without distance limitations", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
+                            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Single square distance limitation", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
+
+                            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Borders", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
+                            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Corners", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
+
+                            menuElement.addPrompt("Choose an option (ex: 1A)");
+                            menuElement.setMenuString();
+                            update();
+                        }
+
+                        optionMenu.readMenu(stageModel);
+
+                        if (menuElement != null) {
+                            menuElement.setVisible(false);
+                            update();
+                        }
+
                         continue;
                     }
 

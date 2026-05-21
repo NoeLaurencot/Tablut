@@ -43,6 +43,7 @@ public class TablutStageModel extends GameStageModel {
     private Pawn[] pawns;
     private Fortress[] fortresses;
     private TextElement playerName;
+    private MenuElement menuElement;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
 
@@ -67,6 +68,10 @@ public class TablutStageModel extends GameStageModel {
         return playerName;
     }
 
+    public MenuElement getMenuElement() {
+        return menuElement;
+    }
+
     public void setBoard(TablutBoard tb) {
         board = tb;
         addContainer(board);
@@ -87,6 +92,11 @@ public class TablutStageModel extends GameStageModel {
     public void setPlayerName(TextElement pn) {
         playerName = pn;
         addElement(playerName);
+    }
+
+    public void setMenuElement(MenuElement menuElement) {
+        this.menuElement = menuElement;
+        addElement(menuElement);
     }
 
     private void setupCallbacks() {
