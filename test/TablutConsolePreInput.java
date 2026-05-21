@@ -16,9 +16,6 @@ public class TablutConsolePreInput {
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // Debug
-        //Logger.setLevel(Logger.LOGGER_TRACE);
-        //Logger.setVerbosity(Logger.VERBOSE_HIGH);
         File ressource;
         File move;
         String strMove;
@@ -63,7 +60,7 @@ class ControllerTablutTest extends TablutController {
 
     public ControllerTablutTest(Model model, View view, String preInputMoves) {
         super(model, view);
-        this.preInputMoves = preInputMoves;
+        this.preInputMoves = preInputMoves.substring(0,preInputMoves.length()-5);
     }
     @Override
     public void stageLoop(InputStream in) {
