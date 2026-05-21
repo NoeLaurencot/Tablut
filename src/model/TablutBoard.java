@@ -175,38 +175,4 @@ public class TablutBoard extends ContainerElement {
     public TablutStageModel getGameStage() {
         return (TablutStageModel) gameStageModel;
     }
-
-    public void setGrid(short[][] map) {
-        reset();
-
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 1) {
-                    addElement(new Soldier(i, j, Team.SWEDISH, getGameStage()), i, j);
-                } else if (map[i][j] == 2) {
-                    addElement(new Soldier(i, j, Team.MUSCOVITES, getGameStage()), i, j);
-                } else if (map[i][j] == 3) {
-                    addElement(new King(i, j, getGameStage()), i, j);
-                } 
-            }
-        }
-    }
-
-    public void storeGrid() {
-        storedGrid = new List[nbRows][nbCols];
-
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                storedGrid[i][j] = grid[i][j];
-            }
-        }
-    }
-
-    public void restoreGrid() {
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                grid[i][j] = storedGrid[i][j];
-            }
-        }
-    }
 }

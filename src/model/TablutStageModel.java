@@ -48,6 +48,10 @@ public class TablutStageModel extends GameStageModel {
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
+
+        kingMoveMode = KingMoveMode.LIMITLESS;
+        winMode = WinMode.BORDERS;
+
         setupCallbacks();
     }
 
