@@ -54,6 +54,8 @@ public class TablutController extends Controller {
             TablutDecider decider = new TablutDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
+            //afterPlay(decider.bestMove.destX, decider.bestMove.destY);
+
         } else {
             boolean ok = false;
             while (!ok) {
@@ -147,7 +149,7 @@ public class TablutController extends Controller {
     /**
      * Checks for captures
      */
-    private void afterPlay(int destRow, int destCol) {
+    public void afterPlay(int destRow, int destCol) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();

@@ -121,8 +121,9 @@ public class TablutStageModel extends GameStageModel {
             }
 
             
-            if (board.areSwedishWinning())
+            if (board.areSwedishWinning()) {
                 showGameResult(true);
+            }
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
