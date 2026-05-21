@@ -82,16 +82,13 @@ public class TablutConsole {
         try {
             control.startGame();
 
+            ((TablutStageModel) model.getGameStage()).setMode(mode);
 
             if (mode >= 1 && mode <= 2) {
                 ((TablutStageModel) model.getGameStage()).setAiModeSingle(AI_MODES[aiModeSingleComp]);
             } else if (mode == 3) {
                 ((TablutStageModel) model.getGameStage()).setAiModeMultiple(new AIMode[]{AI_MODES[aiModeMultipleComp[0]], AI_MODES[aiModeMultipleComp[1]]});
             }
-
-            System.out.println(((TablutStageModel) model.getGameStage()).getAiModeSingle());
-            System.out.println(Arrays.toString(((TablutStageModel) model.getGameStage()).getAiModeMultiple()));
-
 
             control.stageLoop(System.in);
         } catch (GameException e) {

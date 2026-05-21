@@ -3,6 +3,7 @@ package control;
 import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
+import boardifier.control.Decider;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class TablutController extends Controller {
 
@@ -48,9 +50,69 @@ public class TablutController extends Controller {
         // get the new player
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
+            // To avoid lots of casting
+            TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
             System.out.println("COMPUTER PLAYS");
-            TablutDecider decider = new TablutDecider(model, this);
-            ActionPlayer play = new ActionPlayer(model, this, decider, null);
+            ActionPlayer play;
+            Decider decider;
+
+            if (stageModel.getMode() == 3) {
+                if (stageModel.getPlayerName().getText().equals("swedish computer")) {
+                    switch (stageModel.getAiModeMultiple()[0]) {
+                        case MINMAX:
+                            decider = new TablutDecider(model, this);
+                            break;
+                        case SIMPLE_EVAL:
+                            decider = new TablutSimpleDecider(model, this);
+                            break;
+                        default:
+                            // Temporary
+                            decider = new TablutDecider(model, this);
+                            break;
+                    }
+                } else {
+                    switch (stageModel.getAiModeMultiple()[1]) {
+                        case MINMAX:
+                            decider = new TablutDecider(model, this);
+                            break;
+                        case SIMPLE_EVAL:
+                            decider = new TablutSimpleDecider(model, this);
+                            break;
+                        default:
+                            // Temporary
+                            decider = new TablutDecider(model, this);
+                            break;
+                    }
+                }
+            } else {
+                switch (stageModel.getAiModeSingle()) {
+                    case MINMAX:
+                        decider = new TablutDecider(model, this);
+                        break;
+                    case SIMPLE_EVAL:
+                        decider = new TablutSimpleDecider(model, this);
+                        break;
+                    default:
+                        // Temporary
+                        decider = new TablutDecider(model, this);
+                        break;
+                }
+            }
+
+            long timeElapsed = System.nanoTime();
+
+            play = new ActionPlayer(model, this, decider, null);
+
+            timeElapsed = System.nanoTime() - timeElapsed;
+
+            if (timeElapsed < 1000) {
+                try {
+                    Thread.sleep(timeElapsed + (1000 - timeElapsed));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             play.start();
             //afterPlay(decider.bestMove.destX, decider.bestMove.destY);
 

@@ -32,6 +32,7 @@ public class TablutStageModel extends GameStageModel {
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
+    private int Mode;
     private AIMode aiModeSingle;
     private AIMode[] aiModeMultiple;
 
@@ -195,5 +196,13 @@ public class TablutStageModel extends GameStageModel {
 
     public void setAiModeMultiple(AIMode[] aiModeMultiple) {
         this.aiModeMultiple = aiModeMultiple;
+    }
+
+    public int getMode() {
+        return Mode;
+    }
+
+    public void setMode(int mode) {
+        Mode = mode;
     }
 }
