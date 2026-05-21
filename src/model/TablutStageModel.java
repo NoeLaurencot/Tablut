@@ -96,8 +96,9 @@ public class TablutStageModel extends GameStageModel {
 
             // TODO : do something to check for raichi and tuichi
             
-            if (board.areSwedishWinning())
+            if (board.areSwedishWinning()) {
                 showGameResult(true);
+            }
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
