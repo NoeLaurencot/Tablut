@@ -27,9 +27,9 @@ import java.util.Map;
 public class TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
-    private static final int depth = 10;
+    private static final int depth = 3;
 
-    private Map<Integer, SmallTablutBoard> seenBoards;
+    private Map<String, SmallTablutBoard> seenBoards;
 
     private List<Coordinate> winCoords;
     private Team currentTeam;
@@ -58,7 +58,6 @@ public class TablutDecider extends Decider {
         int colDest = 0;
 
         seenBoards = new HashMap();
-        short[][] map = board.convertGridToInt();
         int teamId = model.getIdPlayer();
         
         if (teamId == 0) currentTeam = Team.SWEDISH;
@@ -72,12 +71,13 @@ public class TablutDecider extends Decider {
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
             //newBoard.print();
-            int score = minmax(newBoard, 1, depth, false);
+            int score = minmax(newBoard, depth, false);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
+
             }
-            //System.out.println(score);
+            //System.out.println("score " + score);
 
             //currentTeam = currentTeam.oppositeTeam();
         }
@@ -88,15 +88,15 @@ public class TablutDecider extends Decider {
         return actions;
     }
 
-    private int minmax(SmallTablutBoard board, int gridId, int d, boolean maxing) {
-        if (seenBoards.containsKey(gridId)) {
-            //System.out.println("s " + seenBoards.get(gridId).getScore());
-            return seenBoards.get(gridId).getScore();
+    private int minmax(SmallTablutBoard board, int d, boolean maxing) {
+        String id = board.toString();
+        if (seenBoards.containsKey(id)) {
+            //System.out.println("s " + seenBoards.get(id).getScore());
+            return seenBoards.get(id).getScore();
         }
-
         if (d == 0) {
             //System.out.println("e " + evaluate(board));
-            seenBoards.put(gridId, board);
+            seenBoards.put(id, board);
             return evaluate(board);
         }
 
@@ -108,20 +108,20 @@ public class TablutDecider extends Decider {
         List<Move> moves = board.computeAllValidCells(currentTeam);
 
         int bestScore = (maxing) ? -1500 : 1500;
-        //System.out.println(moves.size());
         for (Move move : moves) {
             if (maxing) {
                 currentTeam = Team.MUSCOVITES;
             } else {
                 currentTeam = Team.SWEDISH;
             }
+            //System.out.println(d + " " + board);
             //System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
             //newBoard.print();
-            int score = minmax(newBoard, gridId+1, d-1, !maxing);
-            //System.out.println(currentTeam);
 
+            int score = minmax(newBoard, d-1, !maxing);
+            //System.out.println(currentTeam);
             if (maxing) {
                 if (score > bestScore) {
                     bestScore = score;
@@ -131,9 +131,6 @@ public class TablutDecider extends Decider {
                     bestScore = score;
                 }
             }
-            //currentTeam = currentTeam.oppositeTeam();
-
-
         }
 
         return bestScore;

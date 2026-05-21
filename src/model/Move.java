@@ -39,7 +39,7 @@ public class Move {
         return (
                 "sourceX : " + this.sourceX +
                 " sourceY : " + this.sourceY +
-                " destX : " + this.destY +
+                " destX : " + this.destX +
                 " destY : " + this.destY
         );
     }

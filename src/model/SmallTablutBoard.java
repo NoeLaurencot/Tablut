@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +11,13 @@ public class SmallTablutBoard {
     private int score;
     private KingMoveMode kingMode;
 
-    public SmallTablutBoard (TablutBoard board, KingMoveMode mode) {
+    public SmallTablutBoard(TablutBoard board, KingMoveMode mode) {
         this.grid = board.convertGridToInt();
         kingMode = mode;
     }
 
-    public SmallTablutBoard (SmallTablutBoard s, KingMoveMode mode) {
-        this.grid = s.getGrid();
+    public SmallTablutBoard(SmallTablutBoard s, KingMoveMode mode) {
+        this.grid = Arrays.stream(s.getGrid()).map(short[]::clone).toArray(short[][]::new);
         kingMode = mode;
     }
 
@@ -119,6 +120,11 @@ public class SmallTablutBoard {
     }
 
     public void applyMove(Move move) {
+        if (grid[move.destX][move.destY] != 0) {
+            System.out.println("chiasse");
+            print();
+            System.out.println(move);
+        }
         grid[move.destX][move.destY] = grid[move.sourceX][move.sourceY];
         grid[move.sourceX][move.sourceY] = 0;
     }
@@ -131,6 +137,17 @@ public class SmallTablutBoard {
             }
             System.out.println();
         }
+    }
+
+    @Override
+    public String toString() {
+        String st = "";
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                st += grid[i][j];
+            }
+        }
+        return st;
     }
 
 
