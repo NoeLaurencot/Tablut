@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class TablutBoard extends ContainerElement {
     private ArrayList<Coordinate> winCoords;
+    private List<GameElement>[][] storedGrid;
 
 
     public TablutBoard(int x, int y, GameStageModel gameStageModel) {
@@ -43,10 +44,10 @@ public class TablutBoard extends ContainerElement {
 
     public void setValidCells(int sourceRow, int sourceCol) {
         resetReachableCells(false);
-        List<Point> valid = computeValidCells(sourceRow, sourceCol);
+        List<Coordinate> valid = computeValidCells(sourceRow, sourceCol);
         if (valid != null) {
-            for (Point p : valid) {
-                reachableCells[p.x][p.y] = true;
+            for (Coordinate c : valid) {
+                reachableCells[c.getX()][c.getY()] = true;
             }
         }
 
@@ -78,9 +79,9 @@ public class TablutBoard extends ContainerElement {
 
                 Pawn pawn = (Pawn) cell.getFirst();
                 if (pawn.getTeam() == team) {
-                    List<Point> pawnLegalMoves = pawn.getLegalMoves();
-                    for (Point point : pawnLegalMoves)
-                        list.add(new Move(i, j, point.x, point.y));
+                    List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
+                    for (Coordinate c : pawnLegalMoves)
+                        list.add(new Move(i, j, c.getX(), c.getY()));
                 }
             }
         }
@@ -97,10 +98,15 @@ public class TablutBoard extends ContainerElement {
         return computeAllValidCells(team).isEmpty();
     }
 
+    /**
+     * Return a List Point Who
+     * @param sourceRow
+     * @param sourceCol
+     * @return
+     */
+    public List<Coordinate> computeValidCells(int sourceRow, int sourceCol) {
 
-    public List<Point> computeValidCells(int sourceRow, int sourceCol) {
-
-        List<Point> lst = new ArrayList<Point>();
+        List<Coordinate> lst = new ArrayList<Coordinate>();
         if (isEmptyAt(sourceRow, sourceCol)) return lst;
 
         Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);
@@ -178,10 +184,28 @@ public class TablutBoard extends ContainerElement {
                 if (map[i][j] == 1) {
                     addElement(new Soldier(i, j, Team.SWEDISH, getGameStage()), i, j);
                 } else if (map[i][j] == 2) {
-                    addElement(new King(i, j, getGameStage()), i, j);
-                } else if (map[i][j] == 3) {
                     addElement(new Soldier(i, j, Team.MUSCOVITES, getGameStage()), i, j);
+                } else if (map[i][j] == 3) {
+                    addElement(new King(i, j, getGameStage()), i, j);
                 } 
+            }
+        }
+    }
+
+    public void storeGrid() {
+        storedGrid = new List[nbRows][nbCols];
+
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                storedGrid[i][j] = grid[i][j];
+            }
+        }
+    }
+
+    public void restoreGrid() {
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                grid[i][j] = storedGrid[i][j];
             }
         }
     }

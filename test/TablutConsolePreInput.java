@@ -74,8 +74,7 @@ class ControllerTablutTest extends TablutController {
         } catch (Exception e) {
             System.out.println("--- MANUAL INPUT ---");;
         }
-            super.stageLoop(in);
-
+        super.stageLoop(in);
     }
 
 }

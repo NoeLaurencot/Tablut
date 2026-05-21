@@ -28,8 +28,7 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
-     *
-     * @param in
+     * @param in InputStream
      */
     public void stageLoop(InputStream in) {
         consoleIn = new BufferedReader(new InputStreamReader(in));
@@ -42,6 +41,9 @@ public class TablutController extends Controller {
         endGame();
     }
 
+    /**
+     *
+     */
     private void playTurn() {
         // get the new player
         Player p = model.getCurrentPlayer();
@@ -50,6 +52,8 @@ public class TablutController extends Controller {
             TablutDecider decider = new TablutDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
+            //afterPlay(decider.bestMove.destX, decider.bestMove.destY);
+
         } else {
             boolean ok = false;
             while (!ok) {
@@ -197,7 +201,7 @@ public class TablutController extends Controller {
     /**
      * Checks for captures
      */
-    private void afterPlay(int destRow, int destCol) {
+    public void afterPlay(int destRow, int destCol) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
