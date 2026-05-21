@@ -4,17 +4,10 @@ import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.control.Decider;
-import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
-import model.Coordinate;
-import model.TablutBoard;
-import model.TablutStageModel;
-import model.Pawn;
-import model.Move;
-import model.Team;
+import model.*;
 
-import java.awt.*;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -36,10 +29,10 @@ public class  TablutDecider extends Decider {
         super(model, control);
         t = (TablutController) control;
 
-        getGameParameters();
+        applyGameParameters();
     }
 
-    private void getGameParameters() {
+    private void applyGameParameters() {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
         TablutBoard board = stage.getBoard();
 
