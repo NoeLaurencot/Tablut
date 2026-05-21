@@ -4,10 +4,13 @@ import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.control.Decider;
+import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
 import model.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +18,7 @@ import java.util.Random;
 public class  TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
-    private static final int depth = 1;
+    private static final int depth = 2;
 
     private List<TablutBoard> seenBoards;
     private TablutController t;
@@ -131,11 +134,6 @@ public class  TablutDecider extends Decider {
             System.out.println();
         }*/
 
-    }
-
-    private int simpleEvaluate(TablutBoard board) {
-        board.computeAllValidCells(Team.SWEDISH);
-        return 0;
     }
 
     private int evaluate(TablutBoard board) {
