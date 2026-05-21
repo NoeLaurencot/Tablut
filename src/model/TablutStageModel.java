@@ -2,11 +2,6 @@ package model;
 
 import boardifier.model.*;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
@@ -37,6 +32,8 @@ public class TablutStageModel extends GameStageModel {
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
+    private AIMode aiModeSingle;
+    private AIMode[] aiModeMultiple;
 
     // define stage game elements
     private TablutBoard board;
@@ -182,5 +179,21 @@ public class TablutStageModel extends GameStageModel {
 
     public void setKingMoveMode(KingMoveMode kingMoveMode) {
         this.kingMoveMode = kingMoveMode;
+    }
+
+    public AIMode getAiModeSingle() {
+        return aiModeSingle;
+    }
+
+    public void setAiModeSingle(AIMode aiModeSingle) {
+        this.aiModeSingle = aiModeSingle;
+    }
+
+    public AIMode[] getAiModeMultiple() {
+        return aiModeMultiple;
+    }
+
+    public void setAiModeMultiple(AIMode[] aiModeMultiple) {
+        this.aiModeMultiple = aiModeMultiple;
     }
 }
