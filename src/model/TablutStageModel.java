@@ -2,6 +2,11 @@ package model;
 
 import boardifier.model.*;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
@@ -32,16 +37,12 @@ public class TablutStageModel extends GameStageModel {
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
-    private int Mode;
-    private AIMode aiModeSingle;
-    private AIMode[] aiModeMultiple;
 
     // define stage game elements
     private TablutBoard board;
     private Pawn[] pawns;
     private Fortress[] fortresses;
     private TextElement playerName;
-    private MenuElement menuElement;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
 
@@ -70,10 +71,6 @@ public class TablutStageModel extends GameStageModel {
         return playerName;
     }
 
-    public MenuElement getMenuElement() {
-        return menuElement;
-    }
-
     public void setBoard(TablutBoard tb) {
         board = tb;
         addContainer(board);
@@ -94,11 +91,6 @@ public class TablutStageModel extends GameStageModel {
     public void setPlayerName(TextElement pn) {
         playerName = pn;
         addElement(playerName);
-    }
-
-    public void setMenuElement(MenuElement menuElement) {
-        this.menuElement = menuElement;
-        addElement(menuElement);
     }
 
     private void setupCallbacks() {
@@ -184,29 +176,5 @@ public class TablutStageModel extends GameStageModel {
 
     public void setKingMoveMode(KingMoveMode kingMoveMode) {
         this.kingMoveMode = kingMoveMode;
-    }
-
-    public AIMode getAiModeSingle() {
-        return aiModeSingle;
-    }
-
-    public void setAiModeSingle(AIMode aiModeSingle) {
-        this.aiModeSingle = aiModeSingle;
-    }
-
-    public AIMode[] getAiModeMultiple() {
-        return aiModeMultiple;
-    }
-
-    public void setAiModeMultiple(AIMode[] aiModeMultiple) {
-        this.aiModeMultiple = aiModeMultiple;
-    }
-
-    public int getMode() {
-        return Mode;
-    }
-
-    public void setMode(int mode) {
-        Mode = mode;
     }
 }
