@@ -115,10 +115,10 @@ public class TablutDecider extends Decider {
             } else {
                 currentTeam = Team.SWEDISH;
             }
-            System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
+            //System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
-            newBoard.print();
+            //newBoard.print();
             int score = minmax(newBoard, gridId+1, d-1, !maxing);
             //System.out.println(currentTeam);
 
