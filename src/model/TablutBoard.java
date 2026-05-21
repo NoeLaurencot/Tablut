@@ -4,7 +4,6 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,5 +207,37 @@ public class TablutBoard extends ContainerElement {
                 grid[i][j] = storedGrid[i][j];
             }
         }
+    }
+
+    public ArrayList<GameElement> getNeighbors(Coordinate coord) {
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+
+        ArrayList<GameElement> neighborList = new ArrayList<>();
+        List<GameElement> cell = this.grid[coord.getX()][coord.getY()];
+
+        if (cell == null) return neighborList;
+
+
+        for (int[] vect : directions) {
+            int[] position = {coord.getX() + vect[0], coord.getY() + vect[1]};
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+
+            if (this.grid[position[0]][position[1]].isEmpty()) continue;
+
+            neighborList.add(this.grid[position[0]][position[1]].getFirst());
+        }
+        return neighborList;
+    }
+
+    public int countEnemyNieghbors(ArrayList<GameElement> neighborList, Team team) {
+        int counter = 0;
+        for (GameElement gameElement : neighborList) {
+            if (((Pawn) gameElement).getTeam() != team) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }
