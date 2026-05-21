@@ -7,99 +7,119 @@ import boardifier.control.Decider;
 import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
-import model.*;
+import model.Coordinate;
+import model.KingMoveMode;
+import model.SmallTablutBoard;
+import model.TablutBoard;
+import model.TablutStageModel;
+import model.Pawn;
+import model.Move;
+import model.Team;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
-public class  TablutDecider extends Decider {
+public class TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
-    private static final int depth = 2;
+    private static final int depth = 10;
 
-    private List<TablutBoard> seenBoards;
-    private TablutController t;
+    private Map<Integer, SmallTablutBoard> seenBoards;
 
     private List<Coordinate> winCoords;
     private Team currentTeam;
-    private TablutBoard baseBoard;
+    private KingMoveMode kingMode;
     public Move bestMove;
 
     public TablutDecider(Model model, Controller control) {
         super(model, control);
-        t = (TablutController) control;
-
-        applyGameParameters();
+        getGameParameters();
     }
 
-    private void applyGameParameters() {
+    private void getGameParameters() {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
         TablutBoard board = stage.getBoard();
 
+        this.kingMode = stage.getKingMoveMode();
         this.winCoords = board.getWinCoords();
     }
 
     @Override
     public ActionList decide() {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
-        baseBoard = stage.getBoard();
-        baseBoard.storeGrid();
+        TablutBoard board = stage.getBoard();
         Pawn pawn = null;
         int rowDest = 0;
         int colDest = 0;
 
-
-
-        short[][] map = baseBoard.convertGridToInt();
+        seenBoards = new HashMap();
+        short[][] map = board.convertGridToInt();
         int teamId = model.getIdPlayer();
+
         if (teamId == 0) currentTeam = Team.SWEDISH;
         else currentTeam = Team.MUSCOVITES;
-
         int bestScore = -2000;
-        List<Move> moves = baseBoard.computeAllValidCells(currentTeam);
+        List<Move> moves = board.computeAllValidCells(currentTeam);
         for (Move move : moves) {
-            baseBoard.setGrid(map);
-            applyMove(move);
-            
-            int score = minmax(baseBoard.convertGridToInt(), depth, false);
+            if (teamId == 0) currentTeam = Team.SWEDISH;
+            else currentTeam = Team.MUSCOVITES;
+
+            SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+            newBoard.applyMove(move);
+            //newBoard.print();
+            int score = minmax(newBoard, 1, depth, false);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
             }
+            //System.out.println(score);
 
-            currentTeam = currentTeam.oppositeTeam();
+            //currentTeam = currentTeam.oppositeTeam();
         }
-
-        baseBoard.restoreGrid();
-        pawn = (Pawn) baseBoard.getElement(bestMove.sourceX, bestMove.sourceY);
+        pawn = (Pawn) board.getElement(bestMove.sourceX, bestMove.sourceY);
 
         ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, bestMove.destX, bestMove.destY);
         actions.setDoEndOfTurn(true);
-        //System.out.println("final " + bestMove.sourceX + " " + bestMove.sourceY + " " + bestMove.destX + " " + bestMove.destY );
         return actions;
     }
 
-    private int minmax(short[][] grid, int d, boolean maxing) {
-        
-
-        baseBoard.setGrid(grid);
-        if (d == 0) {
-            return evaluate(baseBoard);
+    private int minmax(SmallTablutBoard board, int gridId, int d, boolean maxing) {
+        if (seenBoards.containsKey(gridId)) {
+            //System.out.println("s " + seenBoards.get(gridId).getScore());
+            return seenBoards.get(gridId).getScore();
         }
 
-        currentTeam = currentTeam.oppositeTeam();
-        List<Move> moves = baseBoard.computeAllValidCells(currentTeam);
+        if (d == 0) {
+            //System.out.println("e " + evaluate(board));
+            seenBoards.put(gridId, board);
+            return evaluate(board);
+        }
 
-        int bestScore = (maxing) ? -2000 : 2000;
+        if (maxing) {
+            currentTeam = Team.MUSCOVITES;
+        } else {
+            currentTeam = Team.SWEDISH;
+        }
+        List<Move> moves = board.computeAllValidCells(currentTeam);
+
+        int bestScore = (maxing) ? -1500 : 1500;
+        //System.out.println(moves.size());
         for (Move move : moves) {
-            baseBoard.setGrid(grid);
+            if (maxing) {
+                currentTeam = Team.MUSCOVITES;
+            } else {
+                currentTeam = Team.SWEDISH;
+            }
             //System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
-
-            applyMove(move);
-            int score = minmax(baseBoard.convertGridToInt(), d-1, !maxing);
+            SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+            newBoard.applyMove(move);
+            //newBoard.print();
+            int score = minmax(newBoard, gridId+1, d-1, !maxing);
             //System.out.println(currentTeam);
 
             if (maxing) {
@@ -113,51 +133,34 @@ public class  TablutDecider extends Decider {
             }
             //currentTeam = currentTeam.oppositeTeam();
 
+
         }
 
         return bestScore;
     }
 
-    private void applyMove(Move move) {
-        Pawn pawn = (Pawn) baseBoard.getElement(move.sourceX, move.sourceY);
-        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, move.destX, move.destY);
-        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
-        ActionPlayer play = new ActionPlayer(model, t, actions);
-        play.start();
-        t.afterPlay(move.destX, move.destY);
-        /*
-        System.out.println("---------------------");
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.print(baseBoard.convertGridToInt()[i][j]);
-            }
-            System.out.println();
-        }*/
 
-    }
-
-    private int evaluate(TablutBoard board) {
-        if (board.areSwedishWinning()) {
-            return -1000;
-        } 
-        if (board.areMuscovitesWinning()) return 1000;
+    private int evaluate(SmallTablutBoard board) {
+        if (winSwedish(board)) return -1000;
+        if (winMuscovites(board)) return 1000;
     
         return 0;
     }
 
-    private boolean winSwedish(short[][] board) {
+    private boolean winSwedish(SmallTablutBoard board) {
         for (Coordinate pos : winCoords) {
-            if (board[pos.getX()][pos.getY()] == 3) {
+            if (board.getGrid()[pos.getX()][pos.getY()] == 3) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean winMuscovites(short[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == 3) {
+    private boolean winMuscovites(SmallTablutBoard board) {
+        short[][] grid = board.getGrid();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid.length; j++) {
+                if (grid[i][j] == 3) {
                     return false;
                 }
             }

@@ -4,6 +4,7 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,24 +188,6 @@ public class TablutBoard extends ContainerElement {
                 } else if (map[i][j] == 3) {
                     addElement(new King(i, j, getGameStage()), i, j);
                 } 
-            }
-        }
-    }
-
-    public void storeGrid() {
-        storedGrid = new List[nbRows][nbCols];
-
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                storedGrid[i][j] = grid[i][j];
-            }
-        }
-    }
-
-    public void restoreGrid() {
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                grid[i][j] = storedGrid[i][j];
             }
         }
     }
