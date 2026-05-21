@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.awt.*;
 
+/**
+ * A soldier Pawn regroup the ways soldier can die ,and move
+ */
 public class Soldier extends Pawn {
 
     public Soldier(Team team, GameStageModel gameStageModel) {
@@ -23,8 +26,8 @@ public class Soldier extends Pawn {
 
 
     @Override
-    public List<Point> getLegalMoves() {
-        List<Point> lst = new ArrayList<>();
+    public List<Coordinate> getLegalMoves() {
+        List<Coordinate> lst = new ArrayList<>();
         TablutBoard board = (TablutBoard) getContainer();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
@@ -38,7 +41,7 @@ public class Soldier extends Pawn {
                     && board.isEmptyAt(position[0], position[1])
                     && !board.getGameStage().isFortressAt(position[0], position[1])) {
 
-                lst.add(new Point(position[0], position[1]));
+                lst.add(new Coordinate(position[0], position[1]));
                 inc++;
                 position[0] = getXInBoard() + vect[0] * inc;
                 position[1] = getYInBoard() + vect[1] * inc;

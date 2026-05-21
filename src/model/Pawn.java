@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * A basic pawn element, with only 2 fixed parameters : number and color
- * There are no setters because the state of a Hole pawn is fixed.
+ * There are no setters because the state of a pawn is fixed.
  */
 public abstract class Pawn extends GameElement {
 
@@ -69,7 +69,7 @@ public abstract class Pawn extends GameElement {
         return -1;
     }
 
-    public abstract List<Point> getLegalMoves();
+    public abstract List<Coordinate> getLegalMoves();
 
     protected abstract boolean checkIsMoveValid();
 

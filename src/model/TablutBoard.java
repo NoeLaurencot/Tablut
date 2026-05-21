@@ -1,14 +1,12 @@
 package model;
 
-import boardifier.control.Logger;
+import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
-import boardifier.model.ContainerElement;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.*;
-import java.awt.Point;
 
 /**
  * Tablut main board represent the element where pawns are put when played
@@ -46,10 +44,10 @@ public class TablutBoard extends ContainerElement {
 
     public void setValidCells(int sourceRow, int sourceCol) {
         resetReachableCells(false);
-        List<Point> valid = computeValidCells(sourceRow, sourceCol);
+        List<Coordinate> valid = computeValidCells(sourceRow, sourceCol);
         if (valid != null) {
-            for (Point p : valid) {
-                reachableCells[p.x][p.y] = true;
+            for (Coordinate c : valid) {
+                reachableCells[c.getX()][c.getY()] = true;
             }
         }
 
@@ -68,6 +66,7 @@ public class TablutBoard extends ContainerElement {
         */
 
     }
+
     public List<Move> computeAllValidCells(Team team) {
         List<Move> list = new ArrayList<>();
 
@@ -78,21 +77,20 @@ public class TablutBoard extends ContainerElement {
                     continue;
                 }
 
-                Pawn pawn = (Pawn) grid[i][j].getFirst();
+                Pawn pawn = (Pawn) cell.getFirst();
                 if (pawn.getTeam() == team) {
-                    List<Point> pawnLegalMoves = pawn.getLegalMoves();
-                    for (Point point : pawnLegalMoves)
-                        list.add(new Move(i, j, point.x, point.y));
+                    List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
+                    for (Coordinate c : pawnLegalMoves)
+                        list.add(new Move(i, j, c.getX(), c.getY()));
                 }
-
             }
         }
-
         return list;
     }
 
     /**
      * Checks if the team is in a stalemate, if so, they lose
+     *
      * @param team The team to check if in stalemate
      * @return If the team is in stalemate and thus, should lose
      */
@@ -100,10 +98,15 @@ public class TablutBoard extends ContainerElement {
         return computeAllValidCells(team).isEmpty();
     }
 
+    /**
+     * Return a List Point Who
+     * @param sourceRow
+     * @param sourceCol
+     * @return
+     */
+    public List<Coordinate> computeValidCells(int sourceRow, int sourceCol) {
 
-    public List<Point> computeValidCells(int sourceRow, int sourceCol) {
-
-        List<Point> lst = new ArrayList<Point>();
+        List<Coordinate> lst = new ArrayList<Coordinate>();
         if (isEmptyAt(sourceRow, sourceCol)) return lst;
 
         Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);

@@ -3,22 +3,17 @@ package control;
 import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.GameElement;
-import boardifier.model.ContainerElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.view.View;
-import model.Pawn;
-import model.TablutStageModel;
-import model.TablutBoard;
-import model.Team;
+import model.*;
 import view.TablutStageView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class TablutController extends Controller {
 
@@ -33,10 +28,10 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
+     * @param in InputStream
      */
-    public void stageLoop() {
-        consoleIn = new BufferedReader(new InputStreamReader(System.in));
-
+    public void stageLoop(InputStream in) {
+        consoleIn = new BufferedReader(new InputStreamReader(in));
         update();
         while (!model.isEndStage()) {
             playTurn();
@@ -46,6 +41,9 @@ public class TablutController extends Controller {
         endGame();
     }
 
+    /**
+     *
+     */
     private void playTurn() {
         // get the new player
         Player p = model.getCurrentPlayer();
@@ -62,9 +60,33 @@ public class TablutController extends Controller {
                 System.out.print(p.getName() + " > ");
                 try {
                     String line = consoleIn.readLine();
+
+                    if (line.contains("stop")) {
+                        System.exit(0);
+                    }
+
                     if (line.length() == 4) {
                         ok = analyseAndPlay(line);
                     }
+
+                    if (line.equals("options")) {
+                        OptionMenu optionMenu = new OptionMenu();
+                        ((TablutStageView) this.view.getGameStageView()).showOptionsMenu();
+
+                        optionMenu.readMenu(this.model.getGameStage());
+                        continue;
+                    }
+
+                    // temporary bypass cheat to test
+                    // use Z as the first char to move a pawn anywhere without check
+//                    if (line.charAt(0) == 'Z') {
+//                        ActionList actions = ActionFactory.generateMoveWithinContainer(model, ((TablutStageModel) model.getGameStage()).getBoard().getElement((int) (line.charAt(2) - '1'), (int) (line.charAt(1) - 'a')), (int) (line.charAt(4) - '1'), (int) (line.charAt(3) - 'a'));
+//                        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
+//                        ActionPlayer play = new ActionPlayer(model, this, actions);
+//                        ok = true;
+//                        play.start();
+//                    }
+
                     if (!ok) {
                         System.out.println("incorrect instruction. retry!");
                     }
@@ -82,7 +104,7 @@ public class TablutController extends Controller {
         Player p = model.getCurrentPlayer();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
-        
+        /*
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (stageModel.getBoard().isEmptyAt(i, j)) {
@@ -92,7 +114,7 @@ public class TablutController extends Controller {
                 }
             }
             System.out.println();
-        }
+        }*/
     }
 
     private boolean analyseAndPlay(String line) {
@@ -125,6 +147,10 @@ public class TablutController extends Controller {
             destCol = (int) (line.charAt(2) - 'a');
         }
         destRow = (int) (line.charAt(3) - '1');
+
+        if (sourceCol != destCol && sourceRow != destRow) {
+            return false;
+        }
 
         // check coords validity
         if ((destRow < 0) || (destRow > 8)) return false;

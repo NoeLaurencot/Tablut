@@ -4,3 +4,6 @@ E6C6
 I6E6
 F5F2
 F9F5
+E4B4
+I4E4
+stop
