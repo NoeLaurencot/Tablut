@@ -24,8 +24,8 @@ public class King extends Pawn {
 
 
     @Override
-    public List<Point> getLegalMoves() {
-        List<Point> lst = new ArrayList<>();
+    public List<Coordinate> getLegalMoves() {
+        List<Coordinate> lst = new ArrayList<>();
         TablutBoard board = (TablutBoard) getContainer();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
@@ -39,14 +39,14 @@ public class King extends Pawn {
                         && position[1] >= 0 && position[1] < 9
                         && board.isEmptyAt(position[0], position[1])) {
 
-                    lst.add(new Point(position[0], position[1]));
+                    lst.add(new Coordinate(position[0], position[1]));
                     inc++;
                     position[0] = getXInBoard() + vect[0] * inc;
                     position[1] = getYInBoard() + vect[1] * inc;
                 }
             } else {
                 if (position[0] >= 0 && position[0] < 9 && position[1] >= 0 && position[1] < 9 && board.isEmptyAt(position[0], position[1])) {
-                    lst.add(new Point(position[0], position[1]));
+                    lst.add(new Coordinate(position[0], position[1]));
                 }
             }
 

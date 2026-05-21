@@ -28,7 +28,7 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
-     * @param in
+     * @param in InputStream
      */
     public void stageLoop(InputStream in) {
         consoleIn = new BufferedReader(new InputStreamReader(in));
@@ -41,6 +41,9 @@ public class TablutController extends Controller {
         endGame();
     }
 
+    /**
+     *
+     */
     private void playTurn() {
         // get the new player
         Player p = model.getCurrentPlayer();
