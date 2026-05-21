@@ -76,6 +76,11 @@ public class  TablutDecider extends Decider {
         return 0;
     }
 
+    private int simpleEvaluate(TablutBoard board) {
+        board.computeAllValidCells(Team.SWEDISH);
+        return 0;
+    }
+
     private int evaluate(TablutBoard board) {
         if (board.areSwedishWinning()) return 1000;
         if (board.areMuscovitesWinning()) return -1000;
