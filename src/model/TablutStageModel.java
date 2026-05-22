@@ -2,6 +2,8 @@ package model;
 
 import boardifier.model.*;
 
+import java.util.List;
+
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
@@ -111,6 +113,16 @@ public class TablutStageModel extends GameStageModel {
             if (board.areSwedishWinning()) {
                 showGameResult(true);
             }
+
+            // Debug to see which moves are available
+//            Team pawnTeam = ((Pawn) element).getTeam();
+//            System.out.println(pawnTeam + " can play :");
+//            List<Move> moveList = board.computeAllValidCells(pawnTeam);
+//
+//            for (Move move : moveList) {
+//                System.out.println("From x:" + move.sourceX + " y:" + move.sourceY + " to x:" + move.destX + " y:" + move.destY);
+//            }
+
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
@@ -119,7 +131,7 @@ public class TablutStageModel extends GameStageModel {
             if (board.isStalemate(pawnTeam))
                 showGameResult(pawnTeam.oppositeTeam() == Team.SWEDISH);
             else {
-                // print pour debug
+                // print to debug
 
 //                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
 //                System.out.println(pawnTeam + " can still play :");
@@ -127,7 +139,7 @@ public class TablutStageModel extends GameStageModel {
 //                List<Move> moveList = board.computeAllValidCells(pawnTeam);
 //
 //                for (Move move : moveList) {
-//                    System.out.println("From x:" + move.sourceX + ", y:" + move.sourceY + " to x:" + move.destX + ", y:" + move.destY);
+//                    System.out.println("From x:" + move.sourceX + " y:" + move.sourceY + " to x:" + move.destX + " y:" + move.destY);
 //                }
             }
 
