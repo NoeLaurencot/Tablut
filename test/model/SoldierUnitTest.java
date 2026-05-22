@@ -4,6 +4,8 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class SoldierUnitTest {
 
@@ -28,5 +30,14 @@ public class SoldierUnitTest {
     @Test
     public void testShouldDie() {
 
+        assertTrue(soldierMuscovite.shouldDie());
+    }
+
+    @Test
+    public void testShouldDie_Swedish() {
+        assertTrue(soldierSwedish.shouldDie());
     }
 }
+
+
+
