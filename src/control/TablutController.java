@@ -30,6 +30,7 @@ public class TablutController extends Controller {
     /**
      * Defines what to do within the single stage of the single party
      * It is pretty straight forward to write :
+     *
      * @param in InputStream
      */
     public void stageLoop(InputStream in) {
@@ -50,6 +51,9 @@ public class TablutController extends Controller {
         // get the new player
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
+            final long COOLDOWN = 100;
+            AIMode aiModeUsed;
+            Move bestMove = null;
             // To avoid lots of casting
             TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
             System.out.println("COMPUTER PLAYS");
@@ -61,40 +65,49 @@ public class TablutController extends Controller {
                     switch (stageModel.getAiModeMultiple()[0]) {
                         case MINMAX:
                             decider = new TablutDecider(model, this);
+                            aiModeUsed = AIMode.MINMAX;
                             break;
                         case SIMPLE_EVAL:
                             decider = new TablutSimpleDecider(model, this);
+                            aiModeUsed = AIMode.SIMPLE_EVAL;
                             break;
                         default:
                             // Temporary
                             decider = new TablutDecider(model, this);
+                            aiModeUsed = AIMode.MINMAX;
                             break;
                     }
                 } else {
                     switch (stageModel.getAiModeMultiple()[1]) {
                         case MINMAX:
                             decider = new TablutDecider(model, this);
+                            aiModeUsed = AIMode.MINMAX;
                             break;
                         case SIMPLE_EVAL:
                             decider = new TablutSimpleDecider(model, this);
+                            aiModeUsed = AIMode.SIMPLE_EVAL;
                             break;
                         default:
                             // Temporary
                             decider = new TablutDecider(model, this);
+                            aiModeUsed = AIMode.MINMAX;
                             break;
                     }
                 }
-            } else {
+            } else { // mode is only 1 computer
                 switch (stageModel.getAiModeSingle()) {
                     case MINMAX:
                         decider = new TablutDecider(model, this);
+                        aiModeUsed = AIMode.MINMAX;
                         break;
                     case SIMPLE_EVAL:
                         decider = new TablutSimpleDecider(model, this);
+                        aiModeUsed = AIMode.SIMPLE_EVAL;
                         break;
                     default:
                         // Temporary
                         decider = new TablutDecider(model, this);
+                        aiModeUsed = AIMode.MINMAX;
                         break;
                 }
             }
@@ -105,16 +118,29 @@ public class TablutController extends Controller {
 
             timeElapsed = System.nanoTime() - timeElapsed;
 
-            if (timeElapsed < 1000) {
+            if (timeElapsed < COOLDOWN) {
                 try {
-                    Thread.sleep(timeElapsed + (1000 - timeElapsed));
+                    Thread.sleep(timeElapsed + (COOLDOWN - timeElapsed));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
 
+//            ((TablutStageModel) model.getGameStage()).setKingMoveMode(KingMoveMode.LIMITED);
+//            ((TablutStageModel) model.getGameStage()).setWinMode(WinMode.CORNERS);
+
             play.start();
-            //afterPlay(decider.bestMove.destX, decider.bestMove.destY);
+
+            switch (aiModeUsed) {
+                case MINMAX:
+                    bestMove = ((TablutDecider) decider).bestMove;
+                    afterPlay(bestMove.destX, bestMove.destY);
+                    break;
+                case SIMPLE_EVAL:
+                    bestMove = ((TablutSimpleDecider) decider).bestMove;
+                    afterPlay(bestMove.destX, bestMove.destY);
+                    break;
+            }
 
         } else {
             boolean ok = false;

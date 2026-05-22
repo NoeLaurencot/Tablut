@@ -67,26 +67,26 @@ public class TablutBoard extends ContainerElement {
 
     }
 
-    public List<Move> computeAllValidCells(Team team) {
-        List<Move> list = new ArrayList<>();
+        public List<Move> computeAllValidCells(Team team) {
+            List<Move> list = new ArrayList<>();
 
-        for (int i = 0; i < this.grid.length; i++) {
-            for (int j = 0; j < this.grid[i].length; j++) {
-                List<GameElement> cell = grid[i][j];
-                if (cell.isEmpty()) {
-                    continue;
-                }
+            for (int i = 0; i < this.grid.length; i++) {
+                for (int j = 0; j < this.grid[i].length; j++) {
+                    List<GameElement> cell = grid[i][j];
+                    if (cell.isEmpty()) {
+                        continue;
+                    }
 
-                Pawn pawn = (Pawn) cell.getFirst();
-                if (pawn.getTeam() == team) {
-                    List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
-                    for (Coordinate c : pawnLegalMoves)
-                        list.add(new Move(i, j, c.getX(), c.getY()));
+                    Pawn pawn = (Pawn) cell.getFirst();
+                    if (pawn.getTeam() == team) {
+                        List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
+                        for (Coordinate c : pawnLegalMoves)
+                            list.add(new Move(i, j, c.getX(), c.getY()));
+                    }
                 }
             }
+            return list;
         }
-        return list;
-    }
 
     /**
      * Checks if the team is in a stalemate, if so, they lose
@@ -192,35 +192,13 @@ public class TablutBoard extends ContainerElement {
         }
     }
 
-    public ArrayList<GameElement> getNeighbors(Coordinate coord) {
-        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-
-        ArrayList<GameElement> neighborList = new ArrayList<>();
-        List<GameElement> cell = this.grid[coord.getX()][coord.getY()];
-
-        if (cell == null) return neighborList;
-
-
-        for (int[] vect : directions) {
-            int[] position = {coord.getX() + vect[0], coord.getY() + vect[1]};
-
-            if (position[0] < 0 || position[0] > 8) continue;
-            if (position[1] < 0 || position[1] > 8) continue;
-
-            if (this.grid[position[0]][position[1]].isEmpty()) continue;
-
-            neighborList.add(this.grid[position[0]][position[1]].getFirst());
-        }
-        return neighborList;
-    }
-
-    public int countEnemyNieghbors(ArrayList<GameElement> neighborList, Team team) {
-        int counter = 0;
-        for (GameElement gameElement : neighborList) {
-            if (((Pawn) gameElement).getTeam() != team) {
-                counter++;
+    public King findKing() {
+        for (int i = 0; i < this.nbRows; i++) {
+            for (int j = 0; j < this.nbCols; j++) {
+                if (getElement(i, j) instanceof King)
+                    return (King) getElement(i, j);
             }
         }
-        return counter;
+        return null;
     }
 }
