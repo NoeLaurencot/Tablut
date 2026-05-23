@@ -29,7 +29,7 @@ public class TablutDecider extends Decider {
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;
 
-    private Map<String, SmallTablutBoard> seenBoards;
+    private Map<String, Integer> seenBoards;
 
     private List<Coordinate> winCoords;
     private Team currentTeam;
@@ -62,7 +62,9 @@ public class TablutDecider extends Decider {
 
         if (teamId == 0) currentTeam = Team.SWEDISH;
         else currentTeam = Team.MUSCOVITES;
-        int bestScore = -2000;
+
+        boolean maxing = currentTeam == Team.MUSCOVITES;
+        int bestScore = (maxing) ? -20000 : 20000;
         List<Move> moves = board.computeAllValidCells(currentTeam);
         for (Move move : moves) {
             if (teamId == 0) currentTeam = Team.SWEDISH;
@@ -70,12 +72,24 @@ public class TablutDecider extends Decider {
 
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
-            //newBoard.print();
-            int score = minmax(newBoard, depth, false);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
 
+            int score = minmax(newBoard, depth, !maxing);
+            if (maxing) {
+                if (score > bestScore) {
+                    //System.out.println(score + " " + move);
+                    bestScore = score;
+                    bestMove = move;
+                }
+            } else {
+                if (score < bestScore) {
+                    //System.out.println(score + " " + move);
+                    bestScore = score;
+                    bestMove = move;
+                }
+            }
+
+            if (bestScore == ((maxing) ? 10000 : -10000)) {
+                break;
             }
             //System.out.println("score " + score);
 
@@ -90,15 +104,34 @@ public class TablutDecider extends Decider {
 
     private int minmax(SmallTablutBoard board, int d, boolean maxing) {
         String id = board.toString();
+        if (Math.abs(smallEvaluate(board)) == 10000) {
+            if (d == 0) {
+            //board.print();
+            //System.out.println(d + " d");                
+            }
+            
+
+            int score = smallEvaluate(board);
+            seenBoards.put(id, score);
+            return score;
+        } 
         if (seenBoards.containsKey(id)) {
-            //System.out.println("s " + seenBoards.get(id).getScore());
-            return seenBoards.get(id).getScore();
+            int score = seenBoards.get(id);
+            if (Math.abs(d - score % 10) < 2) {
+                return score - score % 10;
+            }
+            //System.out.println("s " + seenBoards.get(id));
+
         }
+
         if (d == 0) {
             //System.out.println("e " + evaluate(board));
-            seenBoards.put(id, board);
-            return evaluate(board);
+            int score = evaluate(board) + d;
+            //board.setScore(score);
+            seenBoards.put(id, score);
+            return score;
         }
+        
 
         if (maxing) {
             currentTeam = Team.MUSCOVITES;
@@ -107,7 +140,7 @@ public class TablutDecider extends Decider {
         }
         List<Move> moves = board.computeAllValidCells(currentTeam);
 
-        int bestScore = (maxing) ? -1500 : 1500;
+        int bestScore = (maxing) ? -15000 : 15000;
         for (Move move : moves) {
             if (maxing) {
                 currentTeam = Team.MUSCOVITES;
@@ -121,7 +154,6 @@ public class TablutDecider extends Decider {
             //newBoard.print();
 
             int score = minmax(newBoard, d-1, !maxing);
-            //System.out.println(currentTeam);
             if (maxing) {
                 if (score > bestScore) {
                     bestScore = score;
@@ -131,17 +163,54 @@ public class TablutDecider extends Decider {
                     bestScore = score;
                 }
             }
-        }
 
+            if (bestScore == ((maxing) ? 10000 : -10000)) {
+                break;
+            }
+        }
         return bestScore;
     }
 
 
-    private int evaluate(SmallTablutBoard board) {
-        if (winSwedish(board)) return -1000;
-        if (winMuscovites(board)) return 1000;
-    
+    private int smallEvaluate(SmallTablutBoard board) {
+        if (winSwedish(board)) return -10000;
+        if (winMuscovites(board)) return 10000;
+        
         return 0;
+    }
+
+    private int evaluate(SmallTablutBoard board) {
+        if (winSwedish(board)) return -10000;
+        if (winMuscovites(board)) return 10000;
+
+        int score = 0;
+
+        // Captures
+        for (int i = 0 ; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                short cell = board.getGrid()[i][j];
+                if (cell == 1) {
+                    score -= 30;
+                } else if (cell == 2) {
+                    score += 20;
+                }
+            }
+        }
+
+        // Muscovites around the king
+        Coordinate pos = board.getKingPosition();
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        for (int[] vect : directions) {
+            if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+                score += 20;
+            }
+            else if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
+                score += 10;
+            }
+        }
+
+        
+        return score;
     }
 
     private boolean winSwedish(SmallTablutBoard board) {

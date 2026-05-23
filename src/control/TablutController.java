@@ -10,7 +10,6 @@ import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
 import view.TablutStageView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

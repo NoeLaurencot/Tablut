@@ -14,11 +14,17 @@ public class SmallTablutBoard {
     public SmallTablutBoard(TablutBoard board, KingMoveMode mode) {
         this.grid = board.convertGridToInt();
         kingMode = mode;
+
+        fortresses = new ArrayList<>();
+        for (Fortress fortress : board.getGameStage().getFortresses()) {
+            fortresses.add(new Coordinate((int)fortress.getX(), (int)fortress.getY()));
+        }
     }
 
     public SmallTablutBoard(SmallTablutBoard s, KingMoveMode mode) {
         this.grid = Arrays.stream(s.getGrid()).map(short[]::clone).toArray(short[][]::new);
         kingMode = mode;
+        this.fortresses = s.getFortresses();
     }
 
     public short[][] getGrid() {
@@ -27,6 +33,10 @@ public class SmallTablutBoard {
 
     public int getScore() {
         return score;
+    }
+
+    public List<Coordinate> getFortresses() {
+        return fortresses;
     }
 
     public void setKingMode(KingMoveMode mode) {
@@ -76,8 +86,7 @@ public class SmallTablutBoard {
             while (position[0] >= 0 && position[0] < 9
                     && position[1] >= 0 && position[1] < 9
                     && grid[position[0]][position[1]] == 0
-                    // TODO : add fortresses check
-                    ) {
+                    && !isFortressAt(position[0], position[1])) {
 
                 lst.add(new Coordinate(position[0], position[1]));
                 inc++;
@@ -119,6 +128,17 @@ public class SmallTablutBoard {
         return lst;
     }
 
+    public Coordinate getKingPosition() {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 3) {
+                    return new Coordinate(i, j);
+                }
+            }
+        }
+        return new Coordinate(-1, -1);
+    }
+
     public void applyMove(Move move) {
         if (grid[move.destX][move.destY] != 0) {
             System.out.println("chiasse");
@@ -127,6 +147,57 @@ public class SmallTablutBoard {
         }
         grid[move.destX][move.destY] = grid[move.sourceX][move.sourceY];
         grid[move.sourceX][move.sourceY] = 0;
+        afterPlay(move.destX, move.destY);
+    }
+
+    private void afterPlay(int destRow, int destCol) {
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+
+        short pawn = grid[destRow][destCol];
+        for (int[] vect : directions) {
+
+            // first check if the next cell is an ennemy pawn
+            int[] position = {destRow + vect[0], destCol + vect[1]};
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+
+            if (grid[position[0]][position[1]] == 0)
+                continue;
+
+            short ennemyPawn = grid[position[0]][position[1]];
+            if (Math.abs(ennemyPawn - pawn) != 1)
+                continue;
+
+            // like King::shouldDie()
+            if (ennemyPawn == 3) {
+                int[] neighbor = {position[0] + vect[1], position[1] + vect[0]};
+                if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
+                
+                neighbor[0] -= 2*vect[1];
+                neighbor[1] -= 2*vect[0];
+                if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
+            }
+
+            // checks the further cell if it is a ally pawn (capture)
+            position[0] += vect[0];
+            position[1] += vect[1];
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+
+            if (grid[position[0]][position[1]] == 0 && true )
+            // TODO add fortress check
+                continue;
+
+            short otherPawn = grid[position[0]][position[1]];
+
+            if (otherPawn == pawn) {
+                position[0] -= vect[0];
+                position[1] -= vect[1];
+                grid[position[0]][position[1]] = 0;
+            }
+        }
     }
 
     public void print() {
@@ -137,6 +208,15 @@ public class SmallTablutBoard {
             }
             System.out.println();
         }
+    }
+
+    public boolean isFortressAt(int x, int y) {
+        for (Coordinate fortress : fortresses) {
+            if (fortress.getX() == x && fortress.getY() == y) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
