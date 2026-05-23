@@ -4,8 +4,10 @@ import boardifier.model.GameStageModel;
 import boardifier.model.ElementTypes;
 
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * A soldier Pawn regroup the ways soldier can die ,and move
@@ -59,52 +61,67 @@ public class Soldier extends Pawn {
         return true;
     }
 
-    public boolean isCellCapturableNextMove(Coordinate startCoord, Coordinate coord, Team team) {
+    public boolean wouldDie(Coordinate attackerCoord) {
         TablutBoard board = (TablutBoard) getContainer();
+        TablutStageModel model = board.getGameStage();
+        int solidersToCapture = 2;
+        int ennemyNeighbors = 0;
+
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        for (int[] vect : directions) {
+            int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
 
-        if (this.countEnemyNieghbors(this.getNeighbors(coord.getX(), coord.getY()), team) > 0) {
-            for (int[] vect : directions) {
-                int[] position = {coord.getX() + vect[0], coord.getY() + vect[1]};
+            if (position[0] == attackerCoord.getX() && position[1] == attackerCoord.getY())
+                ennemyNeighbors++;
 
-                if (position[0] < 0 || position[0] > 8) continue;
-                if (position[1] < 0 || position[1] > 8) continue;
+            if (board.isEmptyAt(position[0], position[1])) {
+                continue;
+            }
+            if (model.isFortressAt(position[0], position[1])) {
+                ennemyNeighbors++;
+            }
+            Pawn pawn = (Pawn) board.getElement(position[0], position[1]);
 
-                if (!board.isEmptyAt(position[0],position[1]) && ((Pawn) board.getElement(position[0],position[1])).getTeam() != team) {
-                    position[0] -= vect[0]*2;
-                    position[1] -= vect[1]*2;
-
-                    if (position[0] < 0 || position[0] > 8) continue;
-                    if (position[1] < 0 || position[1] > 8) continue;
-
-                    if (!board.isEmptyAt(position[0],position[1])) continue;
-
-                    for (int[] subVect : directions) {
-                        int[] subPosition = {position[0] + subVect[0], position[1] + subVect[1]};
-                        // skip the direction where the starting point is
-                        if (subVect[0] == vect[0] && subVect[1] == vect[1]) continue;
-
-                        while (subPosition[0] >= 0 && subPosition[0] <= 8 && subPosition[1] >= 0 && subPosition[1] <= 8) {
-                            if (!board.isEmptyAt(subPosition[0], subPosition[1])) {
-                                if (subPosition[0] == startCoord.getX() && subPosition[1] == startCoord.getY()) {
-                                    subPosition[0] += subVect[0];
-                                    subPosition[1] += subVect[1];
-                                    continue;
-                                }
-                                if (((Pawn) board.getElement(subPosition[0], subPosition[1])).getTeam() != team) {
-                                    return true;
-                                }
-                                break;
-                            }
-                            subPosition[0] += subVect[0];
-                            subPosition[1] += subVect[1];
-                        }
-                    }
-                }
-
-
+            if (pawn.getTeam() != getTeam()) {
+                ennemyNeighbors++;
             }
         }
+        return ennemyNeighbors >= solidersToCapture;
+    }
+
+    @Override
+    public boolean isSurrounded() {
+        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
+        int x = getXInBoard();
+        int y = getYInBoard();
+        Set<Integer> seenX = new HashSet<>();
+        Set<Integer> seenY = new HashSet<>();
+
+        for (Coordinate coord : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
+            // check if x or y is the same twice, so in a line
+            if (!seenX.add(coord.getX()) || !seenY.add(coord.getY())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean wouldBeSurrounded(Coordinate coord) {
+        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
+        int x = coord.getX();
+        int y = coord.getY();
+        Set<Integer> seenX = new HashSet<>();
+        Set<Integer> seenY = new HashSet<>();
+
+        for (Coordinate coordAdj : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
+            // check if x or y is the same tiwce, so in a line
+            if (!seenX.add(coordAdj.getX()) || !seenY.add(coordAdj.getY())) {
+                return true;
+            }
+        }
+
         return false;
     }
 }

@@ -1,10 +1,11 @@
 package model;
 
 public class Coordinate {
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
-    public Coordinate() {}
+    public Coordinate() {
+    }
 
     public Coordinate(int x, int y) {
         this.x = x;
@@ -32,19 +33,13 @@ public class Coordinate {
         this.y = y;
     }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " x = " + this.x + " y = " + this.y;
+    public void increment(int x, int y) {
+        this.x += x;
+        this.y += y;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Coordinate C)) {
-            return false;
-        }
-        return this.x == C.getX() && this.y == C.getY();
+    public Coordinate invertedCopy() {
+        return new Coordinate(this.y, this.x);
     }
 }
+

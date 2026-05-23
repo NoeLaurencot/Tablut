@@ -4,7 +4,7 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,9 @@ import java.util.List;
  * pawn with a given value.
  */
 public class TablutBoard extends ContainerElement {
+    //                             UP     RIGHT   DOWN     LEFT
+    final int[][] DIRECTIONS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
     private ArrayList<Coordinate> winCoords;
     private List<GameElement>[][] storedGrid;
 
@@ -67,26 +70,26 @@ public class TablutBoard extends ContainerElement {
 
     }
 
-        public List<Move> computeAllValidCells(Team team) {
-            List<Move> list = new ArrayList<>();
+    public List<Move> computeAllValidCells(Team team) {
+        List<Move> list = new ArrayList<>();
 
-            for (int i = 0; i < this.grid.length; i++) {
-                for (int j = 0; j < this.grid[i].length; j++) {
-                    List<GameElement> cell = grid[i][j];
-                    if (cell.isEmpty()) {
-                        continue;
-                    }
+        for (int i = 0; i < this.grid.length; i++) {
+            for (int j = 0; j < this.grid[i].length; j++) {
+                List<GameElement> cell = grid[i][j];
+                if (cell.isEmpty()) {
+                    continue;
+                }
 
-                    Pawn pawn = (Pawn) cell.getFirst();
-                    if (pawn.getTeam() == team) {
-                        List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
-                        for (Coordinate c : pawnLegalMoves)
-                            list.add(new Move(i, j, c.getX(), c.getY()));
-                    }
+                Pawn pawn = (Pawn) cell.getFirst();
+                if (pawn.getTeam() == team) {
+                    List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
+                    for (Coordinate c : pawnLegalMoves)
+                        list.add(new Move(i, j, c.getX(), c.getY()));
                 }
             }
-            return list;
         }
+        return list;
+    }
 
     /**
      * Checks if the team is in a stalemate, if so, they lose
@@ -100,6 +103,7 @@ public class TablutBoard extends ContainerElement {
 
     /**
      * Return a List Point Who
+     *
      * @param sourceRow
      * @param sourceCol
      * @return
@@ -187,7 +191,7 @@ public class TablutBoard extends ContainerElement {
                     addElement(new Soldier(i, j, Team.MUSCOVITES, getGameStage()), i, j);
                 } else if (map[i][j] == 3) {
                     addElement(new King(i, j, getGameStage()), i, j);
-                } 
+                }
             }
         }
     }
@@ -200,5 +204,102 @@ public class TablutBoard extends ContainerElement {
             }
         }
         return null;
+    }
+
+    public boolean outOfBounds(Coordinate coord) {
+        return coord.getX() < 0 || coord.getX() > this.nbRows-1 ||
+                coord.getY() < 0 || coord.getY() > this.nbCols-1;
+    }
+
+    public boolean canSeeCoordinate(Coordinate srcCoord, Coordinate destCoord) {
+        return getFarthestVisibleCoords(srcCoord).contains(destCoord);
+    }
+
+    public boolean canSeeKing(Coordinate coord) {
+        King king = findKing();
+        Coordinate kingCoord = new Coordinate(king.getXInBoard(), king.getYInBoard());
+
+        return canSeeCoordinate(coord, kingCoord);
+    }
+
+    public ArrayList<Coordinate> getAdjacentCoords(Coordinate coord) {
+        ArrayList<Coordinate> adjacentPawnsCoords = new ArrayList<>();
+
+        for (final int[] VECT : DIRECTIONS) {
+            Coordinate position = new Coordinate(coord);
+
+            position.increment(VECT[0], VECT[1]);
+
+            if (!outOfBounds(position)) {
+                adjacentPawnsCoords.add(position);
+            }
+        }
+        return adjacentPawnsCoords;
+    }
+
+    public ArrayList<Coordinate> getAdjacentEnemyPawnsCoords(Coordinate coord) {
+        Team currentTeam = ((Pawn) getElement(coord.getX(), coord.getY())).getTeam();
+        ArrayList<Coordinate> adjacentEnemyCoords = getAdjacentCoords(coord);
+        for (Coordinate adjCoordv : adjacentEnemyCoords) {
+            // if empty or not enemy
+            if (this.isEmptyAt(adjCoordv.getX(), adjCoordv.getY()) || ((Pawn) getElement(adjCoordv.getX(), adjCoordv.getY())).getTeam() == currentTeam) {
+                adjacentEnemyCoords.remove(adjCoordv);
+            }
+        }
+        return adjacentEnemyCoords;
+    }
+
+    public int captureCount(Coordinate coord) {
+        int count = 0;
+
+        for (Coordinate enemyCoord : getAdjacentEnemyPawnsCoords(coord)) {
+            if (((Pawn) getElement(enemyCoord.getX(), enemyCoord.getY())).wouldBeSurrounded(coord)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Coordinate getFartherVisibleCoord(Coordinate coord, int[] vect) {
+        Coordinate position = new Coordinate(coord);
+
+        do {
+            position.increment(vect[0], vect[1]);
+        } while (!outOfBounds(position) || isEmptyAt(position.getX(), position.getY()));
+
+        if (outOfBounds(position)) {
+            // goes back to prev position
+            position.increment(-vect[0], -vect[1]);
+            // doesn't return if original coords
+            if (!position.equals(coord)) {
+                return position;
+            }
+        } else {
+            return position;
+        }
+        return null;
+    }
+
+    public ArrayList<Coordinate> getFarthestVisibleCoords(Coordinate coord) {
+        ArrayList<Coordinate> farthestVisibleCells = new ArrayList<>();
+
+        for (final int[] VECT : DIRECTIONS) {
+            farthestVisibleCells.add(getFartherVisibleCoord(coord, VECT));
+        }
+        return farthestVisibleCells;
+    }
+
+    public ArrayList<Coordinate> getFarthestVisibleEnemyCoords(Coordinate coord) {
+        ArrayList<Coordinate> enemiesCoords = new ArrayList<>();
+        Team currentTeam = ((Pawn) getElement(coord.getX(), coord.getY())).getTeam();
+
+        for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
+            // if there is enemy at coordinates
+            if (!isEmptyAt(coord.getX(), coord.getY()) && ((Pawn) getElement(coord.getX(), coord.getY())).getTeam() != currentTeam) {
+                enemiesCoords.add(farCoord);
+            }
+        }
+
+        return enemiesCoords;
     }
 }

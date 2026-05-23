@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Timer;
 
 public class TablutController extends Controller {
 
@@ -300,8 +299,8 @@ public class TablutController extends Controller {
             // first check if the next cell is an ennemy pawn
             int[] position = {destRow + vect[0], destCol + vect[1]};
 
-            if (position[0] < 0 || position[0] > 8) continue;
-            if (position[1] < 0 || position[1] > 8) continue;
+            if (board.outOfBounds(new Coordinate(position[0], position[1])))
+                continue;
 
             if (board.isEmptyAt(position[0], position[1]))
                 continue;

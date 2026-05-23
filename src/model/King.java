@@ -1,12 +1,12 @@
 package model;
 
-import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.ElementTypes;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.awt.*;
+import java.util.Set;
 
 public class King extends Pawn {
 
@@ -69,12 +69,12 @@ public class King extends Pawn {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
-            if (model.isFortressAt(position[0], position[1])) {
-                ennemyNeighbors++;
-            }
 
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
+            }
+            if (model.isFortressAt(position[0], position[1]) && position[0] == 4 && position[1] == 4) {
+                ennemyNeighbors++;
             }
             Pawn pawn = (Pawn) board.getElement(position[0], position[1]);
 //            System.out.println(position[0] + " " + position[1]);
@@ -84,5 +84,41 @@ public class King extends Pawn {
             }
         }
         return ennemyNeighbors >= solidersToCapture;
+    }
+
+    @Override
+    public boolean isSurrounded() {
+        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
+        int x = getXInBoard();
+        int y = getYInBoard();
+        Set<Integer> seenX = new HashSet<>();
+        Set<Integer> seenY = new HashSet<>();
+
+        for (Coordinate coord : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
+            // check if x and y is the same tiwce, so in a cross surrounding the king
+            if (!seenX.add(coord.getX()) && !seenY.add(coord.getY())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean wouldBeSurrounded(Coordinate coord) {
+        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
+        int x = coord.getX();
+        int y = coord.getY();
+        Set<Integer> seenX = new HashSet<>();
+        Set<Integer> seenY = new HashSet<>();
+
+        for (Coordinate coordAdj : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
+            // check if x and y is the same tiwce, so in a cross surrounding the king
+            if (!seenX.add(coordAdj.getX()) && !seenY.add(coordAdj.getY())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
