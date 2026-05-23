@@ -4,7 +4,7 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.lang.reflect.Array;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +103,6 @@ public class TablutBoard extends ContainerElement {
 
     /**
      * Return a List Point Who
-     *
      * @param sourceRow
      * @param sourceCol
      * @return
