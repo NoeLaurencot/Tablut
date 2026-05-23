@@ -264,7 +264,7 @@ public class TablutBoard extends ContainerElement {
 
         do {
             position.increment(vect[0], vect[1]);
-        } while (!outOfBounds(position) || isEmptyAt(position.getX(), position.getY()));
+        } while (!outOfBounds(position) && isEmptyAt(position.getX(), position.getY()));
 
         if (outOfBounds(position)) {
             // goes back to prev position

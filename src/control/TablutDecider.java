@@ -59,7 +59,7 @@ public class TablutDecider extends Decider {
 
         seenBoards = new HashMap();
         int teamId = model.getIdPlayer();
-        
+
         if (teamId == 0) currentTeam = Team.SWEDISH;
         else currentTeam = Team.MUSCOVITES;
         int bestScore = -2000;

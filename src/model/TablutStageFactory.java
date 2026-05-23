@@ -33,6 +33,7 @@ public class TablutStageFactory extends StageElementsFactory {
     public void setup() {
         TextElement text = new TextElement(stageModel.getCurrentPlayerName(), stageModel);
         text.setLocation(0,0);
+        text.setVisible(false);
         stageModel.setPlayerName(text);
 
         TablutBoard board = new TablutBoard(0, 1, stageModel);
@@ -40,6 +41,7 @@ public class TablutStageFactory extends StageElementsFactory {
 
         setupPawns();
         setupFortresses();
+        setupMenu();
 
     }
 
@@ -98,5 +100,14 @@ public class TablutStageFactory extends StageElementsFactory {
         fortresses[4] = new Fortress(y/2, x/2, stageModel);
     
         stageModel.setFortresses(fortresses);
+    }
+
+    private void setupMenu() {
+        MenuElement menuElement = new MenuElement(stageModel, "");
+        int boardY = (int) stageModel.getBoard().getY();
+        int menuY = boardY + (stageModel.getBoard().getNbRows() * 2) + 3;
+        menuElement.setLocation(0, menuY);
+        menuElement.setVisible(false);
+        stageModel.setMenuElement(menuElement);
     }
 }

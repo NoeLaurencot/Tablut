@@ -16,11 +16,18 @@ public class OptionMenu {
         int option;
 
         while (!ok) {
-            String line = SCANNER.next();
+            String line = SCANNER.next().trim();
 
             if (line.length() == 2) {
-                prefix = (int) line.charAt(0) - '1';
-                option = (int) line.charAt(1) - 'a';
+                char prefixChar = line.charAt(0);
+                char optionChar = line.charAt(1);
+
+                if (optionChar >= 'a' && optionChar <= 'z') {
+                    optionChar = Character.toUpperCase(optionChar);
+                }
+
+                prefix = (int) prefixChar - '1';
+                option = (int) optionChar - 'A';
 
                 if (prefix < 0 || prefix > 2) continue;
                 if (option < 0 || option > 2) continue;

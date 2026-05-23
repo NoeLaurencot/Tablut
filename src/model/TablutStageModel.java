@@ -2,11 +2,6 @@ package model;
 
 import boardifier.model.*;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
