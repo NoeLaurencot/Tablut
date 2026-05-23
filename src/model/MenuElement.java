@@ -1,5 +1,6 @@
 package model;
 
+import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.TextElement;
@@ -14,6 +15,7 @@ public class MenuElement extends TextElement {
         super(string, gameStageModel);
         this.menuEntries = new ArrayList<>();
         this.prompt = "";
+        ElementTypes.register("menu", 300);
     }
 
     public ArrayList<MenuEntry> getMenuEntries() {
