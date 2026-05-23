@@ -76,13 +76,13 @@ public class TablutDecider extends Decider {
             int score = minmax(newBoard, depth, !maxing);
             if (maxing) {
                 if (score > bestScore) {
-                    System.out.println(score + " " + move);
+                    //System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
                 }
             } else {
                 if (score < bestScore) {
-                    System.out.println(score + " " + move);
+                    //System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
                 }
@@ -117,7 +117,7 @@ public class TablutDecider extends Decider {
         } 
         if (seenBoards.containsKey(id)) {
             int score = seenBoards.get(id);
-            if (Math.abs(d - score % 10) < 1) {
+            if (Math.abs(d - score % 10) < 2) {
                 return score - score % 10;
             }
             //System.out.println("s " + seenBoards.get(id));
