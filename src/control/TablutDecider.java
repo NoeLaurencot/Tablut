@@ -105,11 +105,11 @@ public class TablutDecider extends Decider {
     private int minmax(SmallTablutBoard board, int d, boolean maxing) {
         String id = board.toString();
         if (Math.abs(smallEvaluate(board)) == 10000) {
-            /*if (d == 1) {
-            board.print();
-            System.out.println(d + " d");                
+            if (d == 0) {
+            //board.print();
+            //System.out.println(d + " d");                
             }
-            */
+            
 
             int score = smallEvaluate(board);
             seenBoards.put(id, score);
@@ -117,7 +117,7 @@ public class TablutDecider extends Decider {
         } 
         if (seenBoards.containsKey(id)) {
             int score = seenBoards.get(id);
-            if (Math.abs(d - score % 10) < 2) {
+            if (Math.abs(d - score % 10) < 1) {
                 return score - score % 10;
             }
             //System.out.println("s " + seenBoards.get(id));
