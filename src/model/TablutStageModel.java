@@ -63,7 +63,7 @@ public class TablutStageModel extends GameStageModel {
         return pawns;
     }
 
-    public Fortress[] getFortesses() {
+    public Fortress[] getFortresses() {
         return fortresses;
     }
 
