@@ -9,7 +9,6 @@ import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
 import view.TablutStageView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +51,7 @@ public class TablutController extends Controller {
             TablutDecider decider = new TablutDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
-            //afterPlay(decider.bestMove.destX, decider.bestMove.destY);
+            afterPlay(decider.bestMove.destX, decider.bestMove.destY);
 
         } else {
             boolean ok = false;

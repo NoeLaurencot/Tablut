@@ -127,6 +127,47 @@ public class SmallTablutBoard {
         }
         grid[move.destX][move.destY] = grid[move.sourceX][move.sourceY];
         grid[move.sourceX][move.sourceY] = 0;
+        afterPlay(move.destX, move.destY);
+    }
+
+    private void afterPlay(int destRow, int destCol) {
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+
+        short pawn = grid[destRow][destCol];
+        for (int[] vect : directions) {
+
+            // first check if the next cell is an ennemy pawn
+            int[] position = {destRow + vect[0], destCol + vect[1]};
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+
+            if (grid[position[0]][position[1]] == 0)
+                continue;
+
+            short ennemyPawn = grid[position[0]][position[1]];
+            if (Math.abs(ennemyPawn - pawn) != 1)
+                continue;
+
+            // checks the further cell if it is a ally pawn (capture)
+            position[0] += vect[0];
+            position[1] += vect[1];
+
+            if (position[0] < 0 || position[0] > 8) continue;
+            if (position[1] < 0 || position[1] > 8) continue;
+
+            if (grid[position[0]][position[1]] == 0 && true )
+            // TODO add fortress check
+                continue;
+
+            short otherPawn = grid[position[0]][position[1]];
+
+            if (otherPawn == pawn) {
+                position[0] -= vect[0];
+                position[1] -= vect[1];
+                grid[position[0]][position[1]] = 0;
+            }
+        }
     }
 
     public void print() {

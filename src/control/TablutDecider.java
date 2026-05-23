@@ -29,7 +29,7 @@ public class TablutDecider extends Decider {
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;
 
-    private Map<String, SmallTablutBoard> seenBoards;
+    private Map<String, Integer> seenBoards;
 
     private List<Coordinate> winCoords;
     private Team currentTeam;
@@ -56,13 +56,14 @@ public class TablutDecider extends Decider {
         Pawn pawn = null;
         int rowDest = 0;
         int colDest = 0;
+        boolean maxing = currentTeam == Team.MUSCOVITES;
 
         seenBoards = new HashMap();
         int teamId = model.getIdPlayer();
         
         if (teamId == 0) currentTeam = Team.SWEDISH;
         else currentTeam = Team.MUSCOVITES;
-        int bestScore = -2000;
+        int bestScore = (maxing) ? -2000 : 2000;
         List<Move> moves = board.computeAllValidCells(currentTeam);
         for (Move move : moves) {
             if (teamId == 0) currentTeam = Team.SWEDISH;
@@ -70,12 +71,24 @@ public class TablutDecider extends Decider {
 
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
-            //newBoard.print();
-            int score = minmax(newBoard, depth, false);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
 
+            int score = minmax(newBoard, depth, !maxing);
+            if (maxing) {
+                if (score > bestScore) {
+                    System.out.println(score + " " + move);
+                    bestScore = score;
+                    bestMove = move;
+                }
+            } else {
+                if (score < bestScore) {
+                    System.out.println(score + " " + move);
+                    bestScore = score;
+                    bestMove = move;
+                }
+            }
+
+            if (bestScore == ((maxing) ? 1000 : -1000)) {
+                break;
             }
             //System.out.println("score " + score);
 
@@ -90,15 +103,33 @@ public class TablutDecider extends Decider {
 
     private int minmax(SmallTablutBoard board, int d, boolean maxing) {
         String id = board.toString();
+        if (Math.abs(smallEvaluate(board)) == 1000) {
+            if (d == 2) {
+                           // board.print();
+   //         System.out.println(d + " d");
+            }
+
+            int score = evaluate(board);
+            seenBoards.put(id, score);
+            return score;
+        } 
         if (seenBoards.containsKey(id)) {
-            //System.out.println("s " + seenBoards.get(id).getScore());
-            return seenBoards.get(id).getScore();
+            int score = seenBoards.get(id);
+            if (Math.abs(d - score % 10) < 2) {
+                return score - score % 10;
+            }
+            //System.out.println("s " + seenBoards.get(id));
+
         }
+
         if (d == 0) {
             //System.out.println("e " + evaluate(board));
-            seenBoards.put(id, board);
-            return evaluate(board);
+            int score = evaluate(board) + d;
+            //board.setScore(score);
+            seenBoards.put(id, score);
+            return score;
         }
+        
 
         if (maxing) {
             currentTeam = Team.MUSCOVITES;
@@ -131,17 +162,40 @@ public class TablutDecider extends Decider {
                     bestScore = score;
                 }
             }
-        }
 
+            if (bestScore == ((maxing) ? 1000 : -1000)) {
+                break;
+            }
+        }
         return bestScore;
     }
 
 
+    private int smallEvaluate(SmallTablutBoard board) {
+        if (winSwedish(board)) return -1000;
+        if (winMuscovites(board)) return 1000;
+        
+        return 0;
+    }
+
     private int evaluate(SmallTablutBoard board) {
         if (winSwedish(board)) return -1000;
         if (winMuscovites(board)) return 1000;
-    
-        return 0;
+
+        int score = 0;
+
+        for (int i = 0 ; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                short cell = board.getGrid()[i][j];
+                if (cell == 1) {
+                    score -= 2;
+                } else if (cell == 2) {
+                    score += 1;
+                }
+            }
+        }   
+        
+        return score;
     }
 
     private boolean winSwedish(SmallTablutBoard board) {
