@@ -34,6 +34,8 @@ public class TablutController extends Controller {
      */
     public void stageLoop(InputStream in) {
         consoleIn = new BufferedReader(new InputStreamReader(in));
+        if (((TablutStageModel) model.getGameStage()).getMode() == 3)
+            displayAndApplyMenu();
         update();
         while (!model.isEndStage()) {
             playTurn();
@@ -157,36 +159,7 @@ public class TablutController extends Controller {
                     }
 
                     if (line.equals("options")) {
-                        OptionMenu optionMenu = new OptionMenu();
-
-                        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-                        MenuElement menuElement = stageModel.getMenuElement();
-
-                        if (menuElement != null) {
-                            menuElement.clearEntries();
-                            menuElement.setVisible(true);
-
-                            menuElement.addEntry(new MenuEntry(0, "King move mode", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
-                            menuElement.addEntry(new MenuEntry(0, "Win zone", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
-
-                            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Without distance limitations", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
-                            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Single square distance limitation", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
-
-                            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Borders", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
-                            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Corners", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
-
-                            menuElement.addPrompt("Choose an option (ex: 1A)");
-                            menuElement.setMenuString();
-                            update();
-                        }
-
-                        optionMenu.readMenu(stageModel);
-
-                        if (menuElement != null) {
-                            menuElement.setVisible(false);
-                            update();
-                        }
-
+                        displayAndApplyMenu();
                         continue;
                     }
 
@@ -327,6 +300,38 @@ public class TablutController extends Controller {
                 play.start();
                 ennemyPawn.setVisible(false);
             }
+        }
+    }
+
+    public void displayAndApplyMenu() {
+        OptionMenu optionMenu = new OptionMenu();
+
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+        MenuElement menuElement = stageModel.getMenuElement();
+
+        if (menuElement != null) {
+            menuElement.clearEntries();
+            menuElement.setVisible(true);
+
+            menuElement.addEntry(new MenuEntry(0, "King move mode", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
+            menuElement.addEntry(new MenuEntry(0, "Win zone", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
+
+            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Without distance limitations", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
+            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Single square distance limitation", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
+
+            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Borders", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
+            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Corners", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
+
+            menuElement.addPrompt("Choose an option (ex: 1A)");
+            menuElement.setMenuString();
+            update();
+        }
+
+        optionMenu.readMenu(stageModel);
+
+        if (menuElement != null) {
+            menuElement.setVisible(false);
+            update();
         }
     }
 }
