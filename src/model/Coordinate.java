@@ -41,5 +41,21 @@ public class Coordinate {
     public Coordinate invertedCopy() {
         return new Coordinate(this.y, this.x);
     }
+
+    @Override
+    public String toString() {
+        return "X:" + this.x + " Y: " + this.y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof Coordinate c)) {
+            return false;
+        }
+        return this.x == c.x && this.y == c.y;
+    }
 }
 
