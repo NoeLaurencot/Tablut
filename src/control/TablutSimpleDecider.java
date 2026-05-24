@@ -14,11 +14,14 @@ import java.util.Random;
 
 public class TablutSimpleDecider extends Decider {
 
-    private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
-    private static final int depth = 2;
+    private final int MAX_HISTORY = 64;
 
-    private List<TablutBoard> seenBoards;
-    private TablutController t;
+    private static ArrayList<Move> moveHistory = new ArrayList<>();
+    private static int repetitiveScore;
+
+    private final int BIG_SCORE = 1000000;
+
+    private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
 
     private List<Coordinate> winCoords;
     private Team currentTeam;
@@ -29,7 +32,6 @@ public class TablutSimpleDecider extends Decider {
 
     public TablutSimpleDecider(Model model, Controller control) {
         super(model, control);
-        t = (TablutController) control;
 
         applyGameParameters();
     }
@@ -79,6 +81,10 @@ public class TablutSimpleDecider extends Decider {
             }
         }
 
+        addMoveToHistory(bestMove);
+        repetitiveScore = computeRepetitiveScore();
+        System.out.println("Repetition score: " + repetitiveScore);
+
         System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(model, bestPawn, bestMove.destX, bestMove.destY);
         actionList.setDoEndOfTurn(true);
@@ -91,8 +97,10 @@ public class TablutSimpleDecider extends Decider {
         int score = 0;
         int type = pawn.getType();
         King king = board.findKing();
-        int nSourceEnemyNeighbors = pawn.countEnemyNeighbors(pawn.getNeighbors(move.sourceX, move.sourceY), team);
-        int nDestEnemyNeighbors = pawn.countEnemyNeighbors(pawn.getNeighbors(move.destX, move.destY), team);
+        int kingX = king.getXInBoard();
+        int kingY = king.getYInBoard();
+        Coordinate sourceCoord = new Coordinate(move.sourceX, move.sourceY);
+        Coordinate destCoord = new Coordinate(move.destX, move.destY);
 
         if (pawn instanceof King) {
             double distanceScore = 0;
@@ -104,35 +112,27 @@ public class TablutSimpleDecider extends Decider {
                 }
             }
 
+            // Goes to square where the most visible borders
+            score += board.countVisibleBorder(destCoord) * 500 * repetitiveScore;
+
             // Gets closer to win coordinates
+            int minDist = Integer.MAX_VALUE;
             for (Coordinate winCoord : winCoords) {
-                int destDist = Math.abs(winCoord.getX() - move.destX) + Math.abs(winCoord.getY() - move.destY);
-
-                distanceScore = destDist * 500;
-
-                if (distanceScore > bestDistanceScore) {
-                    bestDistanceScore = distanceScore;
-                }
+                int d = Math.abs(winCoord.getX() - move.destX) + Math.abs(winCoord.getY() - move.destY);
+                if (d < minDist) minDist = d;
             }
-
-            score += (int) bestDistanceScore;
-        } else { // instanceof Soldier
-
+            score += (10 - minDist) * 80;
         }
 
-        // If can capture an enemy pawn
+        score += evalCellFavorability(move, pawn);
 
-        // if can capture an enemy pawn next turn
+        score -= evalCellDangerosity(move, pawn);
 
         // To move away from king's path
-        if (board.canSeeKing(new Coordinate(move.sourceX, move.sourceY)) && !board.canSeeKing(new Coordinate(move.destX, move.destY)))
+        if (board.canSeeKing(sourceCoord) && !board.canSeeKing(destCoord))
             score += 300;
-        else if ((move.sourceX == king.getXInBoard() || move.sourceY == king.getYInBoard()) && (move.destX != king.getXInBoard() || move.destY != king.getYInBoard()))
+        else if ((move.sourceX == kingX || move.sourceY == kingY) && (move.destX != kingX || move.destY != kingY))
             score += 100;
-
-        // Don't go in surrounded cells
-        if (nSourceEnemyNeighbors == 0)
-            score -= 100 * nDestEnemyNeighbors;
 
         return score;
     }
@@ -143,30 +143,280 @@ public class TablutSimpleDecider extends Decider {
         King king = board.findKing();
         int kingX = king.getXInBoard();
         int kingY = king.getYInBoard();
-        int nSourceEnemyNeighbors = pawn.countEnemyNeighbors(pawn.getNeighbors(move.sourceX, move.sourceY), team);
-        int nDestEnemyNeighbors = pawn.countEnemyNeighbors(pawn.getNeighbors(move.destX, move.destY), team);
+        Coordinate sourceCoord = new Coordinate(move.sourceX, move.sourceY);
+        Coordinate destCoord = new Coordinate(move.destX, move.destY);
 
         // Max score if captures the king
+        if (king.wouldBeSurroundedIfEnemyAt(new Coordinate(move.destX, move.destY))) {
+            return Integer.MAX_VALUE;
+        }
 
-        // Don't go in surrounded cells
-        if (nSourceEnemyNeighbors == 0)
-            score -= 100 * nDestEnemyNeighbors;
+        score += evalCellFavorability(move, pawn);
+
+        score -= evalCellDangerosity(move, pawn);
+
+        // To move in the king's path
+        if (!board.canSeeKing(sourceCoord) && isBetweenKingAndWinCoords(destCoord, kingX, kingY)) {
+            score += BIG_SCORE;
+        } else if (((TablutStageModel) model.getGameStage()).getWinMode() == WinMode.CORNERS && !board.canSeeKing(sourceCoord)
+                && isBetweenKingAndBorders(destCoord, kingX, kingY)) {
+            score += 400;
+        } else if (!board.canSeeKing(sourceCoord) && board.canSeeKing(destCoord)) {
+            score += 100;
+        } else if ((move.sourceX != kingX || move.sourceY != kingY) && (move.destX == kingX || move.destY == kingY))
+            score += 50;
+
+        // to stay on the king's path
+        if (isBetweenKingAndBorders(sourceCoord, kingX, kingY) && !isBetweenKingAndBorders(destCoord, kingX, kingY)) {
+            return Integer.MIN_VALUE;
+        }
+
+        // If goes next to king, more score if already allies surrounding it
+        if (!isNextToKing(sourceCoord, new Coordinate(kingX, kingY)) && isNextToKing(destCoord, new Coordinate(kingX, kingY))) {
+            int kingAdjAlly = board.countEnemyNeighbors(new Coordinate(kingX, kingY), team.oppositeTeam());
+            score += 200 * kingAdjAlly+1;
+        }
 
         return score;
     }
 
-    private int evalCellDangerosity(Coordinate coord) {
+    private int evalCellDangerosity(Move move, Pawn pawn) {
+        Team team = pawn.getTeam();
         int score = 0;
 
-        ArrayList<Coordinate> enemyCoords = board.getAdjacentEnemyPawnsCoords(coord);
 
-        for (Coordinate coordEnemy : enemyCoords) {
-            score += 100;
-            Coordinate farCoord = board.getFartherVisibleCoord(coord, new int[]{coordEnemy.getX() - coord.getX(), coordEnemy.getY() - coord.getY()});
-            if (!board.isEmptyAt(farCoord.getX(), farCoord.getY()) && ((Pawn) board.getElement(farCoord.getX(), farCoord.getY())).getTeam() != currentTeam) {
-
+        if (canBeCapturedNextTurn(move, pawn)) {
+            if (pawn instanceof King) {
+                score += BIG_SCORE;
+            } else {
+                score += 500;
             }
         }
+
         return score;
+    }
+
+    private int evalCellFavorability(Move move, Pawn pawn) {
+        Team team = pawn.getTeam();
+        int score = 0;
+
+        Coordinate destCoord = new Coordinate(move.destX, move.destY);
+
+        // 400 score per capture, increasing with repetitive score
+        score += (int) (board.captureCount(destCoord, team) * 400 * Math.max((Math.log(repetitiveScore) + 1), 1));
+
+        // 200 score per capture able next turn, increasing with repetitive score
+        int test = (int) (countCapturableNextTurn(destCoord, pawn) * 200 * Math.max((Math.log(repetitiveScore) + 1), 1));
+        score += test;
+
+        // Doesn't go back to visited square in the last 8 moves (16 / 2)
+        if (repetitiveScore > 8 && moveHistory.subList(0, 16).contains(move))
+            score -= BIG_SCORE;
+
+        return score;
+    }
+
+    public boolean isBetweenKingAndBorders(Coordinate coord, int kingX, int kingY) {
+
+        Coordinate kingCoord = new Coordinate(kingX, kingY);
+
+        // If the king is surrouned, no need to check
+        if (board.getEmptyNeighbors(kingCoord).isEmpty()) {
+            return false;
+        }
+
+        ArrayList<Coordinate> borders = new ArrayList<>();
+        int[] colBorders = {0, board.getNbCols() - 1};
+        int[] rowBorders = {0, board.getNbRows() - 1};
+
+        // Add the horizontal border points
+        for (int col : colBorders) {
+            borders.add(new Coordinate(kingX, col));
+        }
+
+        // Add the vertical border points
+        for (int row : rowBorders) {
+            borders.add(new Coordinate(row, kingY));
+        }
+
+        for (Coordinate winCoord : borders) {
+
+            // Checks if the king, coord, and winCoord on the exact same line
+            boolean isSameRow = (coord.getX() == kingX && coord.getX() == winCoord.getX());
+            boolean isSameCol = (coord.getY() == kingY && coord.getY() == winCoord.getY());
+
+            // If they aren't in a line, it can't possibly be between them.
+            if (!isSameRow && !isSameCol) {
+                continue;
+            }
+
+            // TODO: check if better without this check
+            if (!board.isEmptyAt(winCoord.getX(), winCoord.getY())) {
+                continue;
+            }
+
+            // Checks line of sight
+            boolean coordCanSeeWin = board.canSeeCoordinate(coord, winCoord);
+            boolean coordCanSeeKing = board.canSeeKing(coord);
+
+            if (coordCanSeeWin && coordCanSeeKing)
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean isBetweenKingAndWinCoords(Coordinate coord, int kingX, int kingY) {
+        Coordinate kingCoord = new Coordinate(kingX, kingY);
+
+        // If the king is surrouned, no need to check
+        if (board.getEmptyNeighbors(kingCoord).isEmpty()) {
+            return false;
+        }
+
+        for (Coordinate winCoord : this.winCoords) {
+
+            // Checks if the king, coord, and winCoord on the exact same line
+            boolean isSameRow = (coord.getX() == kingX && coord.getX() == winCoord.getX());
+            boolean isSameCol = (coord.getY() == kingY && coord.getY() == winCoord.getY());
+
+            // If they aren't in a line, it can't possibly be between them.
+            if (!isSameRow && !isSameCol) {
+                continue;
+            }
+
+            // TODO: check if better without this check
+            if (!board.isEmptyAt(winCoord.getX(), winCoord.getY())) {
+                continue;
+            }
+
+            // Checks line of sight
+            boolean coordCanSeeWin = board.canSeeCoordinate(coord, winCoord) || winCoord.equals(coord);
+            boolean coordCanSeeKing = board.canSeeKing(coord);
+
+            if (coordCanSeeWin && coordCanSeeKing)
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean canBeCapturedNextTurn(Move move, Pawn pawn) {
+        Coordinate sourceCoord = new Coordinate(move.sourceX, move.sourceY);
+        Coordinate destCoord = new Coordinate(move.destX, move.destY);
+        Team team = pawn.getTeam();
+
+        if (board.countEnemyNeighbors(destCoord, team) == 0) {
+            return false;
+        }
+
+        ArrayList<Coordinate> emptyNeighbors = new ArrayList<>(board.getEmptyNeighbors(destCoord));
+        // if source is adjacent to dest it adds it to empty neighbo list
+        if (Math.abs(sourceCoord.getX() - destCoord.getX()) + Math.abs(sourceCoord.getY() - destCoord.getY()) == 1) {
+            boolean alreadyIncluded = false;
+            for (Coordinate coord : emptyNeighbors) {
+                if (coord.equals(sourceCoord)) {
+                    alreadyIncluded = true;
+                    break;
+                }
+            }
+            if (!alreadyIncluded) {
+                emptyNeighbors.add(sourceCoord);
+            }
+        }
+
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+        for (Coordinate emptyCoord : emptyNeighbors) {
+            if (!board.wouldBeSurroundedIfEnemyAt(destCoord, emptyCoord, pawn)) {
+                continue;
+            }
+
+            for (int[] vect : directions) {
+                Coordinate cursor = new Coordinate(emptyCoord);
+
+                while (true) {
+                    cursor.increment(vect[0], vect[1]);
+
+                    if (board.outOfBounds(cursor)) {
+                        break;
+                    }
+                    if (cursor.equals(destCoord)) {
+                        // our pawn blocks the path after the move
+                        break;
+                    }
+                    if (cursor.equals(sourceCoord)) {
+                        // treat source as empty after the move
+                        continue;
+                    }
+                    if (board.isEmptyAt(cursor.getX(), cursor.getY())) {
+                        continue;
+                    }
+
+                    Pawn blocker = (Pawn) board.getElement(cursor.getX(), cursor.getY());
+                    if (blocker.getTeam() != team) {
+                        return true;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public int countCapturableNextTurn(Coordinate coord, Pawn pawn) {
+        Team team = pawn.getTeam();
+        int counter = 0;
+
+        for (Coordinate enemyCoord : board.getAdjacentEnemyPawnsCoords(coord, team)) {
+            Coordinate acrossCoord = new Coordinate(enemyCoord.getX() - coord.getX(), enemyCoord.getY() - coord.getY());
+            if (board.isAnyEnemyVisible(acrossCoord, team))
+                counter++;
+        }
+
+        return counter;
+    }
+
+    private void addMoveToHistory(Move move) {
+        if (moveHistory.size() == MAX_HISTORY) moveHistory.removeLast(); // oldest
+        moveHistory.addFirst(move); // newest
+    }
+
+    /**
+     * Determines a score that tells how much a move pattern have repeated, helps unstuck infinite games between 2 AIs
+     *
+     * @return the repetition score. Higher is more repetitive, default is 1
+     */
+    private int computeRepetitiveScore() {
+        final int PATTERN_SIZE = 4;
+        Move[] repeatPattern = new Move[PATTERN_SIZE];
+
+        if (MAX_HISTORY < PATTERN_SIZE) {
+            System.out.println("Max history size smaller than pattern size");
+            return 1;
+        }
+
+        if (moveHistory.size() < PATTERN_SIZE) {
+            return 1;
+        }
+
+        int repeatingCnt = 0;
+
+        for (int i = 0; i < PATTERN_SIZE; i++) {
+            repeatPattern[i] = moveHistory.get(i);
+        }
+        for (int i = PATTERN_SIZE; i <= moveHistory.size() - 1; i++) {
+            if (repeatPattern[i % PATTERN_SIZE].equals(moveHistory.get(i))) {
+                repeatingCnt++;
+            } else {
+                break;
+            }
+        }
+        return repeatingCnt + 1;
+    }
+
+    public boolean isNextToKing(Coordinate coord, Coordinate kingCoord) {
+        return Math.abs(coord.getX() - kingCoord.getX()) + Math.abs(coord.getY() - kingCoord.getY()) == 1;
     }
 }
