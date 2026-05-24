@@ -28,15 +28,13 @@ public class TablutSimpleDecider extends Decider {
     private TablutBoard board;
     public Move bestMove;
 
-    private double bestDistanceScore = 0;
-
     public TablutSimpleDecider(Model model, Controller control) {
         super(model, control);
 
         applyGameParameters();
     }
 
-    private void applyGameParameters() {
+    public void applyGameParameters() {
         TablutStageModel stage = (TablutStageModel) model.getGameStage();
         TablutBoard board = stage.getBoard();
 
@@ -57,14 +55,13 @@ public class TablutSimpleDecider extends Decider {
         return simpleStrategy(moves);
     }
 
-    private ActionList simpleStrategy(List<Move> moves) {
+    public ActionList simpleStrategy(List<Move> moves) {
         ActionList actionList;
         bestMove = moves.getFirst();
         Pawn pawn = (Pawn) board.getElement(moves.getFirst().sourceX, moves.getFirst().sourceY);
         Pawn bestPawn = pawn;
         int bestScore = Integer.MIN_VALUE;
         int score = Integer.MIN_VALUE;
-        bestDistanceScore = 0;
 
         for (Move move : moves) {
 
@@ -85,14 +82,14 @@ public class TablutSimpleDecider extends Decider {
         repetitiveScore = computeRepetitiveScore();
 //        System.out.println("Repetition score: " + repetitiveScore);
 
-        System.out.println("Best move: " + bestMove.humanReadable());
+//        System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(model, bestPawn, bestMove.destX, bestMove.destY);
         actionList.setDoEndOfTurn(true);
 
         return actionList;
     }
 
-    private int evaluateSwedish(TablutBoard board, Move move, Pawn pawn) {
+    public int evaluateSwedish(TablutBoard board, Move move, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
         int type = pawn.getType();
@@ -125,7 +122,6 @@ public class TablutSimpleDecider extends Decider {
 
             if (repetitiveScore > 1) {
                 score += sourceCoord.computeManhattanDistance(destCoord) * 300 * repetitiveScore;
-                System.out.println("TEST " + repetitiveScore);
             }
         }
 
@@ -142,7 +138,7 @@ public class TablutSimpleDecider extends Decider {
         return score;
     }
 
-    private int evaluateMuscovites(TablutBoard board, Move move, Pawn pawn) {
+    public int evaluateMuscovites(TablutBoard board, Move move, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
         King king = board.findKing();
@@ -185,7 +181,7 @@ public class TablutSimpleDecider extends Decider {
         return score;
     }
 
-    private int evalCellDangerosity(Coordinate soureCoord, Coordinate destCoord, Pawn pawn) {
+    public int evalCellDangerosity(Coordinate soureCoord, Coordinate destCoord, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
 
@@ -201,7 +197,7 @@ public class TablutSimpleDecider extends Decider {
         return score;
     }
 
-    private int evalCellFavorability(Coordinate sourceCoord, Coordinate destCoord, Pawn pawn) {
+    public int evalCellFavorability(Coordinate sourceCoord, Coordinate destCoord, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
         Move move = new Move(sourceCoord.getX(), sourceCoord.getY(), destCoord.getX(), destCoord.getY());
@@ -380,7 +376,7 @@ public class TablutSimpleDecider extends Decider {
         return counter;
     }
 
-    private void addMoveToHistory(Move move) {
+    public void addMoveToHistory(Move move) {
         if (moveHistory.size() == MAX_HISTORY) moveHistory.removeLast(); // oldest
         moveHistory.addFirst(move); // newest
     }
@@ -390,7 +386,7 @@ public class TablutSimpleDecider extends Decider {
      *
      * @return the repetition score. Higher is more repetitive, default is 1
      */
-    private int computeRepetitiveScore() {
+    public int computeRepetitiveScore() {
         final int PATTERN_SIZE = 4;
         Move[] repeatPattern = new Move[PATTERN_SIZE];
 
