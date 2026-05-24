@@ -28,6 +28,7 @@ public class TablutDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;
+    private static final int depthDifferenceAcceptance = 0;
 
     private Map<String, Integer> seenBoards;
 
@@ -76,13 +77,13 @@ public class TablutDecider extends Decider {
             int score = minmax(newBoard, depth, !maxing);
             if (maxing) {
                 if (score > bestScore) {
-                    //System.out.println(score + " " + move);
+                    System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
                 }
             } else {
                 if (score < bestScore) {
-                    //System.out.println(score + " " + move);
+                    System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
                 }
@@ -117,7 +118,7 @@ public class TablutDecider extends Decider {
         } 
         if (seenBoards.containsKey(id)) {
             int score = seenBoards.get(id);
-            if (Math.abs(d - score % 10) < 2) {
+            if (Math.abs(d - score % 10) <= depthDifferenceAcceptance) {
                 return score - score % 10;
             }
             //System.out.println("s " + seenBoards.get(id));
@@ -154,6 +155,8 @@ public class TablutDecider extends Decider {
             //newBoard.print();
 
             int score = minmax(newBoard, d-1, !maxing);
+            score -= score % 10;
+
             if (maxing) {
                 if (score > bestScore) {
                     bestScore = score;
@@ -175,6 +178,27 @@ public class TablutDecider extends Decider {
     private int smallEvaluate(SmallTablutBoard board) {
         if (winSwedish(board)) return -10000;
         if (winMuscovites(board)) return 10000;
+
+        short[][] grid = board.getGrid();
+        Coordinate pos = board.getKingPosition();
+
+        // Tuichi
+        boolean tuichi = true;
+        for (int i = 0; i < 9; i++) {
+            if (grid[i][pos.getY()] != 0 && grid[i][pos.getY()] != 3) {
+                tuichi = false;
+                break;
+            }
+        }
+        if (tuichi) return -10000;
+        tuichi = true;
+        for (int j = 0; j < 9; j++) {
+            if (grid[pos.getX()][j] != 0 && grid[pos.getX()][j] != 3) {
+                tuichi = false;
+                break;
+            }
+        }
+        if (tuichi) return -10000;
         
         return 0;
     }
@@ -183,31 +207,68 @@ public class TablutDecider extends Decider {
         if (winSwedish(board)) return -10000;
         if (winMuscovites(board)) return 10000;
 
+        short[][] grid = board.getGrid();
+        Coordinate pos = board.getKingPosition();
+
+        // Tuichi
+        boolean tuichi = true;
+        for (int i = 0; i < 9; i++) {
+            if (grid[i][pos.getY()] != 0 && grid[i][pos.getY()] != 3) {
+                tuichi = false;
+                break;
+            }
+        }
+        if (tuichi) return -10000;
+        tuichi = true;
+        for (int j = 0; j < 9; j++) {
+            if (grid[pos.getX()][j] != 0 && grid[pos.getX()][j] != 3) {
+                tuichi = false;
+                break;
+            }
+        }
+        if (tuichi) return -10000;
+
         int score = 0;
+        
 
         // Captures
         for (int i = 0 ; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                short cell = board.getGrid()[i][j];
+                short cell = grid[i][j];
                 if (cell == 1) {
-                    score -= 30;
+                    score -= 60;
                 } else if (cell == 2) {
-                    score += 20;
+                    score += 40;
                 }
             }
         }
 
-        // Muscovites around the king
-        Coordinate pos = board.getKingPosition();
+        // King close to the border
+        score -= Math.abs(4-pos.getX()) * 10;
+        score -= Math.abs(4-pos.getY()) * 10;
+
+        // Soldiers around the king
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
             if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
 
-            if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+            if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+                score += 40;
+            }
+            else if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
                 score += 20;
             }
-            else if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
+        }
+        int[][] diagonals = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+        for (int[] vect : diagonals) {
+            if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
+            if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
+            
+            if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+                score += 20;
+            }
+            else if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
                 score += 10;
             }
         }
