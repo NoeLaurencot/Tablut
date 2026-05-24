@@ -4,7 +4,6 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +102,7 @@ public class TablutBoard extends ContainerElement {
 
     /**
      * Return a List Point Who
+     *
      * @param sourceRow
      * @param sourceCol
      * @return
@@ -206,8 +206,8 @@ public class TablutBoard extends ContainerElement {
     }
 
     public boolean outOfBounds(Coordinate coord) {
-        return coord.getX() < 0 || coord.getX() > this.nbRows-1 ||
-                coord.getY() < 0 || coord.getY() > this.nbCols-1;
+        return coord.getX() < 0 || coord.getX() > this.nbRows - 1 ||
+                coord.getY() < 0 || coord.getY() > this.nbCols - 1;
     }
 
     public boolean canSeeCoordinate(Coordinate srcCoord, Coordinate destCoord) {
@@ -236,30 +236,23 @@ public class TablutBoard extends ContainerElement {
         return adjacentPawnsCoords;
     }
 
-    public ArrayList<Coordinate> getAdjacentEnemyPawnsCoords(Coordinate coord) {
-        Team currentTeam = ((Pawn) getElement(coord.getX(), coord.getY())).getTeam();
-        ArrayList<Coordinate> adjacentEnemyCoords = getAdjacentCoords(coord);
-        for (Coordinate adjCoordv : adjacentEnemyCoords) {
-            // if empty or not enemy
-            if (this.isEmptyAt(adjCoordv.getX(), adjCoordv.getY()) || ((Pawn) getElement(adjCoordv.getX(), adjCoordv.getY())).getTeam() == currentTeam) {
-                adjacentEnemyCoords.remove(adjCoordv);
+    public ArrayList<Coordinate> getAdjacentEnemyPawnsCoords(Coordinate coord, Team team) {
+        ArrayList<Coordinate> adjacentCoords = getAdjacentCoords(coord);
+        ArrayList<Coordinate> enemyCoords = new ArrayList<>();
+
+        for (Coordinate adjCoord : adjacentCoords) {
+            // Only add if not empty and team is different
+            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY())) {
+                GameElement element = getElement(adjCoord.getX(), adjCoord.getY());
+                if (((Pawn) element).getTeam() != team) {
+                    enemyCoords.add(adjCoord);
+                }
             }
         }
-        return adjacentEnemyCoords;
+        return enemyCoords;
     }
 
-    public int captureCount(Coordinate coord) {
-        int count = 0;
-
-        for (Coordinate enemyCoord : getAdjacentEnemyPawnsCoords(coord)) {
-            if (((Pawn) getElement(enemyCoord.getX(), enemyCoord.getY())).wouldBeSurrounded(coord)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public Coordinate getFartherVisibleCoord(Coordinate coord, int[] vect) {
+    public Coordinate getFarthestVisibleCoord(Coordinate coord, int[] vect) {
         Coordinate position = new Coordinate(coord);
 
         do {
@@ -283,22 +276,85 @@ public class TablutBoard extends ContainerElement {
         ArrayList<Coordinate> farthestVisibleCells = new ArrayList<>();
 
         for (final int[] VECT : DIRECTIONS) {
-            farthestVisibleCells.add(getFartherVisibleCoord(coord, VECT));
+            Coordinate visibleCoord = getFarthestVisibleCoord(coord, VECT);
+            if (visibleCoord != null)
+                farthestVisibleCells.add(visibleCoord);
         }
         return farthestVisibleCells;
     }
 
-    public ArrayList<Coordinate> getFarthestVisibleEnemyCoords(Coordinate coord) {
+    public ArrayList<Coordinate> getFarthestVisibleEnemyCoords(Coordinate coord, Team currentTeam) {
         ArrayList<Coordinate> enemiesCoords = new ArrayList<>();
-        Team currentTeam = ((Pawn) getElement(coord.getX(), coord.getY())).getTeam();
 
         for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
             // if there is enemy at coordinates
-            if (!isEmptyAt(coord.getX(), coord.getY()) && ((Pawn) getElement(coord.getX(), coord.getY())).getTeam() != currentTeam) {
+            if (!isEmptyAt(farCoord.getX(), farCoord.getY()) && ((Pawn) getElement(farCoord.getX(), farCoord.getY())).getTeam() != currentTeam) {
                 enemiesCoords.add(farCoord);
             }
         }
-
         return enemiesCoords;
+    }
+
+    public boolean isAnyEnemyVisible(Coordinate coord, Team currentTeam) {
+        return getFarthestVisibleEnemyCoords(coord, currentTeam).size() > 0;
+    }
+
+    public boolean wouldBeSurroundedIfEnemyAt(Coordinate pawnCoord, Coordinate enemyCoord, Pawn pawn) {
+
+        Team team = pawn.getTeam();
+
+        if (pawn instanceof King) {
+            return this.countEnemyNeighbors(pawnCoord, team) == 3;
+        } else {
+            for (Coordinate coordAdj : this.getAdjacentEnemyPawnsCoords(pawnCoord, team)) {
+                if (enemyCoord.getX() == coordAdj.getX() || enemyCoord.getY() == coordAdj.getY())
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ArrayList<Coordinate> getEmptyNeighbors(Coordinate coord) {
+        ArrayList<Coordinate> emptyCoords = new ArrayList<>();
+
+        for (Coordinate emptyCoord : getAdjacentCoords(coord)) {
+            if (this.isEmptyAt(emptyCoord.getX(), emptyCoord.getY())) {
+                emptyCoords.add(emptyCoord);
+            }
+        }
+
+        return emptyCoords;
+    }
+
+    public int countEnemyNeighbors(Coordinate coord, Team team) {
+        ArrayList<Coordinate> coords = getAdjacentEnemyPawnsCoords(coord, team);
+
+        if (coords != null)
+            return coords.size();
+
+        return 0;
+    }
+
+    public int captureCount(Coordinate coord, Team team) {
+        int count = 0;
+
+        for (Coordinate enemyCoord : getAdjacentEnemyPawnsCoords(coord, team)) {
+            if (((Pawn) getElement(enemyCoord.getX(), enemyCoord.getY())).wouldBeSurroundedIfEnemyAt(coord)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countVisibleBorder(Coordinate coord) {
+        int counter = 0;
+        for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
+            boolean isBorders = (farCoord.getX() == 0 || farCoord.getX() == this.nbRows - 1) || (farCoord.getY() == 0 || farCoord.getY() == this.nbCols - 1);
+            if (this.isEmptyAt(farCoord.getX(), farCoord.getY()) && isBorders) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }
