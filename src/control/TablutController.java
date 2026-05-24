@@ -38,7 +38,7 @@ public class TablutController extends Controller {
             openMenu();
         update();
         while (!model.isEndStage()) {
-            playTurn();
+            playTurn(consoleIn);
             endOfTurn();
             update();
         }
@@ -48,7 +48,7 @@ public class TablutController extends Controller {
     /**
      *
      */
-    private void playTurn() {
+    public void playTurn(BufferedReader input) {
         // get the new player
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
@@ -148,7 +148,7 @@ public class TablutController extends Controller {
             while (!ok) {
                 System.out.print(p.getName() + " > ");
                 try {
-                    String line = consoleIn.readLine();
+                    String line = input.readLine();
 
                     if (line.contains("stop")) {
                         System.exit(0);
@@ -203,7 +203,7 @@ public class TablutController extends Controller {
         }*/
     }
 
-    private boolean analyseAndPlay(String line) {
+    public boolean analyseAndPlay(String line) {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
 
@@ -304,8 +304,15 @@ public class TablutController extends Controller {
     }
 
     public boolean displayAndApplyMenu() {
+        return displayAndApplyMenu(createOptionMenu());
+    }
+
+    protected OptionMenu createOptionMenu() {
+        return new OptionMenu();
+    }
+
+    public boolean displayAndApplyMenu(OptionMenu optionMenu) {
         boolean done;
-        OptionMenu optionMenu = new OptionMenu();
 
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         MenuElement menuElement = stageModel.getMenuElement();
@@ -349,9 +356,13 @@ public class TablutController extends Controller {
     }
 
     public void openMenu() {
+        openMenu(createOptionMenu());
+    }
+
+    public void openMenu(OptionMenu optionMenu) {
         boolean done;
         do {
-            done = displayAndApplyMenu();
+            done = displayAndApplyMenu(optionMenu);
         } while (!done);
     }
 }

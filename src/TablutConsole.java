@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class TablutConsole {
 
     public static void main(String[] args) {
-        final AIMode[] AI_MODES = {AIMode.MINMAX, AIMode.SIMPLE_EVAL, AIMode.IDK_YET};
+        final AIMode[] AI_MODES = {AIMode.MINMAX, AIMode.SIMPLE_EVAL, AIMode.TODO};
         // Debug
         //Logger.setLevel(Logger.LOGGER_TRACE);
         //Logger.setVerbosity(Logger.VERBOSE_HIGH);
