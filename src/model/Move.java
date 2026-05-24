@@ -22,6 +22,10 @@ public class Move {
         this.destY = m.destY;
     }
 
+    public Move reverse() {
+        return new Move(destX, destY, sourceX, sourceY);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) {
