@@ -25,8 +25,8 @@ public class King extends Pawn {
 
     @Override
     public List<Coordinate> getLegalMoves() {
-        List<Coordinate> lst = new ArrayList<>();
         TablutBoard board = (TablutBoard) getContainer();
+        List<Coordinate> lst = new ArrayList<>();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -70,9 +70,14 @@ public class King extends Pawn {
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
 
+            if (board.outOfBounds(new Coordinate(position[0], position[1]))) {
+                continue;
+            }
+
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
             }
+
             if (model.isFortressAt(position[0], position[1]) && position[0] == 4 && position[1] == 4) {
                 ennemyNeighbors++;
             }
@@ -83,42 +88,24 @@ public class King extends Pawn {
                 ennemyNeighbors++;
             }
         }
-        return ennemyNeighbors >= solidersToCapture;
+        return ennemyNeighbors == solidersToCapture;
     }
 
     @Override
     public boolean isSurrounded() {
-        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
+        TablutBoard board = (TablutBoard) getContainer();
         int x = getXInBoard();
         int y = getYInBoard();
-        Set<Integer> seenX = new HashSet<>();
-        Set<Integer> seenY = new HashSet<>();
 
-        for (Coordinate coord : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
-            // check if x and y is the same tiwce, so in a cross surrounding the king
-            if (!seenX.add(coord.getX()) && !seenY.add(coord.getY())) {
-                return true;
-            }
-        }
-
-        return false;
+        return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture;
     }
 
     @Override
-    public boolean wouldBeSurrounded(Coordinate coord) {
-        TablutBoard board = ((TablutStageModel) gameStageModel).getBoard();
-        int x = coord.getX();
-        int y = coord.getY();
-        Set<Integer> seenX = new HashSet<>();
-        Set<Integer> seenY = new HashSet<>();
+    public boolean wouldBeSurroundedIfEnemyAt(Coordinate coord) {
+        TablutBoard board = (TablutBoard) getContainer();
+        int x = getXInBoard();
+        int y = getYInBoard();
 
-        for (Coordinate coordAdj : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y))) {
-            // check if x and y is the same tiwce, so in a cross surrounding the king
-            if (!seenX.add(coordAdj.getX()) && !seenY.add(coordAdj.getY())) {
-                return true;
-            }
-        }
-
-        return false;
+        return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture - 1;
     }
 }

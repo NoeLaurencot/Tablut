@@ -5,7 +5,6 @@ import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.action.ActionList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,45 +80,13 @@ public abstract class Pawn extends GameElement {
         return ActionFactory.generateRemoveFromContainer(this.getModel(), this);
     }
 
-    public ArrayList<GameElement> getNeighbors(int x, int y) {
-        TablutBoard board = ((TablutStageModel) this.getGameStage()).getBoard();
-        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-
-        ArrayList<GameElement> neighborList = new ArrayList<>();
-        List<GameElement> cell = board.getElements(x, y);
-
-        if (cell == null) return neighborList;
-
-        for (int[] vect : directions) {
-            int[] position = {x + vect[0], y + vect[1]};
-
-            if (position[0] < 0 || position[0] > 8) continue;
-            if (position[1] < 0 || position[1] > 8) continue;
-
-            if (board.isEmptyAt(position[0], position[1])) continue;
-
-            neighborList.add(board.getElement(position[0], position[1]));
-        }
-        return neighborList;
-    }
-
-    public int countEnemyNeighbors(ArrayList<GameElement> neighborList, Team team) {
-        int counter = 0;
-        for (GameElement gameElement : neighborList) {
-            if (((Pawn) gameElement).getTeam() != team) {
-                counter++;
-            }
-        }
-        return counter;
-    }
-
     public abstract boolean isSurrounded();
 
 
     /**
-     * checks if would be surrounded, and thus captured if there was a pawn at coord
-     * @param coord The coordinates the pawn would be at
+     * checks if would be surrounded, and thus captured, if there was an enemy pawn at coord
+     * @param coord The coordinates the enemy pawn would be at
      * @return true if would be surrounded
      */
-    public abstract boolean wouldBeSurrounded(Coordinate coord);
+    public abstract boolean wouldBeSurroundedIfEnemyAt(Coordinate coord);
 }
