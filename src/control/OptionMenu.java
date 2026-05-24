@@ -1,22 +1,28 @@
 package control;
 
+import java.io.InputStream;
 import java.util.Scanner;
 
 import boardifier.model.GameStageModel;
 import model.*;
 
 public class OptionMenu {
-    private static final Scanner SCANNER = new Scanner(System.in);
 
     public OptionMenu() {}
 
-    public boolean readMenu(GameStageModel gameStageModel) {
+    public boolean readMenu(GameStageModel gameStageModel, InputStream inputStream) {
         boolean ok = false;
         int prefix;
         int option;
+        Scanner scanner = new Scanner(inputStream);
 
         while (!ok) {
-            String line = SCANNER.next().trim();
+            if (!scanner.hasNext()) {
+                break;
+            }
+
+            String line = scanner.next().trim();
+
 
             if (line.equals("save")) {
                 System.out.println("Options saved");

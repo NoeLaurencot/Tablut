@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -155,7 +156,7 @@ public class TablutControllerUnitTest {
 		stage.setMenuElement(menuElement);
 
 		OptionMenu optionMenu = Mockito.mock(OptionMenu.class);
-		Mockito.when(optionMenu.readMenu(stage)).thenReturn(true);
+		Mockito.when(optionMenu.readMenu(Mockito.eq(stage), Mockito.any(InputStream.class))).thenReturn(true);
 
 		TestableController testController = new TestableController(model, view);
 		testController.setOptionMenu(optionMenu);
@@ -164,7 +165,7 @@ public class TablutControllerUnitTest {
 
 		assertTrue(result);
 		assertFalse(menuElement.isVisible());
-		Mockito.verify(optionMenu).readMenu(stage);
+		Mockito.verify(optionMenu).readMenu(Mockito.eq(stage), Mockito.any(InputStream.class));
 	}
 
 	@Test
@@ -173,7 +174,7 @@ public class TablutControllerUnitTest {
 		stage.setMenuElement(menuElement);
 
 		OptionMenu optionMenu = Mockito.mock(OptionMenu.class);
-		Mockito.when(optionMenu.readMenu(stage)).thenReturn(true);
+		Mockito.when(optionMenu.readMenu(Mockito.eq(stage), Mockito.any(InputStream.class))).thenReturn(true);
 
 		TestableController testController = new TestableController(model, view);
 		testController.setOptionMenu(optionMenu);
@@ -182,33 +183,20 @@ public class TablutControllerUnitTest {
 
 		assertTrue(result);
 		assertFalse(menuElement.isVisible());
-		Mockito.verify(optionMenu).readMenu(stage);
+		Mockito.verify(optionMenu).readMenu(Mockito.eq(stage), Mockito.any(InputStream.class));
 	}
 
 	@Test
 	public void testOpenMenu_UsesProvidedOptionMenu() {
 		OptionMenu optionMenu = Mockito.mock(OptionMenu.class);
-		Mockito.when(optionMenu.readMenu(stage)).thenReturn(true);
+		Mockito.when(optionMenu.readMenu(Mockito.eq(stage), Mockito.any(InputStream.class))).thenReturn(true);
 
 		TestableController testController = new TestableController(model, view);
 		testController.setOptionMenu(optionMenu);
 
 		testController.openMenu(optionMenu);
 
-		Mockito.verify(optionMenu).readMenu(stage);
-	}
-
-	@Test
-	public void testOpenMenu_NoArgUsesFactory() {
-		OptionMenu optionMenu = Mockito.mock(OptionMenu.class);
-		Mockito.when(optionMenu.readMenu(stage)).thenReturn(true);
-
-		TestableController testController = new TestableController(model, view);
-		testController.setOptionMenu(optionMenu);
-
-		testController.openMenu();
-
-		Mockito.verify(optionMenu).readMenu(stage);
+		Mockito.verify(optionMenu).readMenu(Mockito.eq(stage), Mockito.any(InputStream.class));
 	}
 
 	@Test

@@ -335,7 +335,7 @@ public class TablutController extends Controller {
             update();
         }
 
-        done = optionMenu.readMenu(stageModel);
+        done = optionMenu.readMenu(stageModel, System.in);
 
         if (menuElement != null) {
             menuElement.setVisible(false);
