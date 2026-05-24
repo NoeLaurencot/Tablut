@@ -172,10 +172,12 @@ public class SmallTablutBoard {
             // like King::shouldDie()
             if (ennemyPawn == 3) {
                 int[] neighbor = {position[0] + vect[1], position[1] + vect[0]};
+                if (neighbor[0] < 0 || neighbor[0] > 8 || neighbor[1] < 0 || neighbor[1] > 8) continue;
                 if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
                 
                 neighbor[0] -= 2*vect[1];
                 neighbor[1] -= 2*vect[0];
+
                 if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
             }
 
