@@ -38,6 +38,10 @@ public class Coordinate {
         this.y += y;
     }
 
+    public int computeManhattanDistance(Coordinate destination) {
+        return Math.abs(this.x - destination.getX()) + Math.abs(this.y - destination.getY());
+    }
+
     public Coordinate invertedCopy() {
         return new Coordinate(this.y, this.x);
     }
