@@ -22,17 +22,17 @@ Deux IA différentes ont été développées afin de proposer plusieurs styles d
 ### Fonctionnalités
 
 - Interface console avec Boardifier
-- Gestion complète des règles du Tablut
+- Gestion des règles du Tablut
 - Mode Joueur vs IA
 - Mode IA vs IA
-- Deux intelligences artificielles développées
+- Deux intelligences artificielles
 - Gestion des déplacements et captures
 
 ## Technologies utilisées
 
 - Java
 - Boardifier
-- Console Java
+- Junit5 et Mockito
  
 ## Auteurs
 
