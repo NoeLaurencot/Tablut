@@ -141,7 +141,6 @@ public class SmallTablutBoard {
 
     public void applyMove(Move move) {
         if (grid[move.destX][move.destY] != 0) {
-            System.out.println("chiasse");
             print();
             System.out.println(move);
         }
