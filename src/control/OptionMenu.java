@@ -10,13 +10,18 @@ public class OptionMenu {
 
     public OptionMenu() {}
 
-    public void readMenu(GameStageModel gameStageModel) {
+    public boolean readMenu(GameStageModel gameStageModel) {
         boolean ok = false;
         int prefix;
         int option;
 
         while (!ok) {
             String line = SCANNER.next().trim();
+
+            if (line.equals("save")) {
+                System.out.println("Options saved");
+                return true;
+            }
 
             if (line.length() == 2) {
                 char prefixChar = line.charAt(0);
@@ -29,14 +34,19 @@ public class OptionMenu {
                 prefix = (int) prefixChar - '1';
                 option = (int) optionChar - 'A';
 
-                if (prefix < 0 || prefix > 2) continue;
-                if (option < 0 || option > 2) continue;
+                if (prefix < 0 || prefix > 2 || option < 0 || option > 2) {
+                    System.out.println("Invalid option, try again");
+                    continue;
+                }
 
                 setOption(gameStageModel, prefix, option);
 
                 ok = true;
+            } else {
+                System.out.println("Invalid option, try again");
             }
         }
+        return false;
     }
 
     private void setOption(GameStageModel gameStageModel, int prefix, int option) {

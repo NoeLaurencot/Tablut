@@ -35,7 +35,7 @@ public class TablutController extends Controller {
     public void stageLoop(InputStream in) {
         consoleIn = new BufferedReader(new InputStreamReader(in));
         if (((TablutStageModel) model.getGameStage()).getMode() == 3)
-            displayAndApplyMenu();
+            openMenu();
         update();
         while (!model.isEndStage()) {
             playTurn();
@@ -159,7 +159,7 @@ public class TablutController extends Controller {
                     }
 
                     if (line.equals("options")) {
-                        displayAndApplyMenu();
+                        openMenu();
                         continue;
                     }
 
@@ -303,7 +303,8 @@ public class TablutController extends Controller {
         }
     }
 
-    public void displayAndApplyMenu() {
+    public boolean displayAndApplyMenu() {
+        boolean done;
         OptionMenu optionMenu = new OptionMenu();
 
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
@@ -322,16 +323,35 @@ public class TablutController extends Controller {
             menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Borders", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
             menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Corners", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
 
-            menuElement.addPrompt("Choose an option (ex: 1A)");
+            menuElement.addPrompt("Choose an option (ex: 1A) or type 'save' to exit");
             menuElement.setMenuString();
             update();
         }
 
-        optionMenu.readMenu(stageModel);
+        done = optionMenu.readMenu(stageModel);
 
         if (menuElement != null) {
             menuElement.setVisible(false);
-            update();
+
+            if (!done) {
+                stageModel.getBoard().setVisible(false);
+                menuElement.setLocation(0, 0);
+            } else {
+                stageModel.getBoard().setVisible(true);
+                int boardY = (int) stageModel.getBoard().getY();
+                int menuY = boardY + (stageModel.getBoard().getNbRows() * 2) + 3;
+                menuElement.setLocation(0, menuY);
+            }
         }
+
+
+        return done;
+    }
+
+    public void openMenu() {
+        boolean done;
+        do {
+            done = displayAndApplyMenu();
+        } while (!done);
     }
 }
