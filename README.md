@@ -38,10 +38,10 @@ Deux IA différentes ont été développées afin de proposer plusieurs styles d
 
 Projet réalisé par :
 
-Noé Laurençot
-Jules Jeanrot
-Pierre Lamour
-Idrissa Barry
+- Noé Laurençot
+- Jules Jeanrot
+- Pierre Lamour
+- Idrissa Barry
 
 ### Contexte
 
