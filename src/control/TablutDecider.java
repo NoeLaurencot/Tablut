@@ -41,7 +41,7 @@ public class TablutDecider extends Decider {
         getGameParameters();
     }
 
-    private void getGameParameters() {
+    public void getGameParameters() {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
         TablutBoard board = stage.getBoard();
 
@@ -102,7 +102,7 @@ public class TablutDecider extends Decider {
         return actions;
     }
 
-    private int minmax(SmallTablutBoard board, int d, boolean maxing) {
+    public int minmax(SmallTablutBoard board, int d, boolean maxing) {
         String id = board.toString();
         if (Math.abs(smallEvaluate(board)) == 10000) {
             if (d == 0) {
@@ -172,14 +172,14 @@ public class TablutDecider extends Decider {
     }
 
 
-    private int smallEvaluate(SmallTablutBoard board) {
+    public int smallEvaluate(SmallTablutBoard board) {
         if (winSwedish(board)) return -10000;
         if (winMuscovites(board)) return 10000;
         
         return 0;
     }
 
-    private int evaluate(SmallTablutBoard board) {
+    public int evaluate(SmallTablutBoard board) {
         if (winSwedish(board)) return -10000;
         if (winMuscovites(board)) return 10000;
 
@@ -216,7 +216,7 @@ public class TablutDecider extends Decider {
         return score;
     }
 
-    private boolean winSwedish(SmallTablutBoard board) {
+    public boolean winSwedish(SmallTablutBoard board) {
         for (Coordinate pos : winCoords) {
             if (board.getGrid()[pos.getX()][pos.getY()] == 3) {
                 return true;
@@ -225,7 +225,7 @@ public class TablutDecider extends Decider {
         return false;
     }
 
-    private boolean winMuscovites(SmallTablutBoard board) {
+    public boolean winMuscovites(SmallTablutBoard board) {
         short[][] grid = board.getGrid();
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid.length; j++) {
