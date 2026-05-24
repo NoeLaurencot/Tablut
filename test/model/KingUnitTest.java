@@ -65,4 +65,61 @@ public class KingUnitTest {
 
         assertFalse(result);
     }
+
+    @Test
+    public void testShouldDie_WhenSurroundedBy3EnemiesAnd1Fortress() {
+
+        Fortress fortress = Mockito.mock(Fortress.class);
+
+        Mockito.when(fortress.getX()).thenReturn(4.0);
+        Mockito.when(fortress.getY()).thenReturn(3.0);
+
+        tablutStageModel.setFortresses(new Fortress[]{fortress});
+
+        Soldier e1 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+        Soldier e2 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+        Soldier e3 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+
+        tablutBoard.addElement(e1, 4, 5);
+        tablutBoard.addElement(e2, 5, 4);
+        tablutBoard.addElement(e3, 3, 4);
+
+        boolean result = king.shouldDie();
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testShouldNotDie_WhenNearFortressAndOnly2Enemies() {
+
+        Fortress fortress = Mockito.mock(Fortress.class);
+
+        Mockito.when(fortress.getX()).thenReturn(4.0);
+        Mockito.when(fortress.getY()).thenReturn(3.0);
+
+        tablutStageModel.setFortresses(new Fortress[]{fortress});
+
+        Soldier e1 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+        Soldier e2 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+
+        tablutBoard.addElement(e1, 4, 5);
+        tablutBoard.addElement(e2, 5, 4);
+
+        boolean result = king.shouldDie();
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testKingPosition_WhenKingOnBorder() {
+
+        tablutBoard.reset();
+
+        tablutBoard.addElement(king, 0, 4);
+
+        Coordinate position = tablutBoard.getKingPosition();
+
+        assertEquals(0, position.getX());
+        assertEquals(4, position.getY());
+    }
 }
