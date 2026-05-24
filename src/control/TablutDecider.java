@@ -201,6 +201,9 @@ public class TablutDecider extends Decider {
         Coordinate pos = board.getKingPosition();
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
+            if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
+            if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
+
             if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
                 score += 20;
             }
