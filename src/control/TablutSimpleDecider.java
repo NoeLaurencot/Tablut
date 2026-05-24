@@ -83,7 +83,7 @@ public class TablutSimpleDecider extends Decider {
 
         addMoveToHistory(bestMove);
         repetitiveScore = computeRepetitiveScore();
-        System.out.println("Repetition score: " + repetitiveScore);
+//        System.out.println("Repetition score: " + repetitiveScore);
 
         System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(model, bestPawn, bestMove.destX, bestMove.destY);
@@ -103,8 +103,6 @@ public class TablutSimpleDecider extends Decider {
         Coordinate destCoord = new Coordinate(move.destX, move.destY);
 
         if (pawn instanceof King) {
-            double distanceScore = 0;
-
             // Max score if winning move
             for (Coordinate winCoord : board.getWinCoords()) {
                 if (winCoord.getX() == move.destX && winCoord.getY() == move.destY) {
@@ -112,8 +110,10 @@ public class TablutSimpleDecider extends Decider {
                 }
             }
 
+            score += (board.countEnemyNeighbors(sourceCoord, team) - board.countEnemyNeighbors(destCoord, team)) * 200;
+
             // Goes to square where the most visible borders
-            score += board.countVisibleBorder(destCoord) * 500 * repetitiveScore;
+            score += board.countVisibleBorder(destCoord) * 100 * repetitiveScore;
 
             // Gets closer to win coordinates
             int minDist = Integer.MAX_VALUE;
@@ -122,11 +122,16 @@ public class TablutSimpleDecider extends Decider {
                 if (d < minDist) minDist = d;
             }
             score += (10 - minDist) * 80;
+
+            if (repetitiveScore > 1) {
+                score += sourceCoord.computeManhattanDistance(destCoord) * 300 * repetitiveScore;
+                System.out.println("TEST " + repetitiveScore);
+            }
         }
 
-        score += evalCellFavorability(move, pawn);
+        score += evalCellFavorability(sourceCoord, destCoord, pawn);
 
-        score -= evalCellDangerosity(move, pawn);
+        score -= evalCellDangerosity(sourceCoord, destCoord, pawn);
 
         // To move away from king's path
         if (board.canSeeKing(sourceCoord) && !board.canSeeKing(destCoord))
@@ -151,9 +156,9 @@ public class TablutSimpleDecider extends Decider {
             return Integer.MAX_VALUE;
         }
 
-        score += evalCellFavorability(move, pawn);
+        score += evalCellFavorability(sourceCoord, destCoord, pawn);
 
-        score -= evalCellDangerosity(move, pawn);
+        score -= evalCellDangerosity(sourceCoord, destCoord, pawn);
 
         // To move in the king's path
         if (!board.canSeeKing(sourceCoord) && isBetweenKingAndWinCoords(destCoord, kingX, kingY)) {
@@ -174,33 +179,32 @@ public class TablutSimpleDecider extends Decider {
         // If goes next to king, more score if already allies surrounding it
         if (!isNextToKing(sourceCoord, new Coordinate(kingX, kingY)) && isNextToKing(destCoord, new Coordinate(kingX, kingY))) {
             int kingAdjAlly = board.countEnemyNeighbors(new Coordinate(kingX, kingY), team.oppositeTeam());
-            score += 200 * kingAdjAlly+1;
+            score += 300 * (kingAdjAlly + 1) * repetitiveScore;
         }
 
         return score;
     }
 
-    private int evalCellDangerosity(Move move, Pawn pawn) {
+    private int evalCellDangerosity(Coordinate soureCoord, Coordinate destCoord, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
 
-
-        if (canBeCapturedNextTurn(move, pawn)) {
+        // also reverse to check pawns that don't move (so the new destCoord would be where it is now)
+        if (canBeCapturedNextTurn(soureCoord, destCoord, pawn)) {
             if (pawn instanceof King) {
                 score += BIG_SCORE;
             } else {
-                score += 500;
+                score += 800;
             }
         }
 
         return score;
     }
 
-    private int evalCellFavorability(Move move, Pawn pawn) {
+    private int evalCellFavorability(Coordinate sourceCoord, Coordinate destCoord, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
-
-        Coordinate destCoord = new Coordinate(move.destX, move.destY);
+        Move move = new Move(sourceCoord.getX(), sourceCoord.getY(), destCoord.getX(), destCoord.getY());
 
         // 400 score per capture, increasing with repetitive score
         score += (int) (board.captureCount(destCoord, team) * 400 * Math.max((Math.log(repetitiveScore) + 1), 1));
@@ -210,7 +214,7 @@ public class TablutSimpleDecider extends Decider {
         score += test;
 
         // Doesn't go back to visited square in the last 8 moves (16 / 2)
-        if (repetitiveScore > 8 && moveHistory.subList(0, 16).contains(move))
+        if (repetitiveScore > 8 && moveHistory.subList(0, Math.min(16, moveHistory.size() - 1)).contains(move))
             score -= BIG_SCORE;
 
         return score;
@@ -301,9 +305,7 @@ public class TablutSimpleDecider extends Decider {
         return false;
     }
 
-    public boolean canBeCapturedNextTurn(Move move, Pawn pawn) {
-        Coordinate sourceCoord = new Coordinate(move.sourceX, move.sourceY);
-        Coordinate destCoord = new Coordinate(move.destX, move.destY);
+    public boolean canBeCapturedNextTurn(Coordinate sourceCoord, Coordinate destCoord, Pawn pawn) {
         Team team = pawn.getTeam();
 
         if (board.countEnemyNeighbors(destCoord, team) == 0) {
