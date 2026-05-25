@@ -66,6 +66,9 @@ public class TablutDecider extends Decider {
 
         boolean maxing = currentTeam == Team.MUSCOVITES;
         int bestScore = (maxing) ? -20000 : 20000;
+
+        int alpha = -20000;
+        int beta = 20000;
         List<Move> moves = board.computeAllValidCells(currentTeam);
         for (Move move : moves) {
             if (teamId == 0) currentTeam = Team.SWEDISH;
@@ -74,18 +77,28 @@ public class TablutDecider extends Decider {
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
 
-            int score = minmax(newBoard, depth, !maxing);
+            int score = minmax(newBoard, depth, alpha, beta, !maxing);
+            score -= score % 10;
+
             if (maxing) {
+                // beta
+
                 if (score > bestScore) {
                     System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
+
+                    alpha = score;
                 }
             } else {
+                // alpha
+
                 if (score < bestScore) {
                     System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = move;
+
+                    beta = score;
                 }
             }
 
@@ -103,72 +116,41 @@ public class TablutDecider extends Decider {
         return actions;
     }
 
-    private int minmax(SmallTablutBoard board, int d, boolean maxing) {
-        String id = board.toString();
-        if (Math.abs(smallEvaluate(board)) == 10000) {
-            if (d == 0) {
-            //board.print();
-            //System.out.println(d + " d");                
-            }
-            
+    private int minmax(SmallTablutBoard board, int d, int alpha, int beta, boolean maxing) {
+        int quick = smallEvaluate(board);
+        if (quick != 0) return quick + d;
 
-            int score = smallEvaluate(board);
-            seenBoards.put(id, score);
-            return score;
-        } 
+        String id = board.toString();
         if (seenBoards.containsKey(id)) {
             int score = seenBoards.get(id);
             if (Math.abs(d - score % 10) <= depthDifferenceAcceptance) {
-                return score - score % 10;
+                return score;
             }
             //System.out.println("s " + seenBoards.get(id));
-
         }
 
-        if (d == 0) {
-            //System.out.println("e " + evaluate(board));
-            int score = evaluate(board) + d;
-            //board.setScore(score);
-            seenBoards.put(id, score);
-            return score;
-        }
-        
+        if (d == 0) return evaluate(board);
 
-        if (maxing) {
-            currentTeam = Team.MUSCOVITES;
-        } else {
-            currentTeam = Team.SWEDISH;
-        }
-        List<Move> moves = board.computeAllValidCells(currentTeam);
+        Team team = maxing ? Team.MUSCOVITES : Team.SWEDISH;
+        List<Move> moves = board.computeAllValidCells(team);
 
-        int bestScore = (maxing) ? -15000 : 15000;
+        int bestScore = maxing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
         for (Move move : moves) {
-            if (maxing) {
-                currentTeam = Team.MUSCOVITES;
-            } else {
-                currentTeam = Team.SWEDISH;
-            }
-            //System.out.println(d + " " + board);
-            //System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
-            //newBoard.print();
 
-            int score = minmax(newBoard, d-1, !maxing);
+            int score = minmax(newBoard, d - 1, alpha, beta, !maxing);
             score -= score % 10;
 
             if (maxing) {
-                if (score > bestScore) {
-                    bestScore = score;
-                }
+                bestScore = Math.max(bestScore, score);
+                alpha = Math.max(alpha, bestScore);
+                if (bestScore >= beta) break; // ← beta cutoff, prune remaining siblings
             } else {
-                if (score < bestScore) {
-                    bestScore = score;
-                }
-            }
-
-            if (bestScore == ((maxing) ? 10000 : -10000)) {
-                break;
+                bestScore = Math.min(bestScore, score);
+                beta = Math.min(beta, bestScore);
+                if (bestScore <= alpha) break; // ← alpha cutoff, prune remaining siblings
             }
         }
         return bestScore;
@@ -264,7 +246,7 @@ public class TablutDecider extends Decider {
         for (int[] vect : diagonals) {
             if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
             if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
-            
+
             if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
                 score += 20;
             }
