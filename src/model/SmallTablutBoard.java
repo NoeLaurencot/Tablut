@@ -186,13 +186,12 @@ public class SmallTablutBoard {
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
 
-            if (grid[position[0]][position[1]] == 0 && true )
-            // TODO add fortress check
+            if (grid[position[0]][position[1]] == 0 && !isFortressAt(position[0], position[1]))
                 continue;
 
             short otherPawn = grid[position[0]][position[1]];
 
-            if (otherPawn == pawn) {
+            if (otherPawn == pawn || (isFortressAt(position[0], position[1]) && grid[position[0]][position[1]] != 3)) {
                 position[0] -= vect[0];
                 position[1] -= vect[1];
                 grid[position[0]][position[1]] = 0;

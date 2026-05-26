@@ -289,12 +289,14 @@ public class TablutController extends Controller {
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
 
-            if (board.isEmptyAt(position[0], position[1]) && !gameStage.isFortressAt(position[0], position[1]))
+            if (board.isEmptyAt(position[0], position[1]) && (!gameStage.isFortressAt(position[0], position[1]) || (board.getElement(position[0],position[1]) instanceof King)))
                 continue;
 
             Pawn otherPawn = (Pawn) board.getElement(position[0], position[1]);
-
-            if ((gameStage.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
+            System.out.println(position[0] + " " + position[1]);
+            if (((gameStage.isFortressAt(position[0], position[1]) && !(board.getElement(position[0],position[1]) instanceof King))
+             || otherPawn.getTeam() == pawn.getTeam()) 
+                && ennemyPawn.shouldDie()) {
                 ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
                 ActionPlayer play = new ActionPlayer(model, this, actions);
                 play.start();
