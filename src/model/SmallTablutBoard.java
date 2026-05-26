@@ -7,8 +7,7 @@ import java.util.List;
 public class SmallTablutBoard {
 
     private short[][] grid;
-    private List<Coordinate> fortresses;
-    private int score;
+    private List<CoordinateByte> fortresses;
     private KingMoveMode kingMode;
 
     public SmallTablutBoard(TablutBoard board, KingMoveMode mode) {
@@ -17,7 +16,7 @@ public class SmallTablutBoard {
 
         fortresses = new ArrayList<>();
         for (Fortress fortress : board.getGameStage().getFortresses()) {
-            fortresses.add(new Coordinate((int)fortress.getX(), (int)fortress.getY()));
+            fortresses.add(new CoordinateByte((byte)fortress.getX(), (byte)fortress.getY()));
         }
     }
 
@@ -31,11 +30,7 @@ public class SmallTablutBoard {
         return grid;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public List<Coordinate> getFortresses() {
+    public List<CoordinateByte> getFortresses() {
         return fortresses;
     }
 
@@ -43,11 +38,11 @@ public class SmallTablutBoard {
         this.kingMode = mode;
     }
 
-    public List<Move> computeAllValidCells(Team team) {
-        List<Move> list = new ArrayList<>();
+    public List<MoveByte> computeAllValidCells(Team team) {
+        List<MoveByte> list = new ArrayList<>();
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+        for (byte i = 0; i < grid.length; i++) {
+            for (byte j = 0; j < grid[i].length; j++) {
                 short cell = grid[i][j];
                 if (cell == 0) {
                     continue;
@@ -55,19 +50,19 @@ public class SmallTablutBoard {
 
                 if (team == Team.MUSCOVITES) {
                     if (cell == 2) {
-                        List<Coordinate> pawnLegalMoves = computeSoldierValidCells(i, j);
-                        for (Coordinate c : pawnLegalMoves)
-                            list.add(new Move(i, j, c.getX(), c.getY()));
+                        List<CoordinateByte> pawnLegalMoveBytes = computeSoldierValidCells(i, j);
+                        for (CoordinateByte c : pawnLegalMoveBytes)
+                            list.add(new MoveByte(i, j, c.getX(), c.getY()));
                     }
                 } else {
                     if (cell == 1) {
-                        List<Coordinate> pawnLegalMoves = computeSoldierValidCells(i, j);
-                        for (Coordinate c : pawnLegalMoves)
-                            list.add(new Move(i, j, c.getX(), c.getY()));
+                        List<CoordinateByte> pawnLegalMoveBytes = computeSoldierValidCells(i, j);
+                        for (CoordinateByte c : pawnLegalMoveBytes)
+                            list.add(new MoveByte(i, j, c.getX(), c.getY()));
                     } else if (cell == 3) {
-                        List<Coordinate> pawnLegalMoves = computeKingValidCells(i, j);
-                        for (Coordinate c : pawnLegalMoves)
-                            list.add(new Move(i, j, c.getX(), c.getY()));
+                        List<CoordinateByte> pawnLegalMoveBytes = computeKingValidCells(i, j);
+                        for (CoordinateByte c : pawnLegalMoveBytes)
+                            list.add(new MoveByte(i, j, c.getX(), c.getY()));
                     }
                 }
             }
@@ -75,8 +70,8 @@ public class SmallTablutBoard {
         return list;
     }
 
-    public List<Coordinate> computeSoldierValidCells(int i, int j) {
-        List<Coordinate> lst = new ArrayList<>();
+    public List<CoordinateByte> computeSoldierValidCells(int i, int j) {
+        List<CoordinateByte> lst = new ArrayList<>();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -88,7 +83,7 @@ public class SmallTablutBoard {
                     && grid[position[0]][position[1]] == 0
                     && !isFortressAt(position[0], position[1])) {
 
-                lst.add(new Coordinate(position[0], position[1]));
+                lst.add(new CoordinateByte((byte)position[0], (byte)position[1]));
                 inc++;
                 position[0] = i + vect[0] * inc;
                 position[1] = j + vect[1] * inc;
@@ -98,8 +93,8 @@ public class SmallTablutBoard {
         return lst;
     }
 
-    public List<Coordinate> computeKingValidCells(int i, int j) {
-        List<Coordinate> lst = new ArrayList<>();
+    public List<CoordinateByte> computeKingValidCells(int i, int j) {
+        List<CoordinateByte> lst = new ArrayList<>();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -110,7 +105,7 @@ public class SmallTablutBoard {
                         && position[1] >= 0 && position[1] < 9
                         && grid[position[0]][position[1]] == 0) {
 
-                    lst.add(new Coordinate(position[0], position[1]));
+                    lst.add(new CoordinateByte((byte)position[0], (byte)position[1]));
                     inc++;
                     position[0] = i + vect[0] * inc;
                     position[1] = j + vect[1] * inc;
@@ -119,7 +114,7 @@ public class SmallTablutBoard {
                 if (position[0] >= 0 && position[0] < 9 && 
                     position[1] >= 0 && position[1] < 9 && 
                     grid[position[0]][position[1]] == 0) {
-                    lst.add(new Coordinate(position[0], position[1]));
+                    lst.add(new CoordinateByte((byte)position[0], (byte)position[1]));
                 }
             }
 
@@ -128,26 +123,26 @@ public class SmallTablutBoard {
         return lst;
     }
 
-    public Coordinate getKingPosition() {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+    public CoordinateByte getKingPosition() {
+        for (byte i = 0; i < grid.length; i++) {
+            for (byte j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] == 3) {
-                    return new Coordinate(i, j);
+                    return new CoordinateByte(i, j);
                 }
             }
         }
-        return new Coordinate(-1, -1);
+        return new CoordinateByte((byte)-1, (byte)-1);
     }
 
-    public void applyMove(Move move) {
-        if (grid[move.destX][move.destY] != 0) {
+    public void applyMove(MoveByte moveByte) {
+        if (grid[moveByte.destX][moveByte.destY] != 0) {
             System.out.println("chiasse");
             print();
-            System.out.println(move);
+            System.out.println(moveByte);
         }
-        grid[move.destX][move.destY] = grid[move.sourceX][move.sourceY];
-        grid[move.sourceX][move.sourceY] = 0;
-        afterPlay(move.destX, move.destY);
+        grid[moveByte.destX][moveByte.destY] = grid[moveByte.sourceX][moveByte.sourceY];
+        grid[moveByte.sourceX][moveByte.sourceY] = 0;
+        afterPlay(moveByte.destX, moveByte.destY);
     }
 
     private void afterPlay(int destRow, int destCol) {
@@ -210,7 +205,7 @@ public class SmallTablutBoard {
     }
 
     public boolean isFortressAt(int x, int y) {
-        for (Coordinate fortress : fortresses) {
+        for (CoordinateByte fortress : fortresses) {
             if (fortress.getX() == x && fortress.getY() == y) {
                 return true;
             }

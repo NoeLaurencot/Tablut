@@ -8,12 +8,14 @@ import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
 import model.Coordinate;
+import model.CoordinateByte;
 import model.KingMoveMode;
 import model.SmallTablutBoard;
 import model.TablutBoard;
 import model.TablutStageModel;
 import model.Pawn;
 import model.Move;
+import model.MoveByte;
 import model.Team;
 
 import java.awt.*;
@@ -69,12 +71,13 @@ public class TablutDecider extends Decider {
 
         int alpha = -20000;
         int beta = 20000;
-        List<Move> moves = board.computeAllValidCells(currentTeam);
-        for (Move move : moves) {
+        SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+        List<MoveByte> moves = newBoard.computeAllValidCells(currentTeam);
+        for (MoveByte move : moves) {
             if (teamId == 0) currentTeam = Team.SWEDISH;
             else currentTeam = Team.MUSCOVITES;
 
-            SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+            newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
 
             int score = minmax(newBoard, depth, alpha, beta, !maxing);
@@ -86,7 +89,7 @@ public class TablutDecider extends Decider {
                 if (score > bestScore) {
                     System.out.println(score + " " + move);
                     bestScore = score;
-                    bestMove = move;
+                    bestMove = new Move(move);
 
                     alpha = score;
                 }
@@ -96,7 +99,7 @@ public class TablutDecider extends Decider {
                 if (score < bestScore) {
                     System.out.println(score + " " + move);
                     bestScore = score;
-                    bestMove = move;
+                    bestMove = new Move(move);
 
                     beta = score;
                 }
@@ -111,7 +114,7 @@ public class TablutDecider extends Decider {
         }
         pawn = (Pawn) board.getElement(bestMove.sourceX, bestMove.sourceY);
 
-        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, bestMove.destX, bestMove.destY);
+        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, (int)bestMove.destX, (int)bestMove.destY);
         actions.setDoEndOfTurn(true);
         return actions;
     }
@@ -132,11 +135,11 @@ public class TablutDecider extends Decider {
         if (d == 0) return evaluate(board);
 
         Team team = maxing ? Team.MUSCOVITES : Team.SWEDISH;
-        List<Move> moves = board.computeAllValidCells(team);
+        List<MoveByte> moves = board.computeAllValidCells(team);
 
         int bestScore = maxing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-        for (Move move : moves) {
+        for (MoveByte move : moves) {
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
 
@@ -162,7 +165,7 @@ public class TablutDecider extends Decider {
         if (winMuscovites(board)) return 10000;
 
         short[][] grid = board.getGrid();
-        Coordinate pos = board.getKingPosition();
+        CoordinateByte pos = board.getKingPosition();
 
         // Tuichi
         boolean tuichi = true;
@@ -190,7 +193,7 @@ public class TablutDecider extends Decider {
         if (winMuscovites(board)) return 10000;
 
         short[][] grid = board.getGrid();
-        Coordinate pos = board.getKingPosition();
+        CoordinateByte pos = board.getKingPosition();
 
         // Tuichi
         boolean tuichi = true;
