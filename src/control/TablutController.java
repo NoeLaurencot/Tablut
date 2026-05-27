@@ -7,6 +7,7 @@ import boardifier.control.Decider;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
+import boardifier.model.animation.AnimationTypes;
 import boardifier.view.View;
 import model.*;
 import view.TablutStageView;
@@ -249,7 +250,7 @@ public class TablutController extends Controller {
         gameStage.getBoard().setValidCells(sourceRow, sourceCol);
         if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
 
-        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, destRow, destCol);
+        ActionList actions = ActionFactory.generateMoveWithinContainer(this, model, pawn, destRow, destCol, AnimationTypes.MOVE_LINEARPROP, 10);
         actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
