@@ -4,9 +4,14 @@ import boardifier.control.ActionFactory;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.control.Decider;
+import boardifier.model.Coord2D;
 import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
+import boardifier.model.action.GameAction;
+import boardifier.model.animation.AnimationTypes;
+import boardifier.view.GridLook;
+
 import model.Coordinate;
 import model.KingMoveMode;
 import model.SmallTablutBoard;
@@ -96,8 +101,8 @@ public class TablutDecider extends Decider {
             //currentTeam = currentTeam.oppositeTeam();
         }
         pawn = (Pawn) board.getElement(bestMove.sourceX, bestMove.sourceY);
-
-        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, bestMove.destX, bestMove.destY);
+        
+        ActionList actions = ActionFactory.generateMoveWithinContainer(control, model, pawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actions.setDoEndOfTurn(true);
         return actions;
     }

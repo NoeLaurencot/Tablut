@@ -5,6 +5,7 @@ import boardifier.control.Controller;
 import boardifier.control.Decider;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
+import boardifier.model.animation.AnimationTypes;
 import model.*;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class TablutSimpleDecider extends Decider {
 //        System.out.println("Repetition score: " + repetitiveScore);
 
 //        System.out.println("Best move: " + bestMove.humanReadable());
-        actionList = ActionFactory.generateMoveWithinContainer(model, bestPawn, bestMove.destX, bestMove.destY);
+        actionList = ActionFactory.generateMoveWithinContainer(control, model, pawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actionList.setDoEndOfTurn(true);
 
         return actionList;
