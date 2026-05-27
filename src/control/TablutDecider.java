@@ -263,7 +263,7 @@ public class TablutDecider extends Decider {
     }
 
     private boolean winSwedish(SmallTablutBoard board) {
-        for (Coordinate pos : winCoords) {
+        for (CoordinateByte pos : winCoords) {
             if (board.getGrid()[pos.getX()][pos.getY()] == 3) {
                 return true;
             }
