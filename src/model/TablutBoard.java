@@ -143,10 +143,7 @@ public class TablutBoard extends ContainerElement {
     public boolean areMuscovitesWinning() {
         Coordinate kingPos = getKingPosition();
 
-        if (kingPos.getX() == -1 && kingPos.getY() == -1) {
-            return true;
-        }
-        return false;
+        return kingPos.getX() == -1 && kingPos.getY() == -1;
     }
 
     public short[][] convertGridToInt() {
