@@ -90,7 +90,7 @@ public class Tablut extends Application {
 
         StageFactory.registerModelAndView("tablut", "model.TablutStageModel", "view.TablutStageView");
         TablutRootPane rootPane = new TablutRootPane();
-        View tablutView = new View(model, stage, rootPane);
+        TablutView tablutView = new TablutView(model, stage, rootPane);
         TablutController control = new TablutController(model, tablutView);
         control.setFirstStageName("tablut");
 
