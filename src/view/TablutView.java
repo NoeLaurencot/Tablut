@@ -30,4 +30,19 @@ public class TablutView extends View {
         menu1.getItems().add(menuQuit);
         menuBar.getMenus().add(menu1);
     }
+
+    public MenuItem getMenuStart() {
+        return menuStart;
+    }
+
+    public MenuItem getMenuIntro() {
+        return menuIntro;
+    }
+
+    public MenuItem getMenuQuit() {
+        return menuQuit;
+    }
+
+
+
 }
