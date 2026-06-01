@@ -102,7 +102,8 @@ public class Tablut extends Application {
             //((TablutStageModel) model.getGameStage()).setAiModeMultiple(new AIMode[]{AI_MODES[aiModeMultipleComp[0]], AI_MODES[aiModeMultipleComp[1]]});
         }
 
-        stage.setTitle("GIGA TABLUT MOGUS");
+        stage.setTitle("Tablut");
         stage.show();
+        control.startGame();
     }
 }
