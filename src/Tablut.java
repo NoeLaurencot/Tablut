@@ -104,6 +104,5 @@ public class Tablut extends Application {
 
         stage.setTitle("Tablut");
         stage.show();
-        control.startGame();
     }
 }
