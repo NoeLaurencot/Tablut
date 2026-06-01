@@ -1,6 +1,7 @@
 package model;
 
 import boardifier.control.ActionFactory;
+import boardifier.control.Controller;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.action.ActionList;
@@ -72,8 +73,8 @@ public abstract class Pawn extends GameElement {
 
     public abstract boolean shouldDie();
 
-    public ActionList move(int x, int y) {
-        return ActionFactory.generateMoveWithinContainer(this.getModel(), this, x, y);
+    public ActionList move(int x, int y, Controller controller) {
+        return ActionFactory.generateMoveWithinContainer(controller, this.getModel(), this, x, y);
     }
 
     public ActionList die(Pawn pawn) {

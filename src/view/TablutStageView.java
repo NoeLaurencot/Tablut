@@ -4,6 +4,7 @@ import boardifier.model.GameStageModel;
 import boardifier.view.ClassicBoardLook;
 import boardifier.view.GameStageView;
 import boardifier.view.TextLook;
+import javafx.scene.paint.Color;
 import model.*;
 
 /**
@@ -39,10 +40,10 @@ public class TablutStageView extends GameStageView {
         TablutStageModel model = (TablutStageModel) gameStageModel;
         TablutBoard board = model.getBoard();
 
-        TextLook text = new TextLook(model.getPlayerName());
+        TextLook text = new TextLook(3, "0x000000", model.getPlayerName());
         addLook(text);
 
-        ClassicBoardLook boardLook = new ClassicBoardLook(2, 4, board, 1, 1, true);
+        ClassicBoardLook boardLook = new ClassicBoardLook(2, board, 2, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
         addLook(boardLook);
 
         int r = board.getNbRows();
@@ -56,13 +57,10 @@ public class TablutStageView extends GameStageView {
                     addLook(look);
                 } else if (!board.isEmptyAt(i, j)) {
                     Soldier soldier = (Soldier) board.getElement(i, j);
-                    SoldierLook look = new SoldierLook(soldier);
+                    SoldierLook look = new SoldierLook(5, soldier);
                     addLook(look);
                 }
             }
         }
-
-        MultiLineTextLook menuLook = new MultiLineTextLook(model.getMenuElement());
-        addLook(menuLook);
     }
 }

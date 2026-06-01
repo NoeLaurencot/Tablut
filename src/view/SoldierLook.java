@@ -1,27 +1,42 @@
 package view;
 
 import boardifier.model.GameElement;
-import boardifier.view.ConsoleColor;
 import boardifier.view.ElementLook;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import model.Soldier;
 import model.Team;
 
 public class SoldierLook extends ElementLook {
+    private Circle circle;
 
-    public SoldierLook(GameElement element) {
-        // Pawn look is constituted of a single character, so shape size = 1x1
-        super(element, 1, 1);
+    public SoldierLook(int radius, GameElement element) {
+        super(element);
+        Soldier soldier = (Soldier) element; // unless you did somthing stupid in HoleStageView, it IS really a Pawn instance !
+        circle = new Circle();
+        circle.setRadius(radius);
+        if (soldier.getTeam() == Team.MUSCOVITES) {
+            circle.setFill(Color.RED);
+        } else {
+            circle.setFill(Color.YELLOW);
+        }
+        circle.setCenterX(radius);
+        circle.setCenterY(radius);
+        // add the circle to the look
+        addShape(circle);
+        // to fulfill ...
+    }
+
+    @Override
+    public void onSelectionChange() {
+        // to fulfill ...
+    }
+
+    public void onChange() {
     }
 
     protected void render() {
-        Soldier soldier = (Soldier)element;
 
-        if (soldier.getTeam() == Team.SWEDISH) {
-            shape[0][0] = ConsoleColor.YELLOW + "O" + ConsoleColor.RESET;
-        }
-        else {
-            shape[0][0] = ConsoleColor.RED + "O" + ConsoleColor.RESET;
-        }
     }
 
 }
