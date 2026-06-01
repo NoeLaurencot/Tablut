@@ -1,9 +1,6 @@
 package control;
 
-import boardifier.control.ActionFactory;
-import boardifier.control.ActionPlayer;
-import boardifier.control.Controller;
-import boardifier.control.Decider;
+import boardifier.control.*;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -24,6 +21,7 @@ public class TablutController extends Controller {
 
     public TablutController(Model model, View view) {
         super(model, view);
+        setControlAction(new TablutControllerAction(model,view,this));
         firstPlayer = true;
     }
 
