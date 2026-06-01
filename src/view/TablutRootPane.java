@@ -14,7 +14,7 @@ public class TablutRootPane extends RootPane {
 
     @Override
     public void createDefaultGroup() {
-        Rectangle frame = new Rectangle(600, 100, Color.LIGHTGREY);
+        Rectangle frame = new Rectangle(600, 600, Color.LIGHTGREY);
         Text text = new Text("Playing Tablut");
         text.setFont(new Font(15));
         text.setFill(Color.BLACK);

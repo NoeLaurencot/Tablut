@@ -35,8 +35,6 @@ public class TablutController extends Controller {
      */
     public void stageLoop(InputStream in) {
         consoleIn = new BufferedReader(new InputStreamReader(in));
-        if (((TablutStageModel) model.getGameStage()).getMode() == 3)
-            openMenu();
         update();
         while (!model.isEndStage()) {
             playTurn(consoleIn);
@@ -157,11 +155,6 @@ public class TablutController extends Controller {
 
                     if (line.length() == 4) {
                         ok = analyseAndPlay(line);
-                    }
-
-                    if (line.equals("options")) {
-                        openMenu();
-                        continue;
                     }
 
                     // temporary bypass cheat to test
@@ -302,68 +295,5 @@ public class TablutController extends Controller {
                 ennemyPawn.setVisible(false);
             }
         }
-    }
-
-    public boolean displayAndApplyMenu() {
-        return displayAndApplyMenu(createOptionMenu());
-    }
-
-    protected OptionMenu createOptionMenu() {
-        return new OptionMenu();
-    }
-
-    public boolean displayAndApplyMenu(OptionMenu optionMenu) {
-        boolean done;
-
-        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-        MenuElement menuElement = stageModel.getMenuElement();
-
-        if (menuElement != null) {
-            menuElement.clearEntries();
-            menuElement.setVisible(true);
-
-            menuElement.addEntry(new MenuEntry(0, "King move mode", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
-            menuElement.addEntry(new MenuEntry(0, "Win zone", new ArrayList<>(), menuElement.getMenuEntries().size() + 1));
-
-            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Without distance limitations", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
-            menuElement.getMenuEntries().get(0).addSubmenuEntry(new MenuEntry(1, "Single square distance limitation", new ArrayList<>(), menuElement.getMenuEntries().get(0).getSubmenu().size() + 1));
-
-            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Borders", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
-            menuElement.getMenuEntries().get(1).addSubmenuEntry(new MenuEntry(1, "Corners", new ArrayList<>(), menuElement.getMenuEntries().get(1).getSubmenu().size() + 1));
-
-            menuElement.addPrompt("Choose an option (ex: 1A) or type 'save' to exit");
-            menuElement.setMenuString();
-            update();
-        }
-
-        done = optionMenu.readMenu(stageModel, System.in);
-
-        if (menuElement != null) {
-            menuElement.setVisible(false);
-
-            if (!done) {
-                stageModel.getBoard().setVisible(false);
-                menuElement.setLocation(0, 0);
-            } else {
-                stageModel.getBoard().setVisible(true);
-                int boardY = (int) stageModel.getBoard().getY();
-                int menuY = boardY + (stageModel.getBoard().getNbRows() * 2) + 3;
-                menuElement.setLocation(0, menuY);
-            }
-        }
-
-
-        return done;
-    }
-
-    public void openMenu() {
-        openMenu(createOptionMenu());
-    }
-
-    public void openMenu(OptionMenu optionMenu) {
-        boolean done;
-        do {
-            done = displayAndApplyMenu(optionMenu);
-        } while (!done);
     }
 }
