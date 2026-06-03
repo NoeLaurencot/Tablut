@@ -31,8 +31,11 @@ import model.*;
  */
 
 public class TablutStageView extends GameStageView {
+    int cellSize;
+
     public TablutStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
+        cellSize = 70;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class TablutStageView extends GameStageView {
         TextLook text = new TextLook(3, "0x000000", model.getPlayerName());
         addLook(text);
 
-        ClassicBoardLook boardLook = new ClassicBoardLook(20, board, 1, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
+        ClassicBoardLook boardLook = new ClassicBoardLook(this.cellSize, board, 1, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
         addLook(boardLook);
 
         int r = board.getNbRows();
@@ -53,11 +56,11 @@ public class TablutStageView extends GameStageView {
             for (int j = 0; j < c; j++) {
                 if (i == r / 2 && j == c / 2) { // king position
                     King king = (King) board.getElement(i, j);
-                    KingLook look = new KingLook(king);
+                    KingLook look = new KingLook((int) (this.cellSize * 0.3), king);
                     addLook(look);
                 } else if (!board.isEmptyAt(i, j)) {
                     Soldier soldier = (Soldier) board.getElement(i, j);
-                    SoldierLook look = new SoldierLook(5, soldier);
+                    SoldierLook look = new SoldierLook((int) (this.cellSize * 0.3), soldier);
                     addLook(look);
                 }
             }
