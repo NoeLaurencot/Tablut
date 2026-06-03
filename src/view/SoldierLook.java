@@ -20,8 +20,8 @@ public class SoldierLook extends ElementLook {
         } else {
             circle.setFill(Color.YELLOW);
         }
-        circle.setCenterX(radius);
-        circle.setCenterY(radius);
+        circle.setCenterX(0);
+        circle.setCenterY(0);
         // add the circle to the look
         addShape(circle);
         // to fulfill ...
