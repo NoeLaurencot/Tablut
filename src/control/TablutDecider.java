@@ -20,6 +20,7 @@ import model.Team;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -34,7 +35,7 @@ public class TablutDecider extends Decider {
 
     private Map<String, Integer> seenBoards;
 
-    private List<Coordinate> winCoords;
+    private List<CoordinateByte> winCoords;
     private Team currentTeam;
     private KingMoveMode kingMode;
     public Move bestMove;
@@ -49,7 +50,11 @@ public class TablutDecider extends Decider {
         TablutBoard board = stage.getBoard();
 
         this.kingMode = stage.getKingMoveMode();
-        this.winCoords = board.getWinCoords();
+
+        this.winCoords = new ArrayList<>();
+        for (Coordinate coord : board.getWinCoords()) {
+            this.winCoords.add(new CoordinateByte(coord));
+        }
     }
 
     @Override
@@ -168,22 +173,19 @@ public class TablutDecider extends Decider {
         CoordinateByte pos = board.getKingPosition();
 
         // Tuichi
-        boolean tuichi = true;
-        for (int i = 0; i < 9; i++) {
-            if (grid[i][pos.getY()] != 0 && grid[i][pos.getY()] != 3) {
-                tuichi = false;
-                break;
+        List<CoordinateByte> kingMoves = board.computeKingValidCells(pos.getX(), pos.getY());
+        int winningPositions = 0;
+        for (CoordinateByte move : kingMoves) {
+            for (CoordinateByte coord : winCoords) {
+                if (move.equals(coord)) {
+                    winningPositions ++;
+                }
             }
         }
-        if (tuichi) return -10000;
-        tuichi = true;
-        for (int j = 0; j < 9; j++) {
-            if (grid[pos.getX()][j] != 0 && grid[pos.getX()][j] != 3) {
-                tuichi = false;
-                break;
-            }
+
+        if (winningPositions >= 2) {
+            return -10000;
         }
-        if (tuichi) return -10000;
         
         return 0;
     }
@@ -194,39 +196,41 @@ public class TablutDecider extends Decider {
 
         short[][] grid = board.getGrid();
         CoordinateByte pos = board.getKingPosition();
+        List<CoordinateByte> kingMoves = board.computeKingValidCells(pos.getX(), pos.getY());
 
         // Tuichi
-        boolean tuichi = true;
-        for (int i = 0; i < 9; i++) {
-            if (grid[i][pos.getY()] != 0 && grid[i][pos.getY()] != 3) {
-                tuichi = false;
-                break;
+        int winningPositions = 0;
+        for (CoordinateByte move : kingMoves) {
+            for (CoordinateByte coord : winCoords) {
+                if (move.equals(coord)) {
+                    winningPositions ++;
+                }
             }
         }
-        if (tuichi) return -10000;
-        tuichi = true;
-        for (int j = 0; j < 9; j++) {
-            if (grid[pos.getX()][j] != 0 && grid[pos.getX()][j] != 3) {
-                tuichi = false;
-                break;
-            }
+
+        if (winningPositions >= 2) {
+            return -10000;
         }
-        if (tuichi) return -10000;
 
         int score = 0;
-        
 
         // Captures
+
+        
         for (int i = 0 ; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 short cell = grid[i][j];
                 if (cell == 1) {
-                    score -= 60;
+                    score -= 20;
                 } else if (cell == 2) {
                     score += 40;
                 }
             }
         }
+
+        // King freedom
+
+        score -= kingMoves.size() * 10;
 
         // King close to the border
         score -= Math.abs(4-pos.getX()) * 10;
