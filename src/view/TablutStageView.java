@@ -46,7 +46,7 @@ public class TablutStageView extends GameStageView {
         TextLook text = new TextLook(3, "0x000000", model.getPlayerName());
         addLook(text);
 
-        ClassicBoardLook boardLook = new ClassicBoardLook(this.cellSize, board, 1, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
+        ClassicBoardLook boardLook = new TablutBoardLook(this.cellSize, board, 1, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
         addLook(boardLook);
 
         int r = board.getNbRows();

@@ -22,6 +22,7 @@ public class TablutController extends Controller {
     public TablutController(Model model, View view) {
         super(model, view);
         setControlAction(new TablutControllerAction(model,view,this));
+        setControlMouse(new ControllerTablutMouse(model, view, this));
         firstPlayer = true;
     }
 
