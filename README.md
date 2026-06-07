@@ -1,48 +1,52 @@
-# Jeu de Tablut
+# Tablut game
 
-Projet réalisé dans le cadre de la SAE de BUT1 S2 Informatique.
+Project realized during computer science BUT1 SAÉ 
 
-## Présentation
+## Presentation
 
-Ce projet est une adaptation du jeu de plateau nordique Tablut en Java avec le framework Boardifier et une interface console.
+This project is an adaptation of the Tablut nordic board game, using the Boardifier framework.
 
-Le jeu permet :
+Our game allows:
 
-- de jouer contre une intelligence artificielle,
-- de faire s’affronter deux IA automatiquement,
-- ou de jouer à deux joueurs.
+- To play against an AI
+- To make 2 AIs play against each other
+- Or to have 2 human players
 
-Deux IA différentes ont été développées afin de proposer plusieurs styles de jeu et stratégies.
+Two different AIs have been developped in order to offer mutliple play styles and strategies.
 
-### Le but du Tablut est :
+### The goal of the Tablut
 
-- pour le roi et ses défenseurs : permettre au roi de s’échapper du plateau ;
-- pour les assaillants : capturer le roi avant sa fuite.
+- For the Swedish team: try to make the king escape the board.
+- For the Muscovite team: try to capture the king before its escape.
 
-### Fonctionnalités
+### Functionalities
 
-- Interface console avec Boardifier
-- Gestion des règles du Tablut
-- Mode Joueur vs IA
-- Mode IA vs IA
-- Deux intelligences artificielles
-- Gestion des déplacements et captures
+- Interface using Boardifier
+- Player VS AI mode
+- AI vs AI mode
+- Two different AIs
+- Move and Capture handeling
 
-## Technologies utilisées
+## How to use
+
+
+```
+java <compiled file>
+```
+
+## Technologies used
 
 - Java
 - Boardifier
-- Junit5 et Mockito
+- Junit5 and Mockito
  
-## Auteurs
-
-Projet réalisé par :
+## Creators
 
 - Noé Laurençot
 - Jules Jeanrot
 - Pierre Lamour
 - Idrissa Barry
 
-### Contexte
+### Context
 
-Projet universitaire réalisé en SAE durant le semestre 2 du BUT Informatique.
+University project realized during computer science BUT1 SAÉ 
