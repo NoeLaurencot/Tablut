@@ -21,17 +21,13 @@ Two different AIs have been developped in order to offer mutliple play styles an
 
 ### Functionalities
 
-- Interface using Boardifier
+- Console interface using Boardifier
 - Player VS AI mode
 - AI vs AI mode
 - Two different AIs
 - Move and Capture handeling
 
 ## How to use
-
-#### Console interface
-
-When using the console branch (main)
 
 ```
 java <compiled file> [play mode] [first AI] [second AI]
@@ -40,14 +36,6 @@ java <compiled file> [play mode] [first AI] [second AI]
 The move input is in a single line (ex: A1C1)
 
 You can type `options` to options menu 
-
-#### Graphical interface
-
-When using the JavaFX branch
-
-```
-java <compiled file>
-```
 
 ## Technologies used
 
