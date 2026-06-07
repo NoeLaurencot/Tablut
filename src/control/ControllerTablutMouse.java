@@ -13,11 +13,13 @@ import boardifier.view.View;
 
 import javafx.event.*;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Tab;
 import javafx.scene.input.*;
 
 import model.TablutBoard;
 import model.TablutStageModel;
 import model.Pawn;
+import model.Team;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import java.util.List;
  * It gets the elements of the scene that are at the clicked position and prints them.
  */
 public class ControllerTablutMouse extends ControllerMouse implements EventHandler<MouseEvent> {
+    private Pawn selectedPawn;
 
     public ControllerTablutMouse(Model model, View view, Controller control) {
         super(model, view, control);
@@ -36,40 +39,92 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
         if (!model.isCaptureMouseEvent()) return;
 
         // get the clic x,y in the whole scene (this includes the menu bar if it exists)
-        Coord2D clic = new Coord2D(event.getSceneX(),event.getSceneY());
+        Coord2D click = new Coord2D(event.getSceneX(),event.getSceneY());
         // get elements at that position
-        List<GameElement> list = control.elementsAt(clic);
+        List<GameElement> list = control.elementsAt(click);
 
         // for debug, uncomment next instructions to display x,y and elements at that postion
         /*
         Logger.debug("click in "+event.getSceneX()+","+event.getSceneY());
         for(GameElement element : list) {
-            Logger.debug(element);
+            Logger.debug(element.toString());
         }
          */
+
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
+
         int elementsClicked = list.size();
-        if (elementsClicked == 2) {
+
+        if (elementsClicked == 2 && stageModel.getState() == TablutStageModel.STATE_SELECT_PAWN) {
             handlePawnClick(list);
-        } else if (elementsClicked == 1) {
-            handleBoardClick(list);
-        }   
+        } else if (elementsClicked == 1 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
+            handleBoardClick(list, click);
+        }
     }
 
-    private void handleBoardClick(List<GameElement> list) {
-        System.out.println("clicked board");
+    // FIXME: the pawn doesn't move after clicking and game freezes
+    private void handleBoardClick(List<GameElement> list, Coord2D click) {
+        TablutBoard board = (TablutBoard) list.getFirst();
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+
+        // Get the board look to convert scene coordinates to cell coordinates
+        GridLook boardLook = (GridLook) control.getElementLook(board);
+        int[] dest = boardLook.getCellFromSceneLocation(click);
+        boolean[][] reach = board.getReachableCells();
+
+        if (dest != null) {
+            System.out.println("clicked board at row: " + dest[0] + " col: " + dest[1]);
+            if (reach[dest[0]][dest[1]]) {
+                ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
+
+                stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
+                selectedPawn.unselect();
+                stageModel.unselectAll();
+                selectedPawn = null;
+                actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
+                ActionPlayer play = new ActionPlayer(model, this.control, actions);
+
+                play.start();
+                System.out.println("test");
+            }
+        }
+
+        // for debug
+//        for (int i = 0; i < 9; i++) {
+//            for (int j = 0; j < 9; j++) {
+//                if (reach[i][j]) {
+//                    System.out.print("1 ");
+//                } else {
+//                    System.out.print("0 ");
+//                }
+//            }
+//            System.out.println();
+//        }
     }
 
     private void handlePawnClick(List<GameElement> list) {
-        Pawn pawn = (Pawn) list.get(1);
         TablutBoard board = (TablutBoard) list.get(0);
-        pawn.selected = true;
+        Pawn pawn = (Pawn) list.get(1);
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
-        int[] coord = board.getElementCell(pawn);
-        board.setValidCells(coord[0], coord[1]);
+        Team curTeam;
 
-        //System.out.println("clicked pawn : " + list.get(1));
+        if (this.model.getCurrentPlayer().getName().equals("swedish player"))
+            curTeam = Team.SWEDISH;
+        else
+            curTeam = Team.MUSCOVITES;
+
+        if (pawn.getTeam().equals(curTeam)) {
+            stageModel.setState(TablutStageModel.STATE_SELECT_DEST);
+            pawn.select();
+            selectedPawn = pawn;
+
+            int[] coord = board.getElementCell(pawn);
+            board.setValidCells(coord[0], coord[1]);
+        }
+
+//        System.out.println("clicked pawn : " + list.get(1));
     }
 }
 
