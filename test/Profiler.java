@@ -1,20 +1,11 @@
-import boardifier.model.Model;
-import boardifier.model.TextElement;
 import boardifier.model.action.ActionList;
-import control.TablutController;
-import control.TablutDecider;
-import model.*;
-import org.mockito.Mockito;
 
 import java.lang.management.ManagementFactory;
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.sun.management.ThreadMXBean;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class Profiler {
     public static long timespan;
