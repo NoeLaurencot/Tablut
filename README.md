@@ -1,6 +1,6 @@
 # Tablut game
 
-Project realized during computer science BUT1 SAÉ 
+Project realized during the computer science BUT1 SAÉ 1-2-6
 
 ## Presentation
 
@@ -35,7 +35,7 @@ java <compiled file> [play mode] [first AI] [second AI]
 
 The move input is in a single line (ex: A1C1)
 
-You can type `options` to options menu 
+You can type `options` to open the options menu 
 
 ## Technologies used
 
@@ -49,7 +49,3 @@ You can type `options` to options menu
 - Jules Jeanrot
 - Pierre Lamour
 - Idrissa Barry
-
-### Context
-
-University project realized during computer science BUT1 SAÉ 
