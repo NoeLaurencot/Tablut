@@ -1,16 +1,11 @@
 package control;
 
 import boardifier.control.ActionFactory;
-import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.control.Decider;
-import boardifier.model.Coord2D;
-import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
 import boardifier.model.animation.AnimationTypes;
-import boardifier.view.GridLook;
 
 import model.Coordinate;
 import model.KingMoveMode;
@@ -21,15 +16,13 @@ import model.Pawn;
 import model.Move;
 import model.Team;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TablutDecider extends Decider {
+public class TablutMinMaxDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;
@@ -41,7 +34,7 @@ public class TablutDecider extends Decider {
     private KingMoveMode kingMode;
     public Move bestMove;
 
-    public TablutDecider(Model model, Controller control) {
+    public TablutMinMaxDecider(Model model, Controller control) {
         super(model, control);
         getGameParameters();
     }

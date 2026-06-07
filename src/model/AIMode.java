@@ -2,6 +2,5 @@ package model;
 
 public enum AIMode {
     MINMAX,
-    SIMPLE_EVAL,
-    TODO
+    SIMPLE_EVAL
 }

@@ -4,251 +4,56 @@ import boardifier.control.*;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
-import boardifier.model.animation.AnimationTypes;
 import boardifier.view.View;
 import model.*;
-import view.TablutStageView;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 
 public class TablutController extends Controller {
 
-    BufferedReader consoleIn;
     boolean firstPlayer;
 
     public TablutController(Model model, View view) {
         super(model, view);
-        setControlAction(new TablutControllerAction(model,view,this));
+        setControlAction(new TablutControllerAction(model, view, this));
         setControlMouse(new ControllerTablutMouse(model, view, this));
         firstPlayer = true;
     }
 
-    /**
-     * Defines what to do within the single stage of the single party
-     * It is pretty straight forward to write :
-     *
-     * @param in InputStream
-     */
-    public void stageLoop(InputStream in) {
-        consoleIn = new BufferedReader(new InputStreamReader(in));
-        update();
-        while (!model.isEndStage()) {
-            playTurn(consoleIn);
-            endOfTurn();
-            update();
-        }
-        endGame();
-    }
+    public void endOfTurn() {
 
-    /**
-     *
-     */
-    public void playTurn(BufferedReader input) {
+        // use the default method to compute next player
+        model.setNextPlayer();
         // get the new player
         Player p = model.getCurrentPlayer();
+        // change the text of the TextElement
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+        stageModel.getPlayerName().setText(p.getName());
         if (p.getType() == Player.COMPUTER) {
-            final long COOLDOWN = 100;
-            AIMode aiModeUsed;
+            Logger.debug("COMPUTER PLAYS");
+
             Move bestMove = null;
-            // To avoid lots of casting
-            TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-            System.out.println("COMPUTER PLAYS");
-            ActionPlayer play;
-            Decider decider;
+            final int COOLDOWN = 300;
 
-            if (stageModel.getMode() == 3) {
-                if (stageModel.getPlayerName().getText().equals("swedish computer")) {
-                    switch (stageModel.getAiModeMultiple()[0]) {
-                        case MINMAX:
-                            decider = new TablutDecider(model, this);
-                            aiModeUsed = AIMode.MINMAX;
-                            break;
-                        case SIMPLE_EVAL:
-                            decider = new TablutSimpleDecider(model, this);
-                            aiModeUsed = AIMode.SIMPLE_EVAL;
-                            break;
-                        default:
-                            // Temporary
-                            decider = new TablutDecider(model, this);
-                            aiModeUsed = AIMode.MINMAX;
-                            break;
-                    }
-                } else {
-                    switch (stageModel.getAiModeMultiple()[1]) {
-                        case MINMAX:
-                            decider = new TablutDecider(model, this);
-                            aiModeUsed = AIMode.MINMAX;
-                            break;
-                        case SIMPLE_EVAL:
-                            decider = new TablutSimpleDecider(model, this);
-                            aiModeUsed = AIMode.SIMPLE_EVAL;
-                            break;
-                        default:
-                            // Temporary
-                            decider = new TablutDecider(model, this);
-                            aiModeUsed = AIMode.MINMAX;
-                            break;
-                    }
-                }
-            } else { // mode is only 1 computer
-                switch (stageModel.getAiModeSingle()) {
-                    case MINMAX:
-                        decider = new TablutDecider(model, this);
-                        aiModeUsed = AIMode.MINMAX;
-                        break;
-                    case SIMPLE_EVAL:
-                        decider = new TablutSimpleDecider(model, this);
-                        aiModeUsed = AIMode.SIMPLE_EVAL;
-                        break;
-                    default:
-                        // Temporary
-                        decider = new TablutDecider(model, this);
-                        aiModeUsed = AIMode.MINMAX;
-                        break;
-                }
-            }
+            Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
 
-            long timeElapsed = System.nanoTime();
+            long timestamp = System.nanoTime();
 
-            play = new ActionPlayer(model, this, decider, null);
+            ActionPlayer play = new ActionPlayer(model, this, decider, null);
 
-            timeElapsed = System.nanoTime() - timeElapsed;
-
-            if (timeElapsed < COOLDOWN) {
-                try {
-                    Thread.sleep(timeElapsed + (COOLDOWN - timeElapsed));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-//            ((TablutStageModel) model.getGameStage()).setKingMoveMode(KingMoveMode.LIMITED);
-//            ((TablutStageModel) model.getGameStage()).setWinMode(WinMode.CORNERS);
+            waitMinimumCooldown(COOLDOWN, timestamp);
 
             play.start();
 
-            switch (aiModeUsed) {
-                case MINMAX:
-                    bestMove = ((TablutDecider) decider).bestMove;
-                    afterPlay(bestMove.destX, bestMove.destY);
-                    break;
-                case SIMPLE_EVAL:
-                    bestMove = ((TablutSimpleDecider) decider).bestMove;
-                    afterPlay(bestMove.destX, bestMove.destY);
-                    break;
+            if (decider instanceof TablutMinMaxDecider) {
+                bestMove = ((TablutMinMaxDecider) decider).bestMove;
+            } else if (decider instanceof TablutSimpleDecider) {
+                bestMove = ((TablutSimpleDecider) decider).bestMove;
             }
-
+            afterPlay(bestMove.destX, bestMove.destY);
         } else {
-            boolean ok = false;
-            while (!ok) {
-                System.out.print(p.getName() + " > ");
-                try {
-                    String line = input.readLine();
-
-                    if (line.contains("stop")) {
-                        System.exit(0);
-                    }
-
-                    if (line.length() == 4) {
-                        ok = analyseAndPlay(line);
-                    }
-
-                    // temporary bypass cheat to test
-                    // use Z as the first char to move a pawn anywhere without check
-//                    if (line.charAt(0) == 'Z') {
-//                        ActionList actions = ActionFactory.generateMoveWithinContainer(model, ((TablutStageModel) model.getGameStage()).getBoard().getElement((int) (line.charAt(2) - '1'), (int) (line.charAt(1) - 'a')), (int) (line.charAt(4) - '1'), (int) (line.charAt(3) - 'a'));
-//                        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
-//                        ActionPlayer play = new ActionPlayer(model, this, actions);
-//                        ok = true;
-//                        play.start();
-//                    }
-
-                    if (!ok) {
-                        System.out.println("incorrect instruction. retry!");
-                    }
-                } catch (IOException e) {
-                }
-            }
+            Logger.debug("PLAYER PLAYS");
         }
-    }
-
-    public void endOfTurn() {
-
-
-        model.setNextPlayer();
-        // get the new player to display its name
-        Player p = model.getCurrentPlayer();
-        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-        stageModel.getPlayerName().setText(p.getName());
-        /*
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (stageModel.getBoard().isEmptyAt(i, j)) {
-                    System.out.print(1);
-                } else {
-                System.out.print(0);
-                }
-            }
-            System.out.println();
-        }*/
-    }
-
-    public boolean analyseAndPlay(String line) {
-        TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
-        TablutBoard board = gameStage.getBoard();
-
-        int sourceCol;
-        int sourceRow;
-
-        int destRow;
-        int destCol;
-
-        // get the coords for the source pawn in the board
-        if (Character.isUpperCase(line.charAt(0))) {
-            sourceCol = (int) (line.charAt(0) - 'A');
-        } else {
-            sourceCol = (int) (line.charAt(0) - 'a');
-        }
-
-        sourceRow = (int) (line.charAt(1) - '1');
-        // check coords validity
-
-        if ((sourceRow < 0) || (sourceRow > 8)) return false;
-        if ((sourceCol < 0) || (sourceCol > 8)) return false;
-
-        // get the ccords for the destination pawn in the board
-        if (Character.isUpperCase(line.charAt(2))) {
-            destCol = (int) (line.charAt(2) - 'A');
-        } else {
-            destCol = (int) (line.charAt(2) - 'a');
-        }
-        destRow = (int) (line.charAt(3) - '1');
-
-        if (sourceCol != destCol && sourceRow != destRow) {
-            return false;
-        }
-
-        // check coords validity
-        if ((destRow < 0) || (destRow > 8)) return false;
-        if ((destCol < 0) || (destCol > 8)) return false;
-        if (board.isEmptyAt(sourceRow, sourceCol)) return false;
-        Pawn pawn = (Pawn) board.getElement(sourceRow, sourceCol);
-        if ((model.getIdPlayer() == 0) != (pawn.getTeam() == Team.SWEDISH)) return false;
-
-        // compute valid cells for the chosen pawn
-        gameStage.getBoard().setValidCells(sourceRow, sourceCol);
-        if (!gameStage.getBoard().canReachCell(destRow, destCol)) return false;
-
-        ActionList actions = ActionFactory.generateMoveWithinContainer(this, model, pawn, destRow, destCol, AnimationTypes.MOVE_LINEARPROP, 10);
-        actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
-        ActionPlayer play = new ActionPlayer(model, this, actions);
-        play.start();
-        afterPlay(destRow, destCol);
-
-        return true;
     }
 
     /**
@@ -294,5 +99,50 @@ public class TablutController extends Controller {
                 ennemyPawn.setVisible(false);
             }
         }
+    }
+
+    public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+        Decider decider = new TablutMinMaxDecider(this.model, this); // defaults to minmax
+
+        if (mode == 1 || mode == 2) {
+            switch (aiModes.getFirst()) {
+                case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
+                case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+            }
+        } else {
+            if (stageModel.getPlayerName().getText().equals("swedish computer")) {
+                switch (aiModes.get(0)) { // first AI is swedish AI
+                    case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
+                    case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+                }
+            } else {
+                switch (aiModes.get(1)) { // second AI is muscovite AI
+                    case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
+                    case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+                }
+            }
+        }
+
+        return decider;
+    }
+
+    /**
+     * Makes the AI turn take at least a certain amount of time before ending turn
+     * @param cooldown the minimum time before the turn ends
+     * @param timestamp the timestamp taken before deciding best move
+     */
+    public void waitMinimumCooldown(int cooldown, long timestamp) {
+
+        long timeElapsed = System.nanoTime() - timestamp;
+
+        if (timeElapsed < cooldown) {
+            try {
+                Thread.sleep(timeElapsed + (cooldown - timeElapsed));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 }

@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TablutDeciderUnitTest {
+public class TablutMinMaxDeciderUnitTest {
 
 	Model model;
 	Controller controller;
 	TablutStageModel stage;
 	TablutBoard board;
-	TablutDecider decider;
+	TablutMinMaxDecider decider;
 
 	@BeforeEach
 	public void init() {
@@ -42,7 +42,7 @@ public class TablutDeciderUnitTest {
 		model.setGameStage(stage);
 
 		controller = Mockito.mock(Controller.class);
-		decider = new TablutDecider(model, controller);
+		decider = new TablutMinMaxDecider(model, controller);
 	}
 
 	@Test

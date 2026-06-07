@@ -2,6 +2,8 @@ package model;
 
 import boardifier.model.*;
 
+import java.util.ArrayList;
+
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
  * there are no levels in this game: a party starts and when it's done, the game is also done.
@@ -29,12 +31,15 @@ import boardifier.model.*;
  */
 public class TablutStageModel extends GameStageModel {
 
+    // states
+    public static final int STATE_SELECT_PAWN = 1;
+    public static final int STATE_SELECT_DEST = 2;
+
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
     private int Mode;
-    private AIMode aiModeSingle;
-    private AIMode[] aiModeMultiple;
+    private ArrayList<AIMode> aiModesUsed;
 
     // define stage game elements
     private TablutBoard board;
@@ -46,10 +51,9 @@ public class TablutStageModel extends GameStageModel {
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
-
         kingMoveMode = KingMoveMode.LIMITLESS;
         winMode = WinMode.BORDERS;
-
+        setState(STATE_SELECT_PAWN);
         setupCallbacks();
     }
 
@@ -102,25 +106,17 @@ public class TablutStageModel extends GameStageModel {
                 showGameResult(true);
             }
 
-            // Debug to see which moves are available
-//            Team pawnTeam = ((Pawn) element).getTeam();
-//            System.out.println(pawnTeam + " can play :");
-//            List<Move> moveList = board.computeAllValidCells(pawnTeam);
-//
-//            for (Move move : moveList) {
-//                System.out.println("From x:" + move.sourceX + " y:" + move.sourceY + " to x:" + move.destX + " y:" + move.destY);
-//            }
-
         });
 
         onRemoveFromContainer( (element, container, row, col) -> {
             // Checks if the team that just played put the opposite team in stalemate
             Team pawnTeam = ((Pawn) element).getTeam();
-            if (board.isStalemate(pawnTeam))
+            if (board.isStalemate(pawnTeam)) {
+                System.out.println(pawnTeam + " was put in a stalemate");
                 showGameResult(pawnTeam.oppositeTeam() == Team.SWEDISH);
-            else {
-                // print to debug
-
+//            } else {
+//              // print to debug
+//
 //                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
 //                System.out.println(pawnTeam + " can still play :");
 //
@@ -186,20 +182,27 @@ public class TablutStageModel extends GameStageModel {
         this.kingMoveMode = kingMoveMode;
     }
 
-    public AIMode getAiModeSingle() {
-        return aiModeSingle;
+    public ArrayList<AIMode> getAIModesUsed() {
+        return aiModesUsed;
     }
 
-    public void setAiModeSingle(AIMode aiModeSingle) {
-        this.aiModeSingle = aiModeSingle;
+    public void setAIModesUsed(ArrayList<AIMode> aiModesUsed) {
+        this.aiModesUsed = aiModesUsed;
     }
 
-    public AIMode[] getAiModeMultiple() {
-        return aiModeMultiple;
+    public void setAIModesUsed(AIMode AI) {
+        ArrayList<AIMode> aiModes = new ArrayList<>();
+        aiModes.add(AI);
+
+        this.aiModesUsed = aiModes;
     }
 
-    public void setAiModeMultiple(AIMode[] aiModeMultiple) {
-        this.aiModeMultiple = aiModeMultiple;
+    public void setAIModesUsed(AIMode SwedishAI, AIMode MuscoAI) {
+        ArrayList<AIMode> aiModes = new ArrayList<>();
+        aiModes.add(SwedishAI);
+        aiModes.add(MuscoAI);
+
+        this.aiModesUsed = aiModes;
     }
 
     public int getMode() {
