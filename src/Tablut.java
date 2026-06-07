@@ -62,13 +62,6 @@ public class Tablut extends Application {
         TablutController control = new TablutController(model, tablutView);
         control.setFirstStageName("tablut");
 
-        // Defaults to minmax AI, can be chosen later in options
-        if (mode >= 1 && mode <= 2) {
-            ((TablutStageModel) model.getGameStage()).setAIModesUsed(AIMode.MINMAX);
-        } else if (mode == 3) {
-            ((TablutStageModel) model.getGameStage()).setAIModesUsed(AIMode.MINMAX, AIMode.MINMAX);
-        }
-
         stage.setTitle("Tablut");
         stage.show();
     }

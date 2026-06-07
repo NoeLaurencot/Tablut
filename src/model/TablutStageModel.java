@@ -38,7 +38,8 @@ public class TablutStageModel extends GameStageModel {
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
-    private int Mode;
+    // 0 for no AI, 1 for one AI, 2 for two AIs
+    private int mode;
     private ArrayList<AIMode> aiModesUsed;
 
     // define stage game elements
@@ -51,10 +52,25 @@ public class TablutStageModel extends GameStageModel {
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
-        kingMoveMode = KingMoveMode.LIMITLESS;
-        winMode = WinMode.BORDERS;
+        this.kingMoveMode = KingMoveMode.LIMITLESS;
+        this.winMode = WinMode.BORDERS;
+        this.aiModesUsed = new ArrayList<>();
+
+        setAIModes(); // defaults to minmax AI, can be changed later in options
+
         setState(STATE_SELECT_PAWN);
         setupCallbacks();
+    }
+
+    public void setAIModes() {
+        int cnt = 0;
+        for (Player player : this.model.getPlayers()) {
+            if (player.getName().contains("computer")) {
+                aiModesUsed.add(AIMode.MINMAX);
+                cnt++;
+            }
+        }
+        this.mode = cnt;
     }
 
     public TablutBoard getBoard() {
@@ -206,10 +222,10 @@ public class TablutStageModel extends GameStageModel {
     }
 
     public int getMode() {
-        return Mode;
+        return mode;
     }
 
     public void setMode(int mode) {
-        Mode = mode;
+        this.mode = mode;
     }
 }
