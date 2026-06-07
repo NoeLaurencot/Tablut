@@ -90,4 +90,10 @@ public abstract class Pawn extends GameElement {
      * @return true if would be surrounded
      */
     public abstract boolean wouldBeSurroundedIfEnemyAt(Coordinate coord);
+
+    @Override
+    public String toString() {
+        char[] charTable = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+        return (this.team + " "  + this.getClass().getSimpleName() + " " + charTable[getYInBoard()] + (getXInBoard()+1));
+    }
 }
