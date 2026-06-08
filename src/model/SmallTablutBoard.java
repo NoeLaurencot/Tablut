@@ -166,12 +166,26 @@ public class SmallTablutBoard {
 
             // like King::shouldDie()
             if (ennemyPawn == 3) {
+                boolean inBounds = true;
                 int[] neighbor = {position[0] + vect[1], position[1] + vect[0]};
-                if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
                 
+                if (neighbor[0] < 0 || neighbor[0] > 8) inBounds = false;
+                if (neighbor[1] < 0 || neighbor[1] > 8) inBounds = false;
+
+                if (inBounds) {
+                    if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
+                }
+
                 neighbor[0] -= 2*vect[1];
                 neighbor[1] -= 2*vect[0];
-                if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
+                
+                inBounds = true;
+                if (neighbor[0] < 0 || neighbor[0] > 8) inBounds = false;
+                if (neighbor[1] < 0 || neighbor[1] > 8) inBounds = false;
+                
+                if (inBounds) {
+                    if (grid[neighbor[0]][neighbor[1]] != 2 && !isFortressAt(neighbor[0], neighbor[1])) continue;
+                }
             }
 
             // checks the further cell if it is a ally pawn (capture)

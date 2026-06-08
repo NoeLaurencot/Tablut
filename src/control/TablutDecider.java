@@ -221,9 +221,9 @@ public class TablutDecider extends Decider {
             for (int j = 0; j < 9; j++) {
                 short cell = grid[i][j];
                 if (cell == 1) {
-                    score -= 20;
+                    score -= 30;
                 } else if (cell == 2) {
-                    score += 40;
+                    score += 60;
                 }
             }
         }
