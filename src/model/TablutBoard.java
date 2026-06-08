@@ -79,7 +79,7 @@ public class TablutBoard extends ContainerElement {
                     continue;
                 }
 
-                Pawn pawn = (Pawn) cell.getFirst();
+                Pawn pawn = (Pawn) cell.getLast();
                 if (pawn.getTeam() == team) {
                     List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
                     for (Coordinate c : pawnLegalMoves)
@@ -112,16 +112,27 @@ public class TablutBoard extends ContainerElement {
         List<Coordinate> lst = new ArrayList<Coordinate>();
         if (isEmptyAt(sourceRow, sourceCol)) return lst;
 
-        Pawn pawn = (Pawn) getElement(sourceRow, sourceCol);
+        Pawn pawn = (Pawn) getLastElement(sourceRow, sourceCol);
         lst = pawn.getLegalMoves();
 
         return lst;
     }
 
+    public boolean isFortressAt(int i, int j) {
+        return grid[i][j].getFirst() instanceof Fortress;
+    }
+
+    public boolean isPawnAt(int i, int j) {
+        if (grid[i][j].size() == 0) {
+            return false;
+        }
+        return grid[i][j].getLast() instanceof Soldier;
+    }
+
     public Coordinate getKingPosition() {
         for (int i = 0; i < nbRows; i++) {
             for (int j = 0; j < nbCols; j++) {
-                if (getElement(i, j) instanceof King) {
+                if (getLastElement(i, j) instanceof King) {
                     return new Coordinate(i, j);
                 }
             }

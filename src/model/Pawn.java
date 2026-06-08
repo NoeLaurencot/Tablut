@@ -49,7 +49,7 @@ public abstract class Pawn extends GameElement {
 
         for (int i = 0; i < board.getNbRows(); i++) {
             for (int j = 0; j < board.getNbCols(); j++) {
-                if (board.getElement(i, j) == this) {
+                if (board.getLastElement(i, j) == this) {
                     return i;
                 }
             }
@@ -62,7 +62,7 @@ public abstract class Pawn extends GameElement {
 
         for (int i = 0; i < board.getNbRows(); i++) {
             for (int j = 0; j < board.getNbCols(); j++) {
-                if (board.getElement(i, j) == this) {
+                if (board.getLastElement(i, j) == this) {
                     return j;
                 }
             }

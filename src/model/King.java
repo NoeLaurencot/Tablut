@@ -37,7 +37,7 @@ public class King extends Pawn {
             if (((TablutStageModel) this.gameStageModel).getKingMoveMode() == KingMoveMode.LIMITLESS) {
                 while (position[0] >= 0 && position[0] < 9
                         && position[1] >= 0 && position[1] < 9
-                        && board.isEmptyAt(position[0], position[1])) {
+                        && !board.isPawnAt(position[0], position[1])) {
 
                     lst.add(new Coordinate(position[0], position[1]));
                     inc++;

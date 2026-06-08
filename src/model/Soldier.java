@@ -38,8 +38,7 @@ public class Soldier extends Pawn {
 
             while (position[0] >= 0 && position[0] < 9
                     && position[1] >= 0 && position[1] < 9
-                    && board.isEmptyAt(position[0], position[1])
-                    && !board.getGameStage().isFortressAt(position[0], position[1])) {
+                    && board.isEmptyAt(position[0], position[1])) {
 
                 lst.add(new Coordinate(position[0], position[1]));
                 inc++;

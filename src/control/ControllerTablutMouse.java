@@ -20,6 +20,7 @@ import model.TablutBoard;
 import model.TablutStageModel;
 import model.Pawn;
 import model.Team;
+import model.Fortress;
 
 import java.util.List;
 
@@ -53,14 +54,30 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
+        boolean fortressInList = false;
+        for (GameElement ge : list) {
+            if (ge instanceof Fortress) {
+                fortressInList = true;
+                break;
+            }
+        }
 
         int elementsClicked = list.size();
 
-        if (elementsClicked == 2) {
-            handlePawnClick(list);
-        } else if (elementsClicked == 1 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
-            handleBoardClick(list, click);
+        if (fortressInList) {
+            if (elementsClicked == 3) {
+                handlePawnClick(list);
+            } else if (elementsClicked == 2 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
+                handleBoardClick(list, click);
+            }  
+        } else {
+            if (elementsClicked == 2) {
+                handlePawnClick(list);
+            } else if (elementsClicked == 1 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
+                handleBoardClick(list, click);
+            }
         }
+
     }
 
     // FIXME: the pawn doesn't move after clicking and game freezes
@@ -104,7 +121,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
     private void handlePawnClick(List<GameElement> list) {
         TablutBoard board = (TablutBoard) list.get(0);
-        Pawn pawn = (Pawn) list.get(1);
+        Pawn pawn = (Pawn) list.get(list.size()-1);
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
         Team curTeam;
