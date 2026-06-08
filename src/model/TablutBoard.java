@@ -365,4 +365,18 @@ public class TablutBoard extends ContainerElement {
         }
         return counter;
     }
+
+    public void debugPrint() {
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                if (!grid[i][j].isEmpty()) {
+                    System.out.print("1 ");
+                } else {
+                    System.out.print("0 ");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 }
