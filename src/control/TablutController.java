@@ -63,7 +63,7 @@ public class TablutController extends Controller {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
-        Pawn pawn = (Pawn) board.getElement(destRow, destCol);
+        Pawn pawn = (Pawn) board.getLastElement(destRow, destCol);
 
         for (int[] vect : directions) {
 
@@ -73,10 +73,10 @@ public class TablutController extends Controller {
             if (board.outOfBounds(new Coordinate(position[0], position[1])))
                 continue;
 
-            if (board.isEmptyAt(position[0], position[1]))
+            if (!board.isPawnAt(position[0], position[1]))
                 continue;
-
-            Pawn ennemyPawn = (Pawn) board.getElement(position[0], position[1]);
+            
+            Pawn ennemyPawn = (Pawn) board.getLastElement(position[0], position[1]);
             if (ennemyPawn.getTeam() == pawn.getTeam())
                 continue;
 
@@ -92,7 +92,7 @@ public class TablutController extends Controller {
 
             Pawn otherPawn = (Pawn) board.getElement(position[0], position[1]);
 
-            if ((gameStage.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
+            if ((board.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
                 ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
                 ActionPlayer play = new ActionPlayer(model, this, actions);
                 play.start();
