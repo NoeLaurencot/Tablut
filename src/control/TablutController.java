@@ -7,7 +7,6 @@ import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class TablutController extends Controller {
@@ -24,7 +23,6 @@ public class TablutController extends Controller {
 
     public void endOfTurn() {
 
-        afterPlay(lastMove.destX, lastMove.destY);
         // use the default method to compute next player
         model.setNextPlayer();
         // get the new player
@@ -36,13 +34,15 @@ public class TablutController extends Controller {
             Logger.debug("COMPUTER PLAYS");
 
             Move bestMove = null;
-            final int COOLDOWN = 300;
+            final int COOLDOWN = 500;
 
             Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
 
             long timestamp = System.nanoTime();
 
-            ActionPlayer play = new ActionPlayer(model, this, decider, null);
+            ActionList actionList = decider.decide();
+
+            ActionPlayer play = new ActionPlayer(model, this, actionList);
 
             waitMinimumCooldown(COOLDOWN, timestamp);
 
@@ -59,7 +59,8 @@ public class TablutController extends Controller {
         }
     }
 
-    public void afterPlay(int destRow, int destCol) {
+    // TODO: remake this function so it thinks there is a pawn at dest, then put actions in the actionList
+    public void addAfterPlayActions(int destRow, int destCol, ActionList actionList) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
@@ -110,18 +111,18 @@ public class TablutController extends Controller {
         if (mode == 1 || mode == 2) {
             switch (aiModes.getFirst()) {
                 case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
-                case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+                case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
             }
         } else {
             if (stageModel.getPlayerName().getText().equals("swedish computer")) {
                 switch (aiModes.get(0)) { // first AI is swedish AI
                     case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
-                    case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+                    case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
                 }
             } else {
                 switch (aiModes.get(1)) { // second AI is muscovite AI
                     case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
-                    case SIMPLE_EVAL -> new TablutSimpleDecider(this.model, this);
+                    case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
                 }
             }
         }
@@ -137,6 +138,9 @@ public class TablutController extends Controller {
     public void waitMinimumCooldown(int cooldown, long timestamp) {
 
         long timeElapsed = System.nanoTime() - timestamp;
+
+        // from nanosecond to milisecond
+        timeElapsed *= 10e-3;
 
         if (timeElapsed < cooldown) {
             try {

@@ -45,7 +45,7 @@ public class TablutStageModel extends GameStageModel {
     // define stage game elements
     private TablutBoard board;
     private Pawn[] pawns;
-    private Fortress[] fortresses;
+    private ArrayList<Fortress> fortresses;
     private TextElement playerName;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     //private ContainerElement mainContainer;
@@ -66,7 +66,7 @@ public class TablutStageModel extends GameStageModel {
         int cnt = 0;
         for (Player player : this.model.getPlayers()) {
             if (player.getName().contains("computer")) {
-                aiModesUsed.add(AIMode.MINMAX);
+                aiModesUsed.add(AIMode.SIMPLE_EVAL);
                 cnt++;
             }
         }
@@ -81,7 +81,7 @@ public class TablutStageModel extends GameStageModel {
         return pawns;
     }
 
-    public Fortress[] getFortresses() {
+    public ArrayList<Fortress> getFortresses() {
         return fortresses;
     }
 
@@ -102,9 +102,9 @@ public class TablutStageModel extends GameStageModel {
         }
     }
 
-    public void setFortresses(Fortress[] f) {
-        fortresses = f;
-        for (Fortress fortress : fortresses) {
+    public void setFortresses(ArrayList<Fortress> fortressList) {
+        this.fortresses = fortressList;
+        for (Fortress fortress : fortressList) {
             board.addElement(fortress, (int)fortress.getX(), (int)fortress.getY());
             addElement(fortress);
         }

@@ -209,8 +209,11 @@ public class TablutBoard extends ContainerElement {
     public King findKing() {
         for (int i = 0; i < this.nbRows; i++) {
             for (int j = 0; j < this.nbCols; j++) {
-                if (getElement(i, j) instanceof King)
-                    return (King) getElement(i, j);
+                for (GameElement element : getElements(i, j)) {
+                    if (element instanceof King) {
+                        return (King) element;
+                    }
+                }
             }
         }
         return null;
@@ -252,8 +255,8 @@ public class TablutBoard extends ContainerElement {
         ArrayList<Coordinate> enemyCoords = new ArrayList<>();
 
         for (Coordinate adjCoord : adjacentCoords) {
-            // Only add if not empty and team is different
-            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY())) {
+            // Only add if not empty and team is different and not a fortress
+            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY()) && this.getElement(adjCoord.getX(), adjCoord.getY()) instanceof Pawn) {
                 GameElement element = getElement(adjCoord.getX(), adjCoord.getY());
                 if (((Pawn) element).getTeam() != team) {
                     enemyCoords.add(adjCoord);
@@ -299,7 +302,9 @@ public class TablutBoard extends ContainerElement {
 
         for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
             // if there is enemy at coordinates
-            if (!isEmptyAt(farCoord.getX(), farCoord.getY()) && ((Pawn) getElement(farCoord.getX(), farCoord.getY())).getTeam() != currentTeam) {
+
+            // checks if not empty, if not a fortress and if is opposite team
+            if (!isEmptyAt(farCoord.getX(), farCoord.getY()) && !(getElement(farCoord.getX(), farCoord.getY()) instanceof Fortress) && ((Pawn) getElement(farCoord.getX(), farCoord.getY())).getTeam() != currentTeam) {
                 enemiesCoords.add(farCoord);
             }
         }

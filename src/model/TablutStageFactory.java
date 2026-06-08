@@ -5,6 +5,8 @@ import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
 
+import java.util.ArrayList;
+
 /**
  * TablutStageFactory must create the game elements that are defined in TablutStageModel
  * WARNING: it just creates the game element and NOT their look, which is done in TablutStageView.
@@ -87,17 +89,17 @@ public class TablutStageFactory extends StageElementsFactory {
     }
 
     private void setupFortresses() {
-        Fortress[] fortresses = new Fortress[5];
+        ArrayList<Fortress> fortressList = new ArrayList<>();
 
         int x = stageModel.getBoard().getNbCols();
         int y = stageModel.getBoard().getNbRows();
 
-        fortresses[0] = new Fortress(0, 0, stageModel);
-        fortresses[1] = new Fortress(y-1, 0, stageModel);
-        fortresses[2] = new Fortress(0, x-1, stageModel);
-        fortresses[3] = new Fortress(y-1, x-1, stageModel);
-        fortresses[4] = new Fortress(y/2, x/2, stageModel);
+//        fortressList.add(new Fortress(0, 0, stageModel));
+//        fortressList.add(new Fortress(y-1, 0, stageModel));
+//        fortressList.add(new Fortress(0, x-1, stageModel));
+//        fortressList.add(new Fortress(y-1, x-1, stageModel));
+        fortressList.add(new Fortress(y/2, x/2, stageModel));
     
-        stageModel.setFortresses(fortresses);
+        stageModel.setFortresses(fortressList);
     }
 }
