@@ -76,10 +76,11 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
     }
 
-    // FIXME: the pawn doesn't move after clicking and game freezes
+
     private void handleBoardClick(List<GameElement> list, Coord2D click) {
         TablutBoard board = (TablutBoard) list.getFirst();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+        TablutController tablutController = (TablutController) this.control;
 
         // Get the board look to convert scene coordinates to cell coordinates
         GridLook boardLook = (GridLook) control.getElementLook(board);
@@ -90,13 +91,16 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
             if (reach[dest[0]][dest[1]]) {
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
                 // set the lastMove to do afterPlay at the endOfTurn
-                ((TablutController) (this.control)).setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
+                tablutController.setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
 
                 stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
                 selectedPawn.unselect();
                 stageModel.unselectAll();
                 selectedPawn = null;
                 actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
+
+                tablutController.addAfterPlayActions(dest[0], dest[1], actions);
+
                 ActionPlayer play = new ActionPlayer(model, this.control, actions);
 
                 play.start();
