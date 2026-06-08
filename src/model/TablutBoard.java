@@ -79,7 +79,7 @@ public class TablutBoard extends ContainerElement {
                     continue;
                 }
 
-                Pawn pawn = (Pawn) cell.get(0);
+                Pawn pawn = (Pawn) cell.getFirst();
                 if (pawn.getTeam() == team) {
                     List<Coordinate> pawnLegalMoves = pawn.getLegalMoves();
                     for (Coordinate c : pawnLegalMoves)
