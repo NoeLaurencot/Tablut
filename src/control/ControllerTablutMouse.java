@@ -56,7 +56,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
         int elementsClicked = list.size();
 
-        if (elementsClicked == 2 && stageModel.getState() == TablutStageModel.STATE_SELECT_PAWN) {
+        if (elementsClicked == 2) {
             handlePawnClick(list);
         } else if (elementsClicked == 1 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
             handleBoardClick(list, click);
@@ -76,7 +76,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
         if (dest != null) {
             System.out.println("clicked board at row: " + dest[0] + " col: " + dest[1]);
             if (reach[dest[0]][dest[1]]) {
-                ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
+                ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_TELEPORT, 10);
 
                 stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
                 selectedPawn.unselect();
@@ -86,7 +86,6 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 ActionPlayer play = new ActionPlayer(model, this.control, actions);
 
                 play.start();
-                System.out.println("test");
             }
         }
 
