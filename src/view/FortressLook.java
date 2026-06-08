@@ -17,7 +17,7 @@ public class FortressLook extends ElementLook {
         // Pawn look is constituted of a single character, so shape size = 1x1
         super(element);
 
-        Image image = new Image(getClass().getResource("/king.png").toExternalForm());
+        Image image = new Image(getClass().getResource("/fortress.png").toExternalForm());
 
         imageView = new ImageView(image);
 
@@ -26,6 +26,8 @@ public class FortressLook extends ElementLook {
 
         imageView.setX(-(size / 2.0));
         imageView.setY(-(size / 2.0));
+
+        imageView.setOpacity(0.3);
 
         addNode(imageView);
     }
