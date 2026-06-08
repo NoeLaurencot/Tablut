@@ -119,6 +119,9 @@ public class TablutBoard extends ContainerElement {
     }
 
     public boolean isFortressAt(int i, int j) {
+        if (grid[i][j].size() == 0) {
+            return false;
+        }
         return grid[i][j].getFirst() instanceof Fortress;
     }
 
@@ -126,7 +129,7 @@ public class TablutBoard extends ContainerElement {
         if (grid[i][j].size() == 0) {
             return false;
         }
-        return grid[i][j].getLast() instanceof Soldier;
+        return grid[i][j].getLast() instanceof Pawn;
     }
 
     public Coordinate getKingPosition() {

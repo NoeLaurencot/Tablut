@@ -90,10 +90,12 @@ public class TablutController extends Controller {
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
 
-            if (board.isPawnAt(position[0], position[1]) || board.isFortressAt(position[0], position[1]))
+            if (board.isPawnAt(position[0], position[1]) == board.isFortressAt(position[0], position[1]))
                 continue;
 
-            Pawn otherPawn = (Pawn) board.getElement(position[0], position[1]);
+            System.out.println(position[0] + " " + position[1]);
+            Pawn otherPawn = (Pawn) board.getLastElement(position[0], position[1]);
+
 
             if ((board.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
                 ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);

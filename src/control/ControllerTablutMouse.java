@@ -101,6 +101,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 ActionPlayer play = new ActionPlayer(model, this.control, actions);
 
                 play.start();
+
+                board.resetReachableCells(false);
             }
         }
 
