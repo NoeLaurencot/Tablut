@@ -2,33 +2,32 @@ package view;
 
 import boardifier.model.GameElement;
 import boardifier.view.ElementLook;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import model.King;
-import model.Soldier;
 
 public class KingLook extends ElementLook {
-    private Circle circle;
-    private Circle innerCircle;
+    private ImageView imageView;
 
     public KingLook(int radius, GameElement element) {
         // Pawn look is constituted of a single character, so shape size = 1x1
         super(element);
         King king = (King) element;
-        circle = new Circle();
-        innerCircle = new Circle();
-        circle.setRadius(radius);
-        innerCircle.setRadius(radius * 0.5);
-        circle.setFill(Color.YELLOW);
-        innerCircle.setFill(Color.ORANGE);
-        circle.setCenterX(0);
-        circle.setCenterY(0);
-        innerCircle.setCenterX(0);
-        innerCircle.setCenterY(0);
-        // add the circle to the look
-        addShape(circle);
-        addShape(innerCircle);
-        // to fulfill ...
+
+        Image image = new Image(
+                getClass().getResource("/king.png").toExternalForm()
+        );
+
+        imageView = new ImageView(image);
+
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+
+        imageView.setY(-25);
+        imageView.setX(-25);
+
+        addNode(imageView);
     }
 
     protected void render() {

@@ -32,10 +32,14 @@ import model.*;
 
 public class TablutStageView extends GameStageView {
     int cellSize;
+    private Color oddColor;
+    private Color evenColor;
 
     public TablutStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
         cellSize = 70;
+        oddColor = Color.rgb(194, 172, 151);
+        evenColor = Color.BEIGE;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class TablutStageView extends GameStageView {
         TextLook text = new TextLook(3, "0x000000", model.getPlayerName());
         addLook(text);
 
-        ClassicBoardLook boardLook = new TablutBoardLook(this.cellSize, board, 1, Color.MAROON, Color.BEIGE, 1, Color.TRANSPARENT, 1, Color.BLACK, true);
+        ClassicBoardLook boardLook = new TablutBoardLook(this.cellSize, board, 1, oddColor, evenColor, 0, Color.TRANSPARENT, 2, Color.BLACK, true);
         addLook(boardLook);
 
         int r = board.getNbRows();
