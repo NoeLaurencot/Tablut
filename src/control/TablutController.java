@@ -59,51 +59,44 @@ public class TablutController extends Controller {
         }
     }
 
-    /**
-     * Checks for captures
-     */
     public void afterPlay(int destRow, int destCol) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
-        Pawn pawn = (Pawn) board.getLastElement(destRow, destCol);
+        Pawn movedPawn = (Pawn) board.getLastElement(destRow, destCol);
 
-        for (int[] vect : directions) {
+        for (int[] dir : directions) {
+            int nextRow = destRow + dir[0];
+            int nextCol = destCol + dir[1];
 
-            // first check if the next cell is an ennemy pawn
-            int[] position = {destRow + vect[0], destCol + vect[1]};
+            if (board.outOfBounds(new Coordinate(nextRow, nextCol))) continue;
+            if (!board.isPawnAt(nextRow, nextCol)) continue;
 
-            if (board.outOfBounds(new Coordinate(position[0], position[1])))
-                continue;
+            Pawn enemyPawn = (Pawn) board.getLastElement(nextRow, nextCol);
 
-            if (!board.isPawnAt(position[0], position[1]))
-                continue;
-            
-            Pawn ennemyPawn = (Pawn) board.getLastElement(position[0], position[1]);
-            if (ennemyPawn.getTeam() == pawn.getTeam())
-                continue;
+            if (enemyPawn.getTeam() == movedPawn.getTeam()) continue;
 
-            // checks the further cell if it is a ally pawn (capture)
-            position[0] += vect[0];
-            position[1] += vect[1];
+            // A capture needs something friendly on the other side
+            int beyondRow = nextRow + dir[0];
+            int beyondCol = nextCol + dir[1];
 
-            if (position[0] < 0 || position[0] > 8) continue;
-            if (position[1] < 0 || position[1] > 8) continue;
+            if (board.outOfBounds(new Coordinate(beyondRow, beyondCol))) continue;
 
-            if (board.isPawnAt(position[0], position[1]) == board.isFortressAt(position[0], position[1]))
-                continue;
+            boolean hasFriendlyPawnBeyond = board.getElement(beyondRow, beyondCol) instanceof Pawn
+                    && ((Pawn) board.getLastElement(beyondRow, beyondCol)).getTeam() == movedPawn.getTeam();
+            boolean hasFortressBeyond = board.isFortressAt(beyondRow, beyondCol);
 
-            System.out.println(position[0] + " " + position[1]);
-            Pawn otherPawn = (Pawn) board.getLastElement(position[0], position[1]);
-
-
-            if ((board.isFortressAt(position[0], position[1]) || otherPawn.getTeam() == pawn.getTeam()) && ennemyPawn.shouldDie()) {
-                ActionList actions = ActionFactory.generateRemoveFromContainer(model, ennemyPawn);
-                ActionPlayer play = new ActionPlayer(model, this, actions);
-                play.start();
-                ennemyPawn.setVisible(false);
+            if ((hasFriendlyPawnBeyond || hasFortressBeyond) && enemyPawn.shouldDie()) {
+                capturePawn(enemyPawn);
             }
         }
+    }
+
+    private void capturePawn(Pawn pawn) {
+        ActionList actions = ActionFactory.generateRemoveFromContainer(model, pawn);
+        ActionPlayer play = new ActionPlayer(model, this, actions);
+        play.start();
+        pawn.setVisible(false);
     }
 
     public void setLastMove(Move move) {
