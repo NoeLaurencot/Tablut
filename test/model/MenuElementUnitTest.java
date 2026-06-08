@@ -101,4 +101,18 @@ public class MenuElementUnitTest {
 
         assertEquals("1 - Exit\n\nChoose now:", menuElement.getMenuString());
     }
+
+    @Test
+    public void testSetMenuString_WithMultipleEntries() {
+        MenuEntry e1 = new MenuEntry(0, "Play", new ArrayList<>(), 1);
+        MenuEntry e2 = new MenuEntry(0, "Exit", new ArrayList<>(), 2);
+
+        menuElement.addEntry(e1);
+        menuElement.addEntry(e2);
+
+        menuElement.setMenuString();
+
+        assertEquals("1 - Play\n2 - Exit\n", menuElement.getMenuString());
+    }
+
 }
