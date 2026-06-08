@@ -38,9 +38,9 @@ public class TablutStageFactory extends StageElementsFactory {
 
         TablutBoard board = new TablutBoard(0, 1, stageModel);
         stageModel.setBoard(board);
-
-        setupPawns();
+        
         setupFortresses();
+        setupPawns();
 
     }
 

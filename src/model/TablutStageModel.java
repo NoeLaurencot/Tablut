@@ -104,6 +104,10 @@ public class TablutStageModel extends GameStageModel {
 
     public void setFortresses(Fortress[] f) {
         fortresses = f;
+        for (Fortress fortress : fortresses) {
+            board.addElement(fortress, (int)fortress.getX(), (int)fortress.getY());
+            addElement(fortress);
+        }
     }
 
     public void setPlayerName(TextElement pn) {

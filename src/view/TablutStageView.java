@@ -55,12 +55,21 @@ public class TablutStageView extends GameStageView {
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
                 if (i == r / 2 && j == c / 2) { // king position
-                    King king = (King) board.getElement(i, j);
+                    King king = (King) board.getElement(i, j, 1);
                     KingLook look = new KingLook((int) (this.cellSize * 0.3), king);
                     addLook(look);
-                } else if (!board.isEmptyAt(i, j)) {
+
+                    Fortress fortress = (Fortress) board.getElement(i, j);
+                    FortressLook fLook = new FortressLook((int) (this.cellSize * 0.25), fortress);
+                    addLook(fLook);
+
+                } else if (board.getElement(i, j) instanceof Soldier) {
                     Soldier soldier = (Soldier) board.getElement(i, j);
                     SoldierLook look = new SoldierLook((int) (this.cellSize * 0.3), soldier);
+                    addLook(look);
+                } else if (board.getElement(i, j) instanceof Fortress) {
+                    Fortress fortress = (Fortress) board.getElement(i, j);
+                    FortressLook look = new FortressLook((int) (this.cellSize * 0.25), fortress);
                     addLook(look);
                 }
             }

@@ -7,6 +7,7 @@ import model.AIMode;
 import model.TablutStageModel;
 
 import view.TablutView;
+import view.TablutStageView;
 import view.TablutRootPane;
 
 import javafx.application.Application;
