@@ -1,10 +1,11 @@
 package model;
 
 public class Coordinate {
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
-    public Coordinate() {}
+    public Coordinate() {
+    }
 
     public Coordinate(int x, int y) {
         this.x = x;
@@ -32,9 +33,22 @@ public class Coordinate {
         this.y = y;
     }
 
+    public void increment(int x, int y) {
+        this.x += x;
+        this.y += y;
+    }
+
+    public int computeManhattanDistance(Coordinate destination) {
+        return Math.abs(this.x - destination.getX()) + Math.abs(this.y - destination.getY());
+    }
+
+    public Coordinate invertedCopy() {
+        return new Coordinate(this.y, this.x);
+    }
+
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " x = " + this.x + " y = " + this.y;
+        return "X:" + this.x + " Y: " + this.y;
     }
 
     @Override
@@ -42,9 +56,10 @@ public class Coordinate {
         if (o == null) {
             return false;
         }
-        if (!(o instanceof Coordinate C)) {
+        if (!(o instanceof Coordinate c)) {
             return false;
         }
-        return this.x == C.getX() && this.y == C.getY();
+        return this.x == c.x && this.y == c.y;
     }
 }
+

@@ -1,17 +1,10 @@
 package view;
 
-import boardifier.control.Logger;
 import boardifier.model.GameStageModel;
 import boardifier.view.ClassicBoardLook;
-import boardifier.view.ContainerLook;
 import boardifier.view.GameStageView;
-
 import boardifier.view.TextLook;
-import model.TablutStageModel;
-import model.TablutBoard;
-import model.Pawn;
-import model.Soldier;
-import model.King;
+import model.*;
 
 /**
  * HoleStageView has to create all the looks for all game elements created by the HoleStageFactory.
@@ -68,18 +61,8 @@ public class TablutStageView extends GameStageView {
                 }
             }
         }
-    }
 
-    // TODO: use boardifier text renderer?
-    public void showOptionsMenu() {
-        System.out.print("""
-                1 - King move mode
-                \ta - Without distance limitations
-                \tb - Single square distance limitation
-                2 - Win zone
-                \ta - Borders
-                \tb - Corners
-               
-                Choose an option (ex: 1a) >\s""");
+        MultiLineTextLook menuLook = new MultiLineTextLook(model.getMenuElement());
+        addLook(menuLook);
     }
 }

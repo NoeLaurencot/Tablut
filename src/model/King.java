@@ -1,12 +1,12 @@
 package model;
 
-import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.ElementTypes;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.awt.*;
+import java.util.Set;
 
 public class King extends Pawn {
 
@@ -25,8 +25,8 @@ public class King extends Pawn {
 
     @Override
     public List<Coordinate> getLegalMoves() {
-        List<Coordinate> lst = new ArrayList<>();
         TablutBoard board = (TablutBoard) getContainer();
+        List<Coordinate> lst = new ArrayList<>();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -69,12 +69,17 @@ public class King extends Pawn {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int[] position = {getXInBoard() + vect[0], getYInBoard() + vect[1]};
-            if (model.isFortressAt(position[0], position[1])) {
-                ennemyNeighbors++;
+
+            if (board.outOfBounds(new Coordinate(position[0], position[1]))) {
+                continue;
             }
 
             if (board.isEmptyAt(position[0], position[1])) {
                 continue;
+            }
+
+            if (model.isFortressAt(position[0], position[1]) && position[0] == 4 && position[1] == 4) {
+                ennemyNeighbors++;
             }
             Pawn pawn = (Pawn) board.getElement(position[0], position[1]);
 //            System.out.println(position[0] + " " + position[1]);
@@ -83,6 +88,24 @@ public class King extends Pawn {
                 ennemyNeighbors++;
             }
         }
-        return ennemyNeighbors >= solidersToCapture;
+        return ennemyNeighbors == solidersToCapture;
+    }
+
+    @Override
+    public boolean isSurrounded() {
+        TablutBoard board = (TablutBoard) getContainer();
+        int x = getXInBoard();
+        int y = getYInBoard();
+
+        return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture;
+    }
+
+    @Override
+    public boolean wouldBeSurroundedIfEnemyAt(Coordinate coord) {
+        TablutBoard board = (TablutBoard) getContainer();
+        int x = getXInBoard();
+        int y = getYInBoard();
+
+        return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture - 1;
     }
 }

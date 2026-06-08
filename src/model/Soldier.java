@@ -1,13 +1,13 @@
 package model;
 
-import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.ElementTypes;
 
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.awt.*;
+import java.util.Set;
 
 /**
  * A soldier Pawn regroup the ways soldier can die ,and move
@@ -27,8 +27,8 @@ public class Soldier extends Pawn {
 
     @Override
     public List<Coordinate> getLegalMoves() {
-        List<Coordinate> lst = new ArrayList<>();
         TablutBoard board = (TablutBoard) getContainer();
+        List<Coordinate> lst = new ArrayList<>();
 
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
@@ -59,5 +59,50 @@ public class Soldier extends Pawn {
     @Override
     public boolean shouldDie() {
         return true;
+    }
+
+    @Override
+    public boolean isSurrounded() {
+        TablutBoard board = (TablutBoard) getContainer();
+        int x = getXInBoard();
+        int y = getYInBoard();
+        Team team = this.getTeam();
+
+        boolean hasLeft = false;
+        boolean hasRight = false;
+        boolean hasTop = false;
+        boolean hasBottom = false;
+
+        for (Coordinate coord : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y), team)) {
+            if (coord.getX() < x)
+                hasLeft = true;
+            else if (coord.getX() > x)
+                hasRight = true;
+            else if (coord.getY() < y)
+                hasTop = true;
+            else if (coord.getY() > y)
+                hasBottom = true;
+
+            if ((hasLeft && hasRight) || (hasTop && hasBottom))
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean wouldBeSurroundedIfEnemyAt(Coordinate coord) {
+        TablutBoard board = (TablutBoard) getContainer();
+        int x = getXInBoard();
+        int y = getYInBoard();
+
+        Team team = this.getTeam();
+
+        for (Coordinate coordAdj : board.getAdjacentEnemyPawnsCoords(new Coordinate(x, y), team)) {
+            if (coord.getX() == coordAdj.getX() || coord.getY() == coordAdj.getY())
+                return true;
+        }
+
+        return false;
     }
 }

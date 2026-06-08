@@ -1,13 +1,10 @@
 package model;
 
 import boardifier.control.ActionFactory;
-import boardifier.control.ActionPlayer;
-import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.action.ActionList;
 
-import java.awt.Point;
 import java.util.List;
 
 /**
@@ -43,7 +40,7 @@ public abstract class Pawn extends GameElement {
         this.team = team;
     }
 
-    protected int getXInBoard() {
+    public int getXInBoard() {
         TablutBoard board = ((TablutStageModel) getGameStage()).getBoard();
 
         for (int i = 0; i < board.getNbRows(); i++) {
@@ -56,7 +53,7 @@ public abstract class Pawn extends GameElement {
         return -1;
     }
 
-    protected int getYInBoard() {
+    public int getYInBoard() {
         TablutBoard board = ((TablutStageModel) getGameStage()).getBoard();
 
         for (int i = 0; i < board.getNbRows(); i++) {
@@ -82,4 +79,14 @@ public abstract class Pawn extends GameElement {
     public ActionList die(Pawn pawn) {
         return ActionFactory.generateRemoveFromContainer(this.getModel(), this);
     }
+
+    public abstract boolean isSurrounded();
+
+
+    /**
+     * checks if would be surrounded, and thus captured, if there was an enemy pawn at coord
+     * @param coord The coordinates the enemy pawn would be at
+     * @return true if would be surrounded
+     */
+    public abstract boolean wouldBeSurroundedIfEnemyAt(Coordinate coord);
 }

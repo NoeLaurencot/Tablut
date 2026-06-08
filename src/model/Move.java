@@ -22,6 +22,10 @@ public class Move {
         this.destY = m.destY;
     }
 
+    public Move reverse() {
+        return new Move(destX, destY, sourceX, sourceY);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) {
@@ -37,10 +41,15 @@ public class Move {
     @Override
     public String toString() {
         return (
-                "sourceX : " + this.sourceX +
-                " sourceY : " + this.sourceY +
-                " destX : " + this.destY +
-                " destY : " + this.destY
+                "[X:" + this.sourceX +
+                " Y:" + this.sourceY +
+                "] -> [X:" + this.destX +
+                " Y:" + this.destY + "]"
         );
+    }
+
+    public String humanReadable() {
+        char[] charTable = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+        return ("" + charTable[this.sourceY] + (this.sourceX+1) + " -> " + charTable[this.destY] + (this.destX+1));
     }
 }

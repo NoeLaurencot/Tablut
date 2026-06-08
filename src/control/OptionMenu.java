@@ -1,35 +1,58 @@
 package control;
 
+import java.io.InputStream;
 import java.util.Scanner;
 
 import boardifier.model.GameStageModel;
 import model.*;
 
 public class OptionMenu {
-    private static final Scanner SCANNER = new Scanner(System.in);
 
     public OptionMenu() {}
 
-    public void readMenu(GameStageModel gameStageModel) {
+    public boolean readMenu(GameStageModel gameStageModel, InputStream inputStream) {
         boolean ok = false;
         int prefix;
         int option;
+        Scanner scanner = new Scanner(inputStream);
 
         while (!ok) {
-            String line = SCANNER.next();
+            if (!scanner.hasNext()) {
+                break;
+            }
+
+            String line = scanner.next().trim();
+
+
+            if (line.equals("save")) {
+                System.out.println("Options saved");
+                return true;
+            }
 
             if (line.length() == 2) {
-                prefix = (int) line.charAt(0) - '1';
-                option = (int) line.charAt(1) - 'a';
+                char prefixChar = line.charAt(0);
+                char optionChar = line.charAt(1);
 
-                if (prefix < 0 || prefix > 2) continue;
-                if (option < 0 || option > 2) continue;
+                if (optionChar >= 'a' && optionChar <= 'z') {
+                    optionChar = Character.toUpperCase(optionChar);
+                }
+
+                prefix = (int) prefixChar - '1';
+                option = (int) optionChar - 'A';
+
+                if (prefix < 0 || prefix > 2 || option < 0 || option > 2) {
+                    System.out.println("Invalid option, try again");
+                    continue;
+                }
 
                 setOption(gameStageModel, prefix, option);
 
                 ok = true;
+            } else {
+                System.out.println("Invalid option, try again");
             }
         }
+        return false;
     }
 
     private void setOption(GameStageModel gameStageModel, int prefix, int option) {

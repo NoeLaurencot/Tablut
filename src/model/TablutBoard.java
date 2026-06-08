@@ -4,7 +4,6 @@ import boardifier.model.ContainerElement;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,9 @@ import java.util.List;
  * pawn with a given value.
  */
 public class TablutBoard extends ContainerElement {
+    //                             UP     RIGHT   DOWN     LEFT
+    final int[][] DIRECTIONS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
     private ArrayList<Coordinate> winCoords;
     private List<GameElement>[][] storedGrid;
 
@@ -100,6 +102,7 @@ public class TablutBoard extends ContainerElement {
 
     /**
      * Return a List Point Who
+     *
      * @param sourceRow
      * @param sourceCol
      * @return
@@ -187,26 +190,171 @@ public class TablutBoard extends ContainerElement {
                     addElement(new Soldier(i, j, Team.MUSCOVITES, getGameStage()), i, j);
                 } else if (map[i][j] == 3) {
                     addElement(new King(i, j, getGameStage()), i, j);
-                } 
+                }
             }
         }
     }
 
-    public void storeGrid() {
-        storedGrid = new List[nbRows][nbCols];
-
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                storedGrid[i][j] = grid[i][j];
+    public King findKing() {
+        for (int i = 0; i < this.nbRows; i++) {
+            for (int j = 0; j < this.nbCols; j++) {
+                if (getElement(i, j) instanceof King)
+                    return (King) getElement(i, j);
             }
         }
+        return null;
     }
 
-    public void restoreGrid() {
-        for (int i = 0; i < nbRows; i++) {
-            for (int j = 0; j < nbCols; j++) {
-                grid[i][j] = storedGrid[i][j];
+    public boolean outOfBounds(Coordinate coord) {
+        return coord.getX() < 0 || coord.getX() > this.nbRows - 1 ||
+                coord.getY() < 0 || coord.getY() > this.nbCols - 1;
+    }
+
+    public boolean canSeeCoordinate(Coordinate srcCoord, Coordinate destCoord) {
+        return getFarthestVisibleCoords(srcCoord).contains(destCoord);
+    }
+
+    public boolean canSeeKing(Coordinate coord) {
+        King king = findKing();
+        Coordinate kingCoord = new Coordinate(king.getXInBoard(), king.getYInBoard());
+
+        return canSeeCoordinate(coord, kingCoord);
+    }
+
+    public ArrayList<Coordinate> getAdjacentCoords(Coordinate coord) {
+        ArrayList<Coordinate> adjacentPawnsCoords = new ArrayList<>();
+
+        for (final int[] VECT : DIRECTIONS) {
+            Coordinate position = new Coordinate(coord);
+
+            position.increment(VECT[0], VECT[1]);
+
+            if (!outOfBounds(position)) {
+                adjacentPawnsCoords.add(position);
             }
         }
+        return adjacentPawnsCoords;
+    }
+
+    public ArrayList<Coordinate> getAdjacentEnemyPawnsCoords(Coordinate coord, Team team) {
+        ArrayList<Coordinate> adjacentCoords = getAdjacentCoords(coord);
+        ArrayList<Coordinate> enemyCoords = new ArrayList<>();
+
+        for (Coordinate adjCoord : adjacentCoords) {
+            // Only add if not empty and team is different
+            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY())) {
+                GameElement element = getElement(adjCoord.getX(), adjCoord.getY());
+                if (((Pawn) element).getTeam() != team) {
+                    enemyCoords.add(adjCoord);
+                }
+            }
+        }
+        return enemyCoords;
+    }
+
+    public Coordinate getFarthestVisibleCoord(Coordinate coord, int[] vect) {
+        Coordinate position = new Coordinate(coord);
+
+        do {
+            position.increment(vect[0], vect[1]);
+        } while (!outOfBounds(position) && isEmptyAt(position.getX(), position.getY()));
+
+        if (outOfBounds(position)) {
+            // goes back to prev position
+            position.increment(-vect[0], -vect[1]);
+            // doesn't return if original coords
+            if (!position.equals(coord)) {
+                return position;
+            }
+        } else {
+            return position;
+        }
+        return null;
+    }
+
+    public ArrayList<Coordinate> getFarthestVisibleCoords(Coordinate coord) {
+        ArrayList<Coordinate> farthestVisibleCells = new ArrayList<>();
+
+        for (final int[] VECT : DIRECTIONS) {
+            Coordinate visibleCoord = getFarthestVisibleCoord(coord, VECT);
+            if (visibleCoord != null)
+                farthestVisibleCells.add(visibleCoord);
+        }
+        return farthestVisibleCells;
+    }
+
+    public ArrayList<Coordinate> getFarthestVisibleEnemyCoords(Coordinate coord, Team currentTeam) {
+        ArrayList<Coordinate> enemiesCoords = new ArrayList<>();
+
+        for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
+            // if there is enemy at coordinates
+            if (!isEmptyAt(farCoord.getX(), farCoord.getY()) && ((Pawn) getElement(farCoord.getX(), farCoord.getY())).getTeam() != currentTeam) {
+                enemiesCoords.add(farCoord);
+            }
+        }
+        return enemiesCoords;
+    }
+
+    public boolean isAnyEnemyVisible(Coordinate coord, Team currentTeam) {
+        return getFarthestVisibleEnemyCoords(coord, currentTeam).size() > 0;
+    }
+
+    public boolean wouldBeSurroundedIfEnemyAt(Coordinate pawnCoord, Coordinate enemyCoord, Pawn pawn) {
+
+        Team team = pawn.getTeam();
+
+        if (pawn instanceof King) {
+            return this.countEnemyNeighbors(pawnCoord, team) == 3;
+        } else {
+            for (Coordinate coordAdj : this.getAdjacentEnemyPawnsCoords(pawnCoord, team)) {
+                if (enemyCoord.getX() == coordAdj.getX() || enemyCoord.getY() == coordAdj.getY())
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ArrayList<Coordinate> getEmptyNeighbors(Coordinate coord) {
+        ArrayList<Coordinate> emptyCoords = new ArrayList<>();
+
+        for (Coordinate emptyCoord : getAdjacentCoords(coord)) {
+            if (this.isEmptyAt(emptyCoord.getX(), emptyCoord.getY())) {
+                emptyCoords.add(emptyCoord);
+            }
+        }
+
+        return emptyCoords;
+    }
+
+    public int countEnemyNeighbors(Coordinate coord, Team team) {
+        ArrayList<Coordinate> coords = getAdjacentEnemyPawnsCoords(coord, team);
+
+        if (coords != null)
+            return coords.size();
+
+        return 0;
+    }
+
+    public int captureCount(Coordinate coord, Team team) {
+        int count = 0;
+
+        for (Coordinate enemyCoord : getAdjacentEnemyPawnsCoords(coord, team)) {
+            if (((Pawn) getElement(enemyCoord.getX(), enemyCoord.getY())).wouldBeSurroundedIfEnemyAt(coord)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int countVisibleBorder(Coordinate coord) {
+        int counter = 0;
+        for (Coordinate farCoord : getFarthestVisibleCoords(coord)) {
+            boolean isBorders = (farCoord.getX() == 0 || farCoord.getX() == this.nbRows - 1) || (farCoord.getY() == 0 || farCoord.getY() == this.nbCols - 1);
+            if (this.isEmptyAt(farCoord.getX(), farCoord.getY()) && isBorders) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }
