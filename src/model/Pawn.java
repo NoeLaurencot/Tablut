@@ -2,9 +2,12 @@ package model;
 
 import boardifier.control.ActionFactory;
 import boardifier.control.Controller;
+import boardifier.control.Logger;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.action.ActionList;
+import boardifier.model.animation.Animation;
+import boardifier.model.animation.AnimationStep;
 
 import java.util.List;
 
@@ -82,6 +85,23 @@ public abstract class Pawn extends GameElement {
     }
 
     public abstract boolean isSurrounded();
+
+    public void update() {
+        // if must be animated, move the pawn
+        if (animation != null) {
+            AnimationStep step = animation.next();
+            if (step == null) {
+                animation = null;
+            }
+            else if (step == Animation.NOPStep) {
+                Logger.debug("nothing to do", this);
+            }
+            else {
+                Logger.debug("move animation", this);
+                setLocation(step.getInt(0), step.getInt(1));
+            }
+        }
+    }
 
 
     /**
