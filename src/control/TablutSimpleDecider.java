@@ -3,6 +3,7 @@ package control;
 import boardifier.control.ActionFactory;
 import boardifier.control.Controller;
 import boardifier.control.Decider;
+import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
 import boardifier.model.animation.AnimationTypes;
@@ -84,7 +85,7 @@ public class TablutSimpleDecider extends Decider {
 //        System.out.println("Repetition score: " + repetitiveScore);
 
 //        System.out.println("Best move: " + bestMove.humanReadable());
-        actionList = ActionFactory.generateMoveWithinContainer(control, model, pawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
+        actionList = ActionFactory.generateMoveWithinContainer(control, model, bestPawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actionList.setDoEndOfTurn(true);
 
         return actionList;
@@ -331,6 +332,7 @@ public class TablutSimpleDecider extends Decider {
                 continue;
             }
 
+            // checks if there is an enemy that can go to the empty adjacent cell next turn
             for (int[] vect : directions) {
                 Coordinate cursor = new Coordinate(emptyCoord);
 
@@ -352,8 +354,8 @@ public class TablutSimpleDecider extends Decider {
                         continue;
                     }
 
-                    Pawn blocker = (Pawn) board.getElement(cursor.getX(), cursor.getY());
-                    if (blocker.getTeam() != team) {
+                    GameElement blocker = board.getElement(cursor.getX(), cursor.getY());
+                    if (blocker instanceof Pawn && ((Pawn) blocker).getTeam() != team) {
                         return true;
                     }
                     break;
