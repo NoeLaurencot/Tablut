@@ -44,7 +44,7 @@ public class TablutStageView extends GameStageView {
 
     @Override
     public void createLooks() {
-        final double SCALE = 0.9;
+        final double SCALE = 0.9; // scale for icons
         TablutStageModel model = (TablutStageModel) gameStageModel;
         TablutBoard board = model.getBoard();
 
@@ -64,10 +64,9 @@ public class TablutStageView extends GameStageView {
                     KingLook look = new KingLook((int) (this.cellSize * SCALE), king);
                     addLook(look);
 
-                    Fortress fortress = (Fortress) board.getElement(i, j);
+                    Fortress fortress = (Fortress) board.getElement(i, j, 0);
                     ThroneLook fLook = new ThroneLook((int) (this.cellSize * SCALE), fortress);
                     addLook(fLook);
-
                 } else if (board.getElement(i, j) instanceof Soldier) {
                     Soldier soldier = (Soldier) board.getElement(i, j);
                     SoldierLook look = new SoldierLook((int) (this.cellSize * SCALE), soldier);
