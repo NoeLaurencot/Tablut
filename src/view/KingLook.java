@@ -10,10 +10,9 @@ import model.King;
 public class KingLook extends ElementLook {
     private ImageView imageView;
 
-    public KingLook(int radius, GameElement element) {
+    public KingLook(int size, GameElement element) {
         // Pawn look is constituted of a single character, so shape size = 1x1
         super(element);
-        King king = (King) element;
 
         Image image = new Image(
                 getClass().getResource("/king.png").toExternalForm()
@@ -21,11 +20,11 @@ public class KingLook extends ElementLook {
 
         imageView = new ImageView(image);
 
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
 
-        imageView.setY(-25);
-        imageView.setX(-25);
+        imageView.setX(-(size / 2.0));
+        imageView.setY(-(size / 2.0));
 
         addNode(imageView);
     }

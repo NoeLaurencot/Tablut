@@ -12,7 +12,7 @@ import model.Team;
 public class SoldierLook extends ElementLook {
     private ImageView imageView;
 
-    public SoldierLook(int radius, GameElement element) {
+    public SoldierLook(int size, GameElement element) {
         super(element);
         Soldier soldier = (Soldier) element; // unless you did somthing stupid in HoleStageView, it IS really a Pawn instance !
 
@@ -26,11 +26,11 @@ public class SoldierLook extends ElementLook {
 
         imageView = new ImageView(image);
 
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
 
-        imageView.setY(-25);
-        imageView.setX(-25);
+        imageView.setX(-(size / 2.0));
+        imageView.setY(-(size / 2.0));
 
         imageView.setSmooth(true);
 
