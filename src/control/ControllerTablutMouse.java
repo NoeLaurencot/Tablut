@@ -87,7 +87,6 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
         boolean[][] reach = board.getReachableCells();
 
         if (dest != null) {
-            System.out.println("clicked board at row: " + dest[0] + " col: " + dest[1]);
             if (reach[dest[0]][dest[1]]) {
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
                 // set the lastMove to do afterPlay at the endOfTurn
