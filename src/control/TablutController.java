@@ -7,11 +7,13 @@ import boardifier.model.action.ActionList;
 import boardifier.view.View;
 import model.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class TablutController extends Controller {
 
     boolean firstPlayer;
+    private Move lastMove;
 
     public TablutController(Model model, View view) {
         super(model, view);
@@ -22,6 +24,7 @@ public class TablutController extends Controller {
 
     public void endOfTurn() {
 
+        afterPlay(lastMove.destX, lastMove.destY);
         // use the default method to compute next player
         model.setNextPlayer();
         // get the new player
@@ -50,7 +53,7 @@ public class TablutController extends Controller {
             } else if (decider instanceof TablutSimpleDecider) {
                 bestMove = ((TablutSimpleDecider) decider).bestMove;
             }
-            afterPlay(bestMove.destX, bestMove.destY);
+            this.lastMove = bestMove;
         } else {
             Logger.debug("PLAYER PLAYS");
         }
@@ -99,6 +102,10 @@ public class TablutController extends Controller {
                 ennemyPawn.setVisible(false);
             }
         }
+    }
+
+    public void setLastMove(Move move) {
+        this.lastMove = move;
     }
 
     public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {

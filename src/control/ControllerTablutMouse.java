@@ -16,11 +16,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Tab;
 import javafx.scene.input.*;
 
-import model.TablutBoard;
-import model.TablutStageModel;
-import model.Pawn;
-import model.Team;
-import model.Fortress;
+import model.*;
 
 import java.util.List;
 
@@ -94,6 +90,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
             System.out.println("clicked board at row: " + dest[0] + " col: " + dest[1]);
             if (reach[dest[0]][dest[1]]) {
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
+                // set the lastMove to do afterPlay at the endOfTurn
+                ((TablutController) (this.control)).setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
 
                 stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
                 selectedPawn.unselect();
@@ -120,8 +118,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
     }
 
     private void handlePawnClick(List<GameElement> list) {
-        TablutBoard board = (TablutBoard) list.get(0);
-        Pawn pawn = (Pawn) list.get(list.size()-1);
+        TablutBoard board = (TablutBoard) list.getFirst();
+        Pawn pawn = (Pawn) list.getLast();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
         Team curTeam;
