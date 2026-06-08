@@ -75,7 +75,7 @@ public class TablutBoard extends ContainerElement {
         for (int i = 0; i < this.grid.length; i++) {
             for (int j = 0; j < this.grid[i].length; j++) {
                 List<GameElement> cell = grid[i][j];
-                if (cell.isEmpty()) {
+                if (cell.isEmpty() || cell.getFirst() instanceof Fortress) {
                     continue;
                 }
 

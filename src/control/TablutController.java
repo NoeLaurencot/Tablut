@@ -90,7 +90,7 @@ public class TablutController extends Controller {
             if (position[0] < 0 || position[0] > 8) continue;
             if (position[1] < 0 || position[1] > 8) continue;
 
-            if (board.isEmptyAt(position[0], position[1]) && !gameStage.isFortressAt(position[0], position[1]))
+            if (board.isPawnAt(position[0], position[1]) || board.isFortressAt(position[0], position[1]))
                 continue;
 
             Pawn otherPawn = (Pawn) board.getElement(position[0], position[1]);
