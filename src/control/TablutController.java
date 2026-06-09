@@ -35,6 +35,7 @@ public class TablutController extends Controller {
         // change the text of the TextElement
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
+        addLastMoveToHistory();
         if (p.getType() == Player.COMPUTER) {
             Logger.debug("COMPUTER PLAYS");
 
@@ -55,6 +56,7 @@ public class TablutController extends Controller {
             } else if (decider instanceof TablutSimpleDecider) {
                 bestMove = ((TablutSimpleDecider) decider).bestMove;
             }
+            lastMove = bestMove;
 
             addAfterPlayActions(bestMove, actionList);
 
@@ -67,9 +69,6 @@ public class TablutController extends Controller {
         } else {
             Logger.debug("PLAYER PLAYS");
         }
-
-        MoveElement moveElement = new MoveElement(lastMove, stageModel);
-        stageModel.addMoveInHistory(moveElement);
     }
 
     public void addAfterPlayActions(Move move, ActionList actionList) {
@@ -110,6 +109,12 @@ public class TablutController extends Controller {
 
     public void setLastMove(Move move) {
         this.lastMove = move;
+    }
+
+    public void addLastMoveToHistory() {
+        TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
+        MoveElement moveElement = new MoveElement(lastMove, gameStage);
+        gameStage.addMoveInHistory(moveElement);
     }
 
     public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {

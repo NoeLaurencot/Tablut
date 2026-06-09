@@ -91,6 +91,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
         if (dest != null) {
             if (reach[dest[0]][dest[1]]) {
                 Move move = new Move(this.selectedCoords.getX(), this.selectedCoords.getY(), dest[0], dest[1]);
+                
+                tablutController.setLastMove(move);
 
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
 
@@ -103,6 +105,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
 
                 tablutController.addAfterPlayActions(move, actions);
+
 
                 ActionPlayer play = new ActionPlayer(model, this.control, actions);
 
