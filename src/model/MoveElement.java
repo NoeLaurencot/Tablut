@@ -12,8 +12,8 @@ public class MoveElement extends TextElement {
     private Move move;
 
     public MoveElement(Move move, GameStageModel gameStageModel) {
-        this.move = move;
         super(move.toStringHistory(), gameStageModel);
+        this.move = move;
     }
 
     public Move getMove() {

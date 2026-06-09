@@ -47,10 +47,8 @@ public class TablutController extends Controller {
 
             ActionList actionList = decider.decide();
 
-            ActionPlayer play = new ActionPlayer(model, this, actionList);
 
             waitMinimumCooldown(COOLDOWN, timestamp);
-            play.start();
 
             if (decider instanceof TablutMinMaxDecider) {
                 bestMove = ((TablutMinMaxDecider) decider).bestMove;
@@ -60,7 +58,7 @@ public class TablutController extends Controller {
 
             addAfterPlayActions(bestMove, actionList);
 
-            play = new ActionPlayer(model, this, actionList);
+            ActionPlayer play = new ActionPlayer(model, this, actionList);
 
             waitMinimumCooldown(COOLDOWN, timestamp);
 
@@ -69,7 +67,7 @@ public class TablutController extends Controller {
         } else {
             Logger.debug("PLAYER PLAYS");
         }
-        
+
         MoveElement moveElement = new MoveElement(lastMove, stageModel);
         stageModel.addMoveInHistory(moveElement);
     }
