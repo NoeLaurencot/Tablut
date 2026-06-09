@@ -166,7 +166,7 @@ public class TablutBoard extends ContainerElement {
         for (int i = 0; i < nbRows; i++) {
             map[i] = new short[nbCols];
             for (int j = 0; j < nbCols; j++) {
-                Pawn pawn = (Pawn) getElement(i, j);
+                Pawn pawn = (Pawn) getLastElement(i, j);
 
                 if (pawn instanceof Soldier) {
                     if (pawn.getTeam() == Team.SWEDISH) {
@@ -192,6 +192,10 @@ public class TablutBoard extends ContainerElement {
 
     public void setGrid(short[][] map) {
         reset();
+
+        for (Fortress fortress : getGameStage().getFortresses()) {
+            addElement(new Fortress(fortress.getX(), fortress.getY(), getGameStage()), (int)fortress.getX(), (int)fortress.getY());
+        }
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {

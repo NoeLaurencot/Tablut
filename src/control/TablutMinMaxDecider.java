@@ -119,7 +119,7 @@ public class TablutMinMaxDecider extends Decider {
         }
         pawn = (Pawn) board.getElement(bestMove.sourceX, bestMove.sourceY);
 
-        ActionList actions = ActionFactory.generateMoveWithinContainer(model, pawn, (int)bestMove.destX, (int)bestMove.destY);
+        ActionList actions = ActionFactory.generateMoveWithinContainer(control, model, pawn, (int)bestMove.destX, (int)bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actions.setDoEndOfTurn(true);
         return actions;
     }
