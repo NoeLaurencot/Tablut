@@ -110,6 +110,8 @@ public class TablutController extends Controller {
 
     public void addLastMoveToHistory() {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
+        if (lastMove == null) return;
+
         MoveElement moveElement = new MoveElement(lastMove, gameStage);
         gameStage.addMoveInHistory(moveElement);
     }
