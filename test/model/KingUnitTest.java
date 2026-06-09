@@ -147,4 +147,46 @@ public class KingUnitTest {
 
         assertTrue(king.wouldBeSurroundedIfEnemyAt(new Coordinate(4, 3)));
     }
+
+    @Test
+    public void testIsSurrounded_WhenNotEnoughEnemies() {
+        Soldier e1 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+        Soldier e2 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+
+        tablutBoard.addElement(e1, 4, 5);
+        tablutBoard.addElement(e2, 5, 4);
+
+        assertFalse(king.isSurrounded());
+    }
+
+    @Test
+    public void testWouldBeSurroundedIfEnemyAt_WhenOnlyTwoEnemies() {
+        Soldier e1 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+        Soldier e2 = new Soldier(Team.MUSCOVITES, tablutStageModel);
+
+        tablutBoard.addElement(e1, 4, 5);
+        tablutBoard.addElement(e2, 5, 4);
+
+        assertFalse(king.wouldBeSurroundedIfEnemyAt(new Coordinate(4, 3)));
+    }
+
+    @Test
+    public void testGetLegalMoves_WhenBlockedByAllies() {
+        Soldier a1 = new Soldier(Team.SWEDISH, tablutStageModel);
+        Soldier a2 = new Soldier(Team.SWEDISH, tablutStageModel);
+        Soldier a3 = new Soldier(Team.SWEDISH, tablutStageModel);
+        Soldier a4 = new Soldier(Team.SWEDISH, tablutStageModel);
+
+        tablutBoard.addElement(a1, 4, 5);
+        tablutBoard.addElement(a2, 5, 4);
+        tablutBoard.addElement(a3, 3, 4);
+        tablutBoard.addElement(a4, 4, 3);
+
+        tablutStageModel.setKingMoveMode(KingMoveMode.LIMITLESS);
+
+        List<Coordinate> moves = king.getLegalMoves();
+
+        assertEquals(0, moves.size());
+    }
+
 }

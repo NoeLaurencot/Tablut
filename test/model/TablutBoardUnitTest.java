@@ -15,6 +15,7 @@ public class TablutBoardUnitTest {
     public void init() {
         tablutStageModel = Mockito.mock(TablutStageModel.class);
         tablutBoard = new TablutBoard(0, 0, tablutStageModel);
+
         Mockito.when(tablutStageModel.getBoard()).thenReturn(tablutBoard);
         Mockito.when(tablutStageModel.isFortressAt(Mockito.anyInt(), Mockito.anyInt())).thenReturn(false);
     }
