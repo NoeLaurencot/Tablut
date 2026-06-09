@@ -166,10 +166,10 @@ public class TablutBoard extends ContainerElement {
         for (int i = 0; i < nbRows; i++) {
             map[i] = new short[nbCols];
             for (int j = 0; j < nbCols; j++) {
-                Pawn pawn = (Pawn) getLastElement(i, j);
+                GameElement pawn = getLastElement(i, j);
 
-                if (pawn instanceof Soldier) {
-                    if (pawn.getTeam() == Team.SWEDISH) {
+                if (pawn instanceof Soldier s) {
+                    if (s.getTeam() == Team.SWEDISH) {
                         map[i][j] = 1;
                     } else {
                         map[i][j] = 2;
