@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class ControllerTablutMouse extends ControllerMouse implements EventHandler<MouseEvent> {
     private Pawn selectedPawn;
+    private Coordinate selectedCoords;
 
     public ControllerTablutMouse(Model model, View view, Controller control) {
         super(model, view, control);
@@ -89,6 +90,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
         if (dest != null) {
             if (reach[dest[0]][dest[1]]) {
+                Move move = new Move(this.selectedCoords.getX(), this.selectedCoords.getY(), dest[0], dest[1]);
+
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
                 // set the lastMove to do afterPlay at the endOfTurn
                 tablutController.setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
@@ -99,7 +102,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 selectedPawn = null;
                 actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
 
-                tablutController.addAfterPlayActions(dest[0], dest[1], actions);
+                tablutController.addAfterPlayActions(move, actions);
 
                 ActionPlayer play = new ActionPlayer(model, this.control, actions);
 
@@ -141,6 +144,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
             int[] coord = board.getElementCell(pawn);
             board.setValidCells(coord[0], coord[1]);
+
+            this.selectedCoords = new Coordinate(coord[0], coord[1]);
         }
 
 //        System.out.println("clicked pawn : " + list.get(1));

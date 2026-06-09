@@ -4,6 +4,7 @@ import boardifier.control.*;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
+import boardifier.model.action.RemoveFromContainerAction;
 import boardifier.view.View;
 import model.*;
 
@@ -42,33 +43,37 @@ public class TablutController extends Controller {
 
             ActionList actionList = decider.decide();
 
-            ActionPlayer play = new ActionPlayer(model, this, actionList);
-
-            waitMinimumCooldown(COOLDOWN, timestamp);
-
-            play.start();
-
             if (decider instanceof TablutMinMaxDecider) {
                 bestMove = ((TablutMinMaxDecider) decider).bestMove;
             } else if (decider instanceof TablutSimpleDecider) {
                 bestMove = ((TablutSimpleDecider) decider).bestMove;
             }
+
+            addAfterPlayActions(bestMove, actionList);
+
+            ActionPlayer play = new ActionPlayer(model, this, actionList);
+
+            waitMinimumCooldown(COOLDOWN, timestamp);
+
+            play.start();
             this.lastMove = bestMove;
         } else {
             Logger.debug("PLAYER PLAYS");
         }
     }
 
-    // TODO: remake this function so it thinks there is a pawn at dest, then put actions in the actionList
-    public void addAfterPlayActions(int destRow, int destCol, ActionList actionList) {
+    public void addAfterPlayActions(Move move, ActionList actionList) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
-        Pawn movedPawn = (Pawn) board.getLastElement(destRow, destCol);
+        Pawn movedPawn = (Pawn) board.getLastElement(move.sourceX, move.sourceY);
 
         for (int[] dir : directions) {
-            int nextRow = destRow + dir[0];
-            int nextCol = destCol + dir[1];
+            int nextRow = move.destX + dir[0];
+            int nextCol = move.destY + dir[1];
+
+            if (nextRow == move.sourceX) continue;
+            if (nextCol == move.sourceY) continue;
 
             if (board.outOfBounds(new Coordinate(nextRow, nextCol))) continue;
             if (!board.isPawnAt(nextRow, nextCol)) continue;
@@ -87,17 +92,11 @@ public class TablutController extends Controller {
                     && ((Pawn) board.getLastElement(beyondRow, beyondCol)).getTeam() == movedPawn.getTeam();
             boolean hasFortressBeyond = board.isFortressAt(beyondRow, beyondCol);
 
-            if ((hasFriendlyPawnBeyond || hasFortressBeyond) && enemyPawn.shouldDie()) {
-                capturePawn(enemyPawn);
+            if ((hasFriendlyPawnBeyond || hasFortressBeyond) && enemyPawn.wouldBeSurroundedIfEnemyAt(new Coordinate(move.destX, move.destY))) {
+                actionList.addSingleAction(new RemoveFromContainerAction(model, enemyPawn));
+                enemyPawn.setVisible(false);
             }
         }
-    }
-
-    private void capturePawn(Pawn pawn) {
-        ActionList actions = ActionFactory.generateRemoveFromContainer(model, pawn);
-        ActionPlayer play = new ActionPlayer(model, this, actions);
-        play.start();
-        pawn.setVisible(false);
     }
 
     public void setLastMove(Move move) {

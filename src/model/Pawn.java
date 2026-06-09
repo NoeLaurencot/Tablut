@@ -21,11 +21,6 @@ public abstract class Pawn extends GameElement {
 
     public Pawn(Team team, GameStageModel gameStageModel) {
         super(gameStageModel);
-        /*
-        TO FULFILL (done?):
-            - register a new type of element for the pawns
-            - initialize attributes
-         */
 
         this.team = team;
     }
