@@ -8,12 +8,14 @@ import boardifier.model.action.ActionList;
 import boardifier.model.action.RemoveFromContainerAction;
 import boardifier.view.View;
 import model.*;
+import view.TablutStageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TablutController extends Controller {
 
+    private Move lastMove;
     boolean firstPlayer;
 
     public TablutController(Model model, View view) {
@@ -45,6 +47,11 @@ public class TablutController extends Controller {
 
             ActionList actionList = decider.decide();
 
+            ActionPlayer play = new ActionPlayer(model, this, actionList);
+
+            waitMinimumCooldown(COOLDOWN, timestamp);
+            play.start();
+
             if (decider instanceof TablutMinMaxDecider) {
                 bestMove = ((TablutMinMaxDecider) decider).bestMove;
             } else if (decider instanceof TablutSimpleDecider) {
@@ -53,14 +60,12 @@ public class TablutController extends Controller {
 
             addAfterPlayActions(bestMove, actionList);
 
-            ActionPlayer play = new ActionPlayer(model, this, actionList);
-
-            waitMinimumCooldown(COOLDOWN, timestamp);
-
-            play.start();
         } else {
             Logger.debug("PLAYER PLAYS");
         }
+        
+        MoveElement moveElement = new MoveElement(lastMove, stageModel);
+        stageModel.addMoveInHistory(moveElement);
     }
 
     public void addAfterPlayActions(Move move, ActionList actionList) {
@@ -97,6 +102,10 @@ public class TablutController extends Controller {
                 enemyPawn.setVisible(false);
             }
         }
+    }
+
+    public void setLastMove(Move move) {
+        this.lastMove = move;
     }
 
     public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {

@@ -5,6 +5,7 @@ import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
 
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -43,6 +44,7 @@ public class TablutStageFactory extends StageElementsFactory {
         
         setupFortresses();
         setupPawns();
+        setupMoveHistory();
 
     }
 
@@ -90,7 +92,7 @@ public class TablutStageFactory extends StageElementsFactory {
 
     private void setupFortresses() {
         ArrayList<Fortress> fortressList = new ArrayList<>();
-
+        
         int x = stageModel.getBoard().getNbCols();
         int y = stageModel.getBoard().getNbRows();
 
@@ -101,5 +103,24 @@ public class TablutStageFactory extends StageElementsFactory {
         fortressList.add(new Fortress(y/2, x/2, stageModel));
     
         stageModel.setFortresses(fortressList);
+    }
+
+    private void setupMoveHistory() {
+        MoveHistory moveHistory = new MoveHistory(600, 0, stageModel);
+        
+        int r = moveHistory.getNbRows();
+        int c = moveHistory.getNbCols();
+
+        List<MoveElement> emptyMoves = new ArrayList<>();
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0 ; j < c; j++) {
+                MoveElement moveElement = new MoveElement(new Move(), stageModel);
+                emptyMoves.add(moveElement);
+            }  
+        }
+
+        stageModel.setMoveHistory(moveHistory);
+        stageModel.setEmptyMovesHistory(emptyMoves);
     }
 }

@@ -48,8 +48,18 @@ public class Move {
         );
     }
 
+    public String toStringHistory() {
+        if (sourceX == destX && sourceY == destY) return "";
+        return humanReadableHistory();
+    }
+
     public String humanReadable() {
         char[] charTable = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
         return ("" + charTable[this.sourceY] + (this.sourceX+1) + " -> " + charTable[this.destY] + (this.destX+1));
+    }
+
+    public String humanReadableHistory() {
+        char[] charTable = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+        return ("" + charTable[this.sourceY] + (this.sourceX+1) + charTable[this.destY] + (this.destX+1));
     }
 }

@@ -3,6 +3,7 @@ package model;
 import boardifier.model.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TablutStageModel defines the model for the single stage in "The Tablut". Indeed,
@@ -47,8 +48,8 @@ public class TablutStageModel extends GameStageModel {
     private Pawn[] pawns;
     private ArrayList<Fortress> fortresses;
     private TextElement playerName;
+    private MoveHistory moveHistory;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
-    //private ContainerElement mainContainer;
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
@@ -89,6 +90,10 @@ public class TablutStageModel extends GameStageModel {
         return playerName;
     }
 
+    public MoveHistory getMoveHistory() {
+        return moveHistory;
+    }
+
     public void setBoard(TablutBoard tb) {
         board = tb;
         addContainer(board);
@@ -114,6 +119,21 @@ public class TablutStageModel extends GameStageModel {
         playerName = pn;
         addElement(playerName);
     }
+
+    public void setMoveHistory(MoveHistory mh) {
+        moveHistory = mh;
+        addElement(moveHistory);
+    }
+
+    public void setEmptyMovesHistory(List<MoveElement> emptyMoves) {
+        for (MoveElement moveElement : emptyMoves) {
+            moveHistory.addEmptyMove(moveElement);
+            addElement(moveElement);
+        }
+
+        moveHistory.resetInsertMove();
+    }
+
 
     private void setupCallbacks() {
         onMoveInContainer( (element, containerDest, rowDest, colDest) -> {
@@ -231,5 +251,13 @@ public class TablutStageModel extends GameStageModel {
 
     public void setMode(int mode) {
         this.mode = mode;
+    }
+
+    public void addMoveInHistory(Move move) {
+        moveHistory.addMove(move);
+    }
+
+    public void addMoveInHistory(MoveElement moveElement) {
+        moveHistory.addMove(moveElement);
     }
 }
