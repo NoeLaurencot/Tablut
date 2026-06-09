@@ -252,7 +252,6 @@ public class TablutSimpleDecider extends Decider {
                 continue;
             }
 
-            // TODO: check if better without this check
             if (!board.isEmptyAt(winCoord.getX(), winCoord.getY())) {
                 continue;
             }
@@ -287,7 +286,6 @@ public class TablutSimpleDecider extends Decider {
                 continue;
             }
 
-            // TODO: check if better without this check
             if (!board.isEmptyAt(winCoord.getX(), winCoord.getY())) {
                 continue;
             }
