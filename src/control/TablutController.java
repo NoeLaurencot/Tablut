@@ -1,6 +1,7 @@
 package control;
 
 import boardifier.control.*;
+import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -9,16 +10,17 @@ import boardifier.view.View;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TablutController extends Controller {
 
     boolean firstPlayer;
-    private Move lastMove;
 
     public TablutController(Model model, View view) {
         super(model, view);
         setControlAction(new TablutControllerAction(model, view, this));
         setControlMouse(new ControllerTablutMouse(model, view, this));
+        setControlKey(new ControllerTablutKey(model, view, this));
         firstPlayer = true;
     }
 
@@ -35,7 +37,7 @@ public class TablutController extends Controller {
             Logger.debug("COMPUTER PLAYS");
 
             Move bestMove = null;
-            final int COOLDOWN = 500;
+            final int COOLDOWN = 1000; // Don't put more than 3 seconds or OS thinks app doesn't respond
 
             Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
 
@@ -56,7 +58,6 @@ public class TablutController extends Controller {
             waitMinimumCooldown(COOLDOWN, timestamp);
 
             play.start();
-            this.lastMove = bestMove;
         } else {
             Logger.debug("PLAYER PLAYS");
         }
@@ -67,6 +68,8 @@ public class TablutController extends Controller {
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();
         Pawn movedPawn = (Pawn) board.getLastElement(move.sourceX, move.sourceY);
+
+        System.out.println(board.getLastElement(move.sourceX, move.sourceY) + " in " + move.destX + " " + move.destY + " surrounded by:");
 
         for (int[] dir : directions) {
             int nextRow = move.destX + dir[0];
@@ -79,6 +82,10 @@ public class TablutController extends Controller {
             if (!board.isPawnAt(nextRow, nextCol)) continue;
 
             Pawn enemyPawn = (Pawn) board.getLastElement(nextRow, nextCol);
+            List<GameElement> list = board.getElements(nextRow, nextCol);
+
+//            System.out.println("\t" + enemyPawn);
+            System.out.println("\t" + list);
 
             if (enemyPawn.getTeam() == movedPawn.getTeam()) continue;
 
@@ -97,10 +104,7 @@ public class TablutController extends Controller {
                 enemyPawn.setVisible(false);
             }
         }
-    }
-
-    public void setLastMove(Move move) {
-        this.lastMove = move;
+        System.out.println();
     }
 
     public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {
@@ -139,11 +143,11 @@ public class TablutController extends Controller {
         long timeElapsed = System.nanoTime() - timestamp;
 
         // from nanosecond to milisecond
-        timeElapsed *= 10e-3;
+        timeElapsed *= 10e-6;
 
         if (timeElapsed < cooldown) {
             try {
-                Thread.sleep(timeElapsed + (cooldown - timeElapsed));
+                Thread.sleep(cooldown - timeElapsed);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

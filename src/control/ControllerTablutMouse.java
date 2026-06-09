@@ -93,8 +93,6 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 Move move = new Move(this.selectedCoords.getX(), this.selectedCoords.getY(), dest[0], dest[1]);
 
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
-                // set the lastMove to do afterPlay at the endOfTurn
-                tablutController.setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
 
                 stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
                 selectedPawn.unselect();
