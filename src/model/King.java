@@ -80,6 +80,7 @@ public class King extends Pawn {
 
             if (model.isFortressAt(position[0], position[1]) && position[0] == 4 && position[1] == 4) {
                 ennemyNeighbors++;
+                continue;
             }
             Pawn pawn = (Pawn) board.getElement(position[0], position[1]);
 //            System.out.println(position[0] + " " + position[1]);
@@ -106,7 +107,7 @@ public class King extends Pawn {
         int x = getXInBoard();
         int y = getYInBoard();
 
-        boolean isCoordAdj = Math.abs(coord.getX() - x) + Math.abs(coord.getY() - x) == 1;
+        boolean isCoordAdj = Math.abs(coord.getX() - x) + Math.abs(coord.getY() - y) == 1;
 
         return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture - 1 && isCoordAdj;
     }

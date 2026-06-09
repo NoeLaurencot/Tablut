@@ -67,7 +67,7 @@ public class TablutSimpleDecider extends Decider {
 
         for (Move move : moves) {
 
-            pawn = (Pawn) board.getElement(move.sourceX, move.sourceY);
+            pawn = (Pawn) board.getLastElement(move.sourceX, move.sourceY);
             switch (pawn.getTeam()) {
                 case SWEDISH -> score = evaluateSwedish(board, move, pawn);
                 case MUSCOVITES -> score = evaluateMuscovites(board, move, pawn);
@@ -82,9 +82,10 @@ public class TablutSimpleDecider extends Decider {
 
         addMoveToHistory(bestMove);
         repetitiveScore = computeRepetitiveScore();
-//        System.out.println("Repetition score: " + repetitiveScore);
 
-//        System.out.println("Best move: " + bestMove.humanReadable());
+        System.out.println("Repetition score: " + repetitiveScore);
+
+        System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(control, model, bestPawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actionList.setDoEndOfTurn(true);
 
@@ -94,7 +95,6 @@ public class TablutSimpleDecider extends Decider {
     public int evaluateSwedish(TablutBoard board, Move move, Pawn pawn) {
         Team team = pawn.getTeam();
         int score = 0;
-        int type = pawn.getType();
         King king = board.findKing();
         int kingX = king.getXInBoard();
         int kingY = king.getYInBoard();
