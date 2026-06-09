@@ -80,8 +80,6 @@ public class TablutController extends Controller {
         TablutBoard board = gameStage.getBoard();
         Pawn movedPawn = (Pawn) board.getLastElement(move.sourceX, move.sourceY);
 
-        System.out.println(board.getLastElement(move.sourceX, move.sourceY) + " in " + move.destX + " " + move.destY + " surrounded by:");
-
         for (int[] dir : directions) {
             int nextRow = move.destX + dir[0];
             int nextCol = move.destY + dir[1];
@@ -92,10 +90,6 @@ public class TablutController extends Controller {
             if (!board.isPawnAt(nextRow, nextCol)) continue;
 
             Pawn enemyPawn = (Pawn) board.getLastElement(nextRow, nextCol);
-            List<GameElement> list = board.getElements(nextRow, nextCol);
-
-//            System.out.println("\t" + enemyPawn);
-            System.out.println("\t" + list);
 
             if (enemyPawn.getTeam() == movedPawn.getTeam()) continue;
 
@@ -114,7 +108,6 @@ public class TablutController extends Controller {
                 enemyPawn.setVisible(false);
             }
         }
-        System.out.println();
     }
 
     public void setLastMove(Move move) {
@@ -153,6 +146,8 @@ public class TablutController extends Controller {
      * @param timestamp the timestamp taken before deciding best move
      */
     public void waitMinimumCooldown(int cooldown, long timestamp) {
+
+        if (cooldown <= 0) return;
 
         long timeElapsed = System.nanoTime() - timestamp;
 
