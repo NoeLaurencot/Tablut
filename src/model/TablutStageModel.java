@@ -67,7 +67,7 @@ public class TablutStageModel extends GameStageModel {
         int cnt = 0;
         for (Player player : this.model.getPlayers()) {
             if (player.getName().contains("computer")) {
-                aiModesUsed.add(AIMode.MINMAX);
+                aiModesUsed.add(AIMode.SIMPLE_EVAL);
                 cnt++;
             }
         }
