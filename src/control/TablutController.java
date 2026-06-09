@@ -39,7 +39,7 @@ public class TablutController extends Controller {
             Logger.debug("COMPUTER PLAYS");
 
             Move bestMove = null;
-            final int COOLDOWN = 1000; // Don't put more than 3 seconds or OS thinks app doesn't respond
+            final int COOLDOWN = 0; // Don't put more than 3 seconds or OS thinks app doesn't respond
 
             Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
 
@@ -59,6 +59,12 @@ public class TablutController extends Controller {
             }
 
             addAfterPlayActions(bestMove, actionList);
+
+            play = new ActionPlayer(model, this, actionList);
+
+            waitMinimumCooldown(COOLDOWN, timestamp);
+
+            play.start();
 
         } else {
             Logger.debug("PLAYER PLAYS");
