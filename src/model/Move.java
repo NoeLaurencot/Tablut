@@ -22,6 +22,13 @@ public class Move {
         this.destY = m.destY;
     }
 
+    public Move(MoveByte mb) {
+        this.sourceX = (int)mb.sourceX;
+        this.sourceY = (int)mb.sourceY;
+        this.destX = (int)mb.destX;
+        this.destY = (int)mb.destY;
+    }
+
     public Move reverse() {
         return new Move(destX, destY, sourceX, sourceY);
     }
