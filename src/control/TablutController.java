@@ -1,17 +1,14 @@
 package control;
 
 import boardifier.control.*;
-import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.RemoveFromContainerAction;
 import boardifier.view.View;
 import model.*;
-import view.TablutStageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TablutController extends Controller {
 
@@ -20,7 +17,7 @@ public class TablutController extends Controller {
 
     public TablutController(Model model, View view) {
         super(model, view);
-        setControlAction(new TablutControllerAction(model, view, this));
+        setControlAction(new ControllerTablutAction(model, view, this));
         setControlMouse(new ControllerTablutMouse(model, view, this));
         setControlKey(new ControllerTablutKey(model, view, this));
         firstPlayer = true;

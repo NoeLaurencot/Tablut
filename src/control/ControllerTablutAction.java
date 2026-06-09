@@ -2,11 +2,9 @@ package control;
 
 import boardifier.control.Controller;
 import boardifier.control.ControllerAction;
-import boardifier.model.GameException;
-import boardifier.model.Model;
+import boardifier.model.*;
 import boardifier.view.View;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import view.TablutView;
 
 /**
