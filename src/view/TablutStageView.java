@@ -2,8 +2,10 @@ package view;
 
 import boardifier.model.GameStageModel;
 import boardifier.view.ClassicBoardLook;
+import boardifier.view.GridLook;
 import boardifier.view.GameStageView;
 import boardifier.view.TextLook;
+
 import javafx.scene.paint.Color;
 import model.*;
 
@@ -37,7 +39,7 @@ public class TablutStageView extends GameStageView {
 
     public TablutStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
-        cellSize = 70;
+        cellSize = 60;
         oddColor = Color.rgb(194, 172, 151);
         evenColor = Color.BEIGE;
     }
@@ -78,5 +80,22 @@ public class TablutStageView extends GameStageView {
                 }
             }
         }
+
+        MoveHistory moveHistory = model.getMoveHistory();
+        GridLook moveHistoryLook = new MoveHistoryLook(moveHistory);
+        
+
+        r = moveHistory.getNbRows();
+        c = moveHistory.getNbCols();
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0 ; j < c; j++) {
+                MoveElement moveElement = (MoveElement) moveHistory.getElement(i, j);
+                TextLook moveLook = new MoveLook(moveElement);
+                addLook(moveLook);
+            }  
+        }
+
+        addLook(moveHistoryLook);
     }
 }

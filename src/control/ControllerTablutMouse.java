@@ -94,6 +94,8 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
                 ActionList actions = ActionFactory.generateMoveWithinContainer(this.control, model, selectedPawn, dest[0], dest[1], AnimationTypes.MOVE_LINEARPROP, 10);
 
+                tablutController.setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
+
                 stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
                 selectedPawn.unselect();
                 stageModel.unselectAll();
@@ -106,9 +108,11 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
                 play.start();
 
-                board.resetReachableCells(false);
+
             }
         }
+        board.resetReachableCells(false);
+
 
         // for debug
 //        for (int i = 0; i < 9; i++) {
