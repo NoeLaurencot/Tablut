@@ -106,7 +106,7 @@ public class King extends Pawn {
         int x = getXInBoard();
         int y = getYInBoard();
 
-        boolean isCoordAdj = coord.getX() == x+1 || coord.getX() == x-1 || coord.getY() == y+1 || coord.getY() == y-1;
+        boolean isCoordAdj = Math.abs(coord.getX() - x) + Math.abs(coord.getY() - x) == 1;
 
         return board.countEnemyNeighbors(new Coordinate(x, y), this.getTeam()) == solidersToCapture - 1 && isCoordAdj;
     }
