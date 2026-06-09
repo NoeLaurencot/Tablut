@@ -75,8 +75,7 @@ public class TablutController extends Controller {
             int nextRow = move.destX + dir[0];
             int nextCol = move.destY + dir[1];
 
-            if (nextRow == move.sourceX) continue;
-            if (nextCol == move.sourceY) continue;
+            if (nextRow == move.sourceX && nextCol == move.sourceY) continue;
 
             if (board.outOfBounds(new Coordinate(nextRow, nextCol))) continue;
             if (!board.isPawnAt(nextRow, nextCol)) continue;
