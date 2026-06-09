@@ -8,14 +8,19 @@ import boardifier.model.action.ActionList;
 import boardifier.model.animation.AnimationTypes;
 
 import model.Coordinate;
+import model.CoordinateByte;
 import model.KingMoveMode;
 import model.SmallTablutBoard;
 import model.TablutBoard;
 import model.TablutStageModel;
 import model.Pawn;
 import model.Move;
+import model.MoveByte;
 import model.Team;
 
+import java.awt.*;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -26,10 +31,11 @@ public class TablutMinMaxDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
     private static final int depth = 3;
+    private static final int depthDifferenceAcceptance = 0;
 
     private Map<String, Integer> seenBoards;
 
-    private List<Coordinate> winCoords;
+    private List<CoordinateByte> winCoords;
     private Team currentTeam;
     private KingMoveMode kingMode;
     public Move bestMove;
@@ -39,12 +45,16 @@ public class TablutMinMaxDecider extends Decider {
         getGameParameters();
     }
 
-    public void getGameParameters() {
+    private void getGameParameters() {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
         TablutBoard board = stage.getBoard();
 
         this.kingMode = stage.getKingMoveMode();
-        this.winCoords = board.getWinCoords();
+
+        this.winCoords = new ArrayList<>();
+        for (Coordinate coord : board.getWinCoords()) {
+            this.winCoords.add(new CoordinateByte(coord));
+        }
     }
 
     @Override
@@ -63,26 +73,40 @@ public class TablutMinMaxDecider extends Decider {
 
         boolean maxing = currentTeam == Team.MUSCOVITES;
         int bestScore = (maxing) ? -20000 : 20000;
-        List<Move> moves = board.computeAllValidCells(currentTeam);
-        for (Move move : moves) {
+
+        int alpha = -20000;
+        int beta = 20000;
+        SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+        List<MoveByte> moves = newBoard.computeAllValidCells(currentTeam);
+        for (MoveByte move : moves) {
             if (teamId == 0) currentTeam = Team.SWEDISH;
             else currentTeam = Team.MUSCOVITES;
 
-            SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
+            newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
 
-            int score = minmax(newBoard, depth, !maxing);
+            int score = minmax(newBoard, depth, alpha, beta, !maxing);
+            score -= score % 10;
+
             if (maxing) {
+                // beta
+
                 if (score > bestScore) {
-                    //System.out.println(score + " " + move);
+                    System.out.println(score + " " + move);
                     bestScore = score;
-                    bestMove = move;
+                    bestMove = new Move(move);
+
+                    alpha = score;
                 }
             } else {
+                // alpha
+
                 if (score < bestScore) {
-                    //System.out.println(score + " " + move);
+                    System.out.println(score + " " + move);
                     bestScore = score;
-                    bestMove = move;
+                    bestMove = new Move(move);
+
+                    beta = score;
                 }
             }
 
@@ -94,118 +118,146 @@ public class TablutMinMaxDecider extends Decider {
             //currentTeam = currentTeam.oppositeTeam();
         }
         pawn = (Pawn) board.getElement(bestMove.sourceX, bestMove.sourceY);
-        
-        ActionList actions = ActionFactory.generateMoveWithinContainer(control, model, pawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
+
+        ActionList actions = ActionFactory.generateMoveWithinContainer(control, model, pawn, (int)bestMove.destX, (int)bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actions.setDoEndOfTurn(true);
         return actions;
     }
 
-    public int minmax(SmallTablutBoard board, int d, boolean maxing) {
-        String id = board.toString();
-        if (Math.abs(smallEvaluate(board)) == 10000) {
-            if (d == 0) {
-            //board.print();
-            //System.out.println(d + " d");                
-            }
-            
+    private int minmax(SmallTablutBoard board, int d, int alpha, int beta, boolean maxing) {
+        int quick = smallEvaluate(board);
+        if (quick != 0) return quick + d;
 
-            int score = smallEvaluate(board);
-            seenBoards.put(id, score);
-            return score;
-        } 
+        String id = board.toString();
         if (seenBoards.containsKey(id)) {
             int score = seenBoards.get(id);
-            if (Math.abs(d - score % 10) < 2) {
-                return score - score % 10;
+            if (Math.abs(d - score % 10) <= depthDifferenceAcceptance) {
+                return score;
             }
             //System.out.println("s " + seenBoards.get(id));
-
         }
 
-        if (d == 0) {
-            //System.out.println("e " + evaluate(board));
-            int score = evaluate(board) + d;
-            //board.setScore(score);
-            seenBoards.put(id, score);
-            return score;
-        }
-        
+        if (d == 0) return evaluate(board);
 
-        if (maxing) {
-            currentTeam = Team.MUSCOVITES;
-        } else {
-            currentTeam = Team.SWEDISH;
-        }
-        List<Move> moves = board.computeAllValidCells(currentTeam);
+        Team team = maxing ? Team.MUSCOVITES : Team.SWEDISH;
+        List<MoveByte> moves = board.computeAllValidCells(team);
 
-        int bestScore = (maxing) ? -15000 : 15000;
-        for (Move move : moves) {
-            if (maxing) {
-                currentTeam = Team.MUSCOVITES;
-            } else {
-                currentTeam = Team.SWEDISH;
-            }
-            //System.out.println(d + " " + board);
-            //System.out.println(d + " move " + move.sourceX + " " + move.sourceY + " " +  move.destX + " " + move.destY + " " + currentTeam);
+        int bestScore = maxing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+        for (MoveByte move : moves) {
             SmallTablutBoard newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
-            //newBoard.print();
 
-            int score = minmax(newBoard, d-1, !maxing);
+            int score = minmax(newBoard, d - 1, alpha, beta, !maxing);
+            score -= score % 10;
+
             if (maxing) {
-                if (score > bestScore) {
-                    bestScore = score;
-                }
+                bestScore = Math.max(bestScore, score);
+                alpha = Math.max(alpha, bestScore);
+                if (bestScore >= beta) break; // ← beta cutoff, prune remaining siblings
             } else {
-                if (score < bestScore) {
-                    bestScore = score;
-                }
-            }
-
-            if (bestScore == ((maxing) ? 10000 : -10000)) {
-                break;
+                bestScore = Math.min(bestScore, score);
+                beta = Math.min(beta, bestScore);
+                if (bestScore <= alpha) break; // ← alpha cutoff, prune remaining siblings
             }
         }
         return bestScore;
     }
 
 
-    public int smallEvaluate(SmallTablutBoard board) {
-        if (winSwedish(board)) return -10000;
-        if (winMuscovites(board)) return 10000;
-        
-        return 0;
-    }
-
-    public int evaluate(SmallTablutBoard board) {
+    private int smallEvaluate(SmallTablutBoard board) {
         if (winSwedish(board)) return -10000;
         if (winMuscovites(board)) return 10000;
 
-        int score = 0;
+        short[][] grid = board.getGrid();
+        CoordinateByte pos = board.getKingPosition();
 
-        // Captures
-        for (int i = 0 ; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                short cell = board.getGrid()[i][j];
-                if (cell == 1) {
-                    score -= 30;
-                } else if (cell == 2) {
-                    score += 20;
+        // Tuichi
+        List<CoordinateByte> kingMoves = board.computeKingValidCells(pos.getX(), pos.getY());
+        int winningPositions = 0;
+        for (CoordinateByte move : kingMoves) {
+            for (CoordinateByte coord : winCoords) {
+                if (move.equals(coord)) {
+                    winningPositions ++;
                 }
             }
         }
 
-        // Muscovites around the king
-        Coordinate pos = board.getKingPosition();
+        if (winningPositions >= 2) {
+            return -10000;
+        }
+        
+        return 0;
+    }
+
+    private int evaluate(SmallTablutBoard board) {
+        if (winSwedish(board)) return -10000;
+        if (winMuscovites(board)) return 10000;
+
+        short[][] grid = board.getGrid();
+        CoordinateByte pos = board.getKingPosition();
+        List<CoordinateByte> kingMoves = board.computeKingValidCells(pos.getX(), pos.getY());
+
+        // Tuichi
+        int winningPositions = 0;
+        for (CoordinateByte move : kingMoves) {
+            for (CoordinateByte coord : winCoords) {
+                if (move.equals(coord)) {
+                    winningPositions ++;
+                }
+            }
+        }
+
+        if (winningPositions >= 2) {
+            return -10000;
+        }
+
+        int score = 0;
+
+        // Captures
+
+        
+        for (int i = 0 ; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                short cell = grid[i][j];
+                if (cell == 1) {
+                    score -= 30;
+                } else if (cell == 2) {
+                    score += 60;
+                }
+            }
+        }
+
+        // King freedom
+
+        score -= kingMoves.size() * 10;
+
+        // King close to the border
+        score -= Math.abs(4-pos.getX()) * 10;
+        score -= Math.abs(4-pos.getY()) * 10;
+
+        // Soldiers around the king
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
             if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
 
-            if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+            if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+                score += 40;
+            }
+            else if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
                 score += 20;
             }
-            else if (board.getGrid()[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
+        }
+        int[][] diagonals = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+        for (int[] vect : diagonals) {
+            if (pos.getX() + vect[0] < 0 || pos.getX() + vect[0] > 8) continue;
+            if (pos.getY() + vect[1] < 0 || pos.getY() + vect[1] > 8) continue;
+
+            if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 2) {
+                score += 20;
+            }
+            else if (grid[pos.getX() + vect[0]][pos.getY() + vect[1]] == 1) {
                 score += 10;
             }
         }
@@ -214,8 +266,8 @@ public class TablutMinMaxDecider extends Decider {
         return score;
     }
 
-    public boolean winSwedish(SmallTablutBoard board) {
-        for (Coordinate pos : winCoords) {
+    private boolean winSwedish(SmallTablutBoard board) {
+        for (CoordinateByte pos : winCoords) {
             if (board.getGrid()[pos.getX()][pos.getY()] == 3) {
                 return true;
             }
