@@ -82,7 +82,6 @@ public class TablutStageView extends GameStageView {
 
         MoveHistory moveHistory = model.getMoveHistory();
         GridLook moveHistoryLook = new MoveHistoryLook(moveHistory);
-        
 
         r = moveHistory.getNbRows();
         c = moveHistory.getNbCols();
@@ -96,5 +95,8 @@ public class TablutStageView extends GameStageView {
         }
 
         addLook(moveHistoryLook);
+
+        RaichiTuichiMessageLook messageLook = new RaichiTuichiMessageLook(30, "0xf00", model.getMessage());
+        addLook(messageLook);
     }
 }
