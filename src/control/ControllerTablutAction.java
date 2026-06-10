@@ -7,7 +7,7 @@ import boardifier.model.Model;
 import boardifier.view.View;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import model.TablutOptionModel;
+import view.TablutRootPane;
 import view.TablutView;
 
 /**
@@ -40,16 +40,12 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
     private void setMenuHandlers() {
 
-        // set event handler on the MenuStart item
+
         tablutView.getMenuStart().setOnAction(e -> {
             try {
-                setPlayers();
-
                 control.startGame();
-
-                System.out.println(TablutOptionModel.getGamemode());
-
-                if (TablutOptionModel.getGamemode() >= 2) {
+                // carabistouille (avec l'accent anglais)
+                if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
                     model.setNextPlayer();
                     control.endOfTurn();
                 }
@@ -70,6 +66,23 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
         tablutView.getMenuOption().setOnAction(e -> {
             tablutView.showOptionMenu();
         });
+        TablutRootPane rootPane = (TablutRootPane) tablutView.getRootPane();
+
+        rootPane.getBtnNewGame().setOnAction(e -> {
+            try {
+                control.startGame();
+                // carabistouille (avec l'accent anglais)
+                if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
+                    model.setNextPlayer();
+                    control.endOfTurn();
+                }
+            } catch (GameException err) {
+                System.err.println(err.getMessage());
+                System.exit(1);
+            }
+        });
+
+
     }
 
     /**
@@ -83,27 +96,6 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
     public void handle(ActionEvent event) {
 
         if (!model.isCaptureActionEvent()) return;
-    }
-
-    public void setPlayers() {
-        switch (TablutOptionModel.getGamemode()) {
-            case 0 -> {
-                model.addHumanPlayer("swedish player");
-                model.addHumanPlayer("muscovite player");
-            }
-            case 1 -> {
-                model.addHumanPlayer("swedish player");
-                model.addComputerPlayer("muscovite computer");
-            }
-            case 2 -> {
-                model.addComputerPlayer("swedish computer");
-                model.addHumanPlayer("muscovite player");
-            }
-            case 3 -> {
-                model.addComputerPlayer("swedish computer");
-                model.addComputerPlayer("muscovite computer");
-            }
-        }
     }
 }
 
