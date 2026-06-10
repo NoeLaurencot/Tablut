@@ -22,8 +22,8 @@ public class PawnLook extends ElementLook {
             ImageView img = (ImageView) getGroup().getChildren().getFirst();
 
             DropShadow boldHighlight = new DropShadow();
-            boldHighlight.setRadius(4.0);
-            boldHighlight.setSpread(1.0);
+            boldHighlight.setRadius(5.0);
+            boldHighlight.setSpread(0.8);
             boldHighlight.setColor(Color.YELLOW);
 
             img.setEffect(boldHighlight);
