@@ -3,20 +3,24 @@ package control;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tab;
 import model.AIMode;
 import model.InvalidIntegerOptionException;
 import model.TablutOptionModel;
 import view.TablutOptionView;
+import view.TablutView;
 
 import java.util.ArrayList;
 
 
 public class TablutOptionController implements EventHandler<ActionEvent> {
     private TablutOptionView tablutOptionView;
+    private TablutView tablutView;
 
 
-    public TablutOptionController(TablutOptionView tablutOptionView) {
+    public TablutOptionController(TablutOptionView tablutOptionView, TablutView tablutView) {
         this.tablutOptionView = tablutOptionView;
+        this.tablutView = tablutView;
     }
 
 
@@ -24,6 +28,7 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
     public void handle(ActionEvent event) {
         if (event.getSource().equals(this.tablutOptionView.getDoneButton())) {
             applyOptions();
+            this.tablutView.resetView();
         } else if (event.getSource().equals(this.tablutOptionView.getValidButton())) {
             applyOptions();
             this.tablutOptionView.getValidButton().setDisable(true);

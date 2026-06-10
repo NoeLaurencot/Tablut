@@ -36,7 +36,7 @@ public class TablutView extends View {
         menuOption = new MenuItem("Settings");
         menuIntro = new MenuItem("Main menu");
         menuQuit = new MenuItem("Quit");
-        tablutOptionView = new TablutOptionView();
+        tablutOptionView = new TablutOptionView(this);
         menu1.getItems().add(menuStart);
         menu1.getItems().add(menuOption);
         menu1.getItems().add(menuIntro);

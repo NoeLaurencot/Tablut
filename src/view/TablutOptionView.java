@@ -7,7 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import model.KingMoveMode;
 import model.TablutOptionModel;
+import model.WinMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +38,16 @@ public class TablutOptionView {
     private Button doneButton;
 
 
-    public TablutOptionView() {
+    public TablutOptionView(TablutView tablutView) {
         this.initWidget();
-        this.initController();
+        this.initController(tablutView);
     }
 
-    private void initController() {
-        validButton.setOnAction(new TablutOptionController(this));
-        doneButton.setOnAction(new TablutOptionController(this));
-        swedishPlayer.setOnAction(new TablutOptionController(this));
-        muscovitesPlayer.setOnAction(new TablutOptionController(this));
+    private void initController(TablutView tablutView) {
+        validButton.setOnAction(new TablutOptionController(this, tablutView));
+        doneButton.setOnAction(new TablutOptionController(this, tablutView));
+        swedishPlayer.setOnAction(new TablutOptionController(this, tablutView));
+        muscovitesPlayer.setOnAction(new TablutOptionController(this, tablutView));
 
         kingMoveGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             reEnableValidButton();
@@ -143,17 +145,17 @@ public class TablutOptionView {
 
         Label catRules = new Label("Rules");
 
-        HBox winModeHbox = new HBox();
-        winModeHbox.setSpacing(10);
-        Label winModeLabel = new Label("Win condition");
-        winModeHbox.getChildren().add(winModeLabel);
-        winModeRadios.forEach(radioButton -> winModeHbox.getChildren().add(radioButton));
-
         HBox kingMoveHbox = new HBox();
         kingMoveHbox.setSpacing(10);
         Label kingMoveLabel = new Label("King movement :");
         kingMoveHbox.getChildren().add(kingMoveLabel);
         kingMoveRadios.forEach(radioButton -> kingMoveHbox.getChildren().add(radioButton));
+
+        HBox winModeHbox = new HBox();
+        winModeHbox.setSpacing(10);
+        Label winModeLabel = new Label("Win condition: ");
+        winModeHbox.getChildren().add(winModeLabel);
+        winModeRadios.forEach(radioButton -> winModeHbox.getChildren().add(radioButton));
 
         /// Color pickers ///
 
