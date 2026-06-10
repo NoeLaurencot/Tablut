@@ -41,7 +41,6 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
     private void setMenuHandlers() {
 
-        // set event handler on the MenuStart item
         tablutView.getMenuStart().setOnAction(e -> {
             try {
                 setPlayers();
@@ -76,9 +75,14 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
         rootPane.getBtnNewGame().setOnAction(e -> {
             try {
+                setPlayers();
+
                 control.startGame();
-                // carabistouille (avec l'accent anglais)
-                if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
+
+
+                System.out.println(TablutOptionModel.getGamemode());
+
+                if (TablutOptionModel.getGamemode() >= 2) {
                     model.setNextPlayer();
                     control.endOfTurn();
                 }
