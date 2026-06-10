@@ -1,6 +1,7 @@
 package view;
 
 import boardifier.view.RootPane;
+import control.TablutOptionController;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -35,6 +36,7 @@ public class TablutOptionView {
     }
 
     private void initController() {
+        validButton.setOnAction(new TablutOptionController(tablutOptionModel,this));
     }
 
     private void initWidget() {
@@ -59,8 +61,12 @@ public class TablutOptionView {
     }
 
     public Node getOptionMenu() {
+
+        this.setModelValue();
+
         VBox main = new VBox();
         VBox vBox1 = new VBox();
+
         GridPane gridPane1 = new GridPane(5,5);
         Label labelVS = new Label("VS");
         gridPane1.add(swedishPlayer,0,1);
@@ -103,4 +109,68 @@ public class TablutOptionView {
 
         return main;
     }
+
+    private void setModelValue() {
+        winModeRadios.get(tablutOptionModel.getWinMode()).setSelected(true);
+        kingMoveRadios.get(tablutOptionModel.getKingMode()).setSelected(true);
+        switch (tablutOptionModel.getGamemode()){
+            case 0:
+                swedishPlayer.setValue("Human");
+                muscovitesPlayer.setValue("Human");
+                break;
+            case 1:
+                swedishPlayer.setValue("Computer");
+                muscovitesPlayer.setValue("Human");
+                break;
+            case 2:
+                swedishPlayer.setValue("Human");
+                muscovitesPlayer.setValue("Computer");
+                break;
+            case 3:
+                swedishPlayer.setValue("Computer");
+                muscovitesPlayer.setValue("Computer");
+                break;
+        }
+        oddColorPicker.setValue(tablutOptionModel.getOddColor());
+        evenColorPicker.setValue(tablutOptionModel.getEvenColor());
+    }
+
+    public Button getValidButton() {
+        return validButton;
+    }
+
+    public ColorPicker getEvenColorPicker() {
+        return evenColorPicker;
+    }
+
+    public ColorPicker getOddColorPicker() {
+        return oddColorPicker;
+    }
+
+    public ComboBox<String> getMuscovitesPlayer() {
+        return muscovitesPlayer;
+    }
+
+    public ComboBox<String> getSwedishPlayer() {
+        return swedishPlayer;
+    }
+
+    public int getSelectedKingMoveRadio() {
+        for (int i = 0; i < kingMoveRadios.size(); i++) {
+            if (kingMoveRadios.get(i).isSelected()) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int getSelectedWinModeRadio() {
+        for (int i = 0; i < winModeRadios.size(); i++) {
+            if (winModeRadios.get(i).isSelected()) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }
