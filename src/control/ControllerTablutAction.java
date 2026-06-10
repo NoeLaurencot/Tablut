@@ -19,6 +19,7 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
     // to avoid lots of casts, create an attribute that matches the instance type.
     private TablutView tablutView;
 
+
     public ControllerTablutAction(Model model, View view, Controller control) {
         super(model, view, control);
         // take the view parameter ot define a local view attribute with the real instance type, i.e. BasicView.
@@ -40,7 +41,13 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
         // set event handler on the MenuStart item
         tablutView.getMenuStart().setOnAction(e -> {
+
+
+
+
             try {
+
+
                 control.startGame();
                 // carabistouille (avec l'accent anglais)
                 if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
@@ -62,6 +69,9 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
         // set event handler on the MenuQuit item
         tablutView.getMenuQuit().setOnAction(e -> {
             System.exit(0);
+        });
+        tablutView.getMenuOption().setOnAction(e -> {
+            tablutView.showOptionMenu();
         });
     }
 

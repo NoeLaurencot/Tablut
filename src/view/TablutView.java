@@ -3,16 +3,26 @@ package view;
 import boardifier.model.Model;
 import boardifier.view.RootPane;
 import boardifier.view.View;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import model.TablutOptionModel;
+import model.TablutStageModel;
 
 public class TablutView extends View {
 
     private MenuItem menuStart;
     private MenuItem menuIntro;
+    private MenuItem menuOption;
     private MenuItem menuQuit;
+    private TablutOptionView tablutOptionView;
+
 
     public TablutView(Model model, Stage stage, RootPane rootPane) {
         super(model, stage, rootPane);
@@ -25,8 +35,12 @@ public class TablutView extends View {
         menuStart = new MenuItem("New game");
         menuIntro = new MenuItem("Intro");
         menuQuit = new MenuItem("Quit");
+        menuOption = new MenuItem("Option");
+        TablutOptionModel tablutOptionModel = new TablutOptionModel();
+        tablutOptionView = new TablutOptionView(tablutOptionModel);
         menu1.getItems().add(menuStart);
         menu1.getItems().add(menuIntro);
+        menu1.getItems().add(menuOption);
         menu1.getItems().add(menuQuit);
         menuBar.getMenus().add(menu1);
     }
@@ -41,6 +55,13 @@ public class TablutView extends View {
 
     public MenuItem getMenuQuit() {
         return menuQuit;
+    }
+
+    public MenuItem getMenuOption() {return  menuOption;}
+
+    public void showOptionMenu() {
+        rootPane.getChildren().clear();
+        rootPane.getChildren().addAll(tablutOptionView.getOptionMenu());
     }
 
 
