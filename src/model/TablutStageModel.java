@@ -2,6 +2,10 @@ package model;
 
 import boardifier.model.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,6 +143,7 @@ public class TablutStageModel extends GameStageModel {
         onMoveInContainer( (element, containerDest, rowDest, colDest) -> {
             if (containerDest != board) return;
 
+            playSound("move.wav");
 
             if (element instanceof King) {
                 int cnt = 0;
@@ -160,6 +165,7 @@ public class TablutStageModel extends GameStageModel {
             }
 
             if (board.areSwedishWinning()) {
+                playSound("victory.wav");
                 showGameResult(true);
             }
 
@@ -184,7 +190,11 @@ public class TablutStageModel extends GameStageModel {
 //                }
             }
 
-            if (getBoard().areMuscovitesWinning()) showGameResult(false);
+            if (getBoard().areMuscovitesWinning()) {
+
+                playSound("explosion.wav");
+                showGameResult(false);
+            }
         });
     }
 
@@ -276,5 +286,21 @@ public class TablutStageModel extends GameStageModel {
 
     public void addMoveInHistory(MoveElement moveElement) {
         moveHistory.addMove(moveElement);
+    }
+
+    private void playSound(String fileName) {
+        try {
+            File soundFile = new File(getClass().getResource("/" + fileName).toURI());
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+
+            clip.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
