@@ -194,7 +194,7 @@ public class TablutBoard extends ContainerElement {
         reset();
 
         for (Fortress fortress : getGameStage().getFortresses()) {
-            addElement(new Fortress(fortress.getX(), fortress.getY(), getGameStage()), (int)fortress.getX(), (int)fortress.getY());
+            addElement(new Fortress(fortress.getX(), fortress.getY(), getGameStage()), (int) fortress.getX(), (int) fortress.getY());
         }
 
         for (int i = 0; i < map.length; i++) {
@@ -360,7 +360,8 @@ public class TablutBoard extends ContainerElement {
         int count = 0;
 
         for (Coordinate enemyCoord : getAdjacentEnemyPawnsCoords(coord, team)) {
-            if (((Pawn) getElement(enemyCoord.getX(), enemyCoord.getY())).wouldBeSurroundedIfEnemyAt(coord)) {
+            GameElement enemy = getLastElement(enemyCoord.getX(), enemyCoord.getY());
+            if (enemy instanceof Pawn && ((Pawn) enemy).wouldBeSurroundedIfEnemyAt(coord)) {
                 count++;
             }
         }
