@@ -47,6 +47,7 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
                 control.startGame();
 
+
                 System.out.println(TablutOptionModel.getGamemode());
 
                 if (TablutOptionModel.getGamemode() >= 2) {
