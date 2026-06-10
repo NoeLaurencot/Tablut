@@ -7,7 +7,6 @@ import boardifier.model.Model;
 import boardifier.view.View;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import model.TablutOptionModel;
 import view.TablutView;
 
 /**
@@ -43,13 +42,9 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
         // set event handler on the MenuStart item
         tablutView.getMenuStart().setOnAction(e -> {
             try {
-                setPlayers();
-
                 control.startGame();
-
-                System.out.println(TablutOptionModel.getGamemode());
-
-                if (TablutOptionModel.getGamemode() >= 2) {
+                // carabistouille (avec l'accent anglais)
+                if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
                     model.setNextPlayer();
                     control.endOfTurn();
                 }
@@ -83,27 +78,6 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
     public void handle(ActionEvent event) {
 
         if (!model.isCaptureActionEvent()) return;
-    }
-
-    public void setPlayers() {
-        switch (TablutOptionModel.getGamemode()) {
-            case 0 -> {
-                model.addHumanPlayer("swedish player");
-                model.addHumanPlayer("muscovite player");
-            }
-            case 1 -> {
-                model.addHumanPlayer("swedish player");
-                model.addComputerPlayer("muscovite computer");
-            }
-            case 2 -> {
-                model.addComputerPlayer("swedish computer");
-                model.addHumanPlayer("muscovite player");
-            }
-            case 3 -> {
-                model.addComputerPlayer("swedish computer");
-                model.addComputerPlayer("muscovite computer");
-            }
-        }
     }
 }
 

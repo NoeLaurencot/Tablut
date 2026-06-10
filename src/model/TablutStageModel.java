@@ -43,7 +43,7 @@ public class TablutStageModel extends GameStageModel {
     // define stage state variables
     private WinMode winMode;
     private KingMoveMode kingMoveMode;
-    // 0 for no AI, 1 for one AI, 2 for two AIs. Used in getDeciderType
+    // 0 for no AI, 1 for one AI, 2 for two AIs
     private int mode;
     private ArrayList<AIMode> aiModesUsed;
 
@@ -63,12 +63,21 @@ public class TablutStageModel extends GameStageModel {
         this.winMode = WinMode.BORDERS;
         this.aiModesUsed = new ArrayList<>();
 
+        setAIModes(); // defaults to minmax AI, can be changed later in options
+
         setState(STATE_SELECT_PAWN);
         setupCallbacks();
     }
 
     public void setAIModes() {
-        this.aiModesUsed = TablutOptionModel.getAiMode();
+        int cnt = 0;
+        for (Player player : this.model.getPlayers()) {
+            if (player.getName().contains("computer")) {
+                aiModesUsed.add(AIMode.SIMPLE_EVAL);
+                cnt++;
+            }
+        }
+        this.mode = cnt;
     }
 
     public TablutBoard getBoard() {
@@ -272,6 +281,37 @@ public class TablutStageModel extends GameStageModel {
 
     public void setKingMoveMode(KingMoveMode kingMoveMode) {
         this.kingMoveMode = kingMoveMode;
+    }
+
+    public ArrayList<AIMode> getAIModesUsed() {
+        return aiModesUsed;
+    }
+
+    public void setAIModesUsed(ArrayList<AIMode> aiModesUsed) {
+        this.aiModesUsed = aiModesUsed;
+    }
+
+    public void setAIModesUsed(AIMode AI) {
+        ArrayList<AIMode> aiModes = new ArrayList<>();
+        aiModes.add(AI);
+
+        this.aiModesUsed = aiModes;
+    }
+
+    public void setAIModesUsed(AIMode SwedishAI, AIMode MuscoAI) {
+        ArrayList<AIMode> aiModes = new ArrayList<>();
+        aiModes.add(SwedishAI);
+        aiModes.add(MuscoAI);
+
+        this.aiModesUsed = aiModes;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
     public void addMoveInHistory(Move move) {
