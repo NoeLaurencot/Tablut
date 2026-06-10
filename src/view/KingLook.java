@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import model.King;
 
-public class KingLook extends ElementLook {
+public class KingLook extends PawnLook {
     private ImageView imageView;
 
     public KingLook(int size, GameElement element) {

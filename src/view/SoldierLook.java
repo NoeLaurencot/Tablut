@@ -9,7 +9,7 @@ import javafx.scene.shape.Circle;
 import model.Soldier;
 import model.Team;
 
-public class SoldierLook extends ElementLook {
+public class SoldierLook extends PawnLook {
     private ImageView imageView;
 
     public SoldierLook(int size, GameElement element) {
@@ -38,11 +38,6 @@ public class SoldierLook extends ElementLook {
 
         // add the circle to the look
 
-        // to fulfill ...
-    }
-
-    @Override
-    public void onSelectionChange() {
         // to fulfill ...
     }
 

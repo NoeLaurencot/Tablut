@@ -66,7 +66,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
                 handlePawnClick(list);
             } else if (elementsClicked == 2 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
                 handleBoardClick(list, click);
-            }  
+            }
         } else {
             if (elementsClicked == 2) {
                 handlePawnClick(list);
@@ -98,10 +98,6 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
                 tablutController.setLastMove(new Move(selectedPawn.getXInBoard(), selectedPawn.getYInBoard(), dest[0], dest[1]));
 
-                stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
-                selectedPawn.unselect();
-                stageModel.unselectAll();
-                selectedPawn = null;
                 actions.setDoEndOfTurn(true); // after playing this action list, it will be the end of turn for current player.
 
                 tablutController.addAfterPlayActions(move, actions);
@@ -115,6 +111,9 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
             }
         }
         board.resetReachableCells(false);
+        selectedPawn.unselect();
+        selectedPawn = null;
+        stageModel.setState(TablutStageModel.STATE_SELECT_PAWN);
 
 
         // for debug
@@ -143,6 +142,11 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
             curTeam = Team.MUSCOVITES;
 
         if (pawn.getTeam().equals(curTeam)) {
+            if (selectedPawn != null) {
+                selectedPawn.unselect();
+                selectedPawn = null;
+            }
+
             stageModel.setState(TablutStageModel.STATE_SELECT_DEST);
             pawn.select();
             selectedPawn = pawn;

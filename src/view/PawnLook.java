@@ -2,6 +2,11 @@ package view;
 
 import boardifier.model.GameElement;
 import boardifier.view.ElementLook;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import model.Pawn;
 
 public class PawnLook extends ElementLook {
@@ -11,12 +16,25 @@ public class PawnLook extends ElementLook {
         super(element);
     }
 
+    @Override
+    public void onSelectionChange() {
+        if (this.element.isSelected()) {
+            ImageView img = (ImageView) getGroup().getChildren().getFirst();
+
+            DropShadow boldHighlight = new DropShadow();
+            boldHighlight.setRadius(4.0);
+            boldHighlight.setSpread(1.0);
+            boldHighlight.setColor(Color.YELLOW);
+
+            img.setEffect(boldHighlight);
+        } else {
+            ImageView img = (ImageView) getGroup().getChildren().getFirst();
+            img.setEffect(null);
+        }
+    }
+
     protected void render() {
         Pawn pawn = (Pawn)element;
-        /*
-        TO FULFILL:
-            - put in shape[0][0] the pawn's value, char color = white on black, or black on red depending on the pawn color.
-         */
     }
 
 }
