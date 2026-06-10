@@ -124,8 +124,9 @@ public class TablutMinMaxDecider extends Decider {
         return actions;
     }
 
-    private int minmax(SmallTablutBoard board, int d, int alpha, int beta, boolean maxing) {
-        int quick = smallEvaluate(board);
+    public int minmax(SmallTablutBoard board, int d, int alpha, int beta, boolean maxing) {
+
+            int quick = smallEvaluate(board);
         if (quick != 0) return quick + d;
 
         String id = board.toString();
