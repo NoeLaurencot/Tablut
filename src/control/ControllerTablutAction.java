@@ -2,11 +2,11 @@ package control;
 
 import boardifier.control.Controller;
 import boardifier.control.ControllerAction;
-import boardifier.model.*;
+import boardifier.model.GameException;
+import boardifier.model.Model;
 import boardifier.view.View;
-import javafx.event.*;
-import model.TablutStageModel;
-import view.TablutStageView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import view.TablutView;
 
 /**
@@ -41,22 +41,14 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
         // set event handler on the MenuStart item
         tablutView.getMenuStart().setOnAction(e -> {
-
-
-
-
             try {
-
-
                 control.startGame();
                 // carabistouille (avec l'accent anglais)
                 if (model.getGameStage().getCurrentPlayer().getName().contains("computer")) {
                     model.setNextPlayer();
                     control.endOfTurn();
                 }
-
-            }
-            catch(GameException err) {
+            } catch (GameException err) {
                 System.err.println(err.getMessage());
                 System.exit(1);
             }
