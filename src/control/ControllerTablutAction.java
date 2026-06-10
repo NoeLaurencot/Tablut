@@ -71,7 +71,7 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
             System.exit(0);
         });
         tablutView.getMenuOption().setOnAction(e -> {
-
+            tablutView.showOptionMenu();
         });
     }
 
