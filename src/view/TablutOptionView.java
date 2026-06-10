@@ -231,8 +231,16 @@ public class TablutOptionView {
             }
         }
 
-        winModeRadios.get(TablutOptionModel.getWinMode()).setSelected(true);
-        kingMoveRadios.get(TablutOptionModel.getKingMode()).setSelected(true);
+        switch (TablutOptionModel.getWinMode()) {
+            case WinMode.BORDERS -> winModeRadios.getFirst().setSelected(true);
+            case WinMode.CORNERS -> winModeRadios.getLast().setSelected(true);
+        }
+
+        switch (TablutOptionModel.getKingMode()) {
+            case KingMoveMode.LIMITLESS -> kingMoveRadios.getFirst().setSelected(true);
+            case KingMoveMode.LIMITED -> kingMoveRadios.getLast().setSelected(true);
+        }
+
         oddColorPicker.setValue(TablutOptionModel.getOddColor());
         evenColorPicker.setValue(TablutOptionModel.getEvenColor());
     }
@@ -316,22 +324,22 @@ public class TablutOptionView {
         }
     }
 
-    public int getSelectedKingMoveRadio() {
-        for (int i = 0; i < kingMoveRadios.size(); i++) {
-            if (kingMoveRadios.get(i).isSelected()) {
-                return i;
-            }
+    public KingMoveMode getSelectedKingMoveRadio() {
+        int radioId = kingMoveRadios.indexOf(kingMoveGroup.getSelectedToggle());
+        if (radioId == 0) {
+            return KingMoveMode.LIMITLESS;
+        } else {
+            return KingMoveMode.LIMITED;
         }
-        return 0;
     }
 
-    public int getSelectedWinModeRadio() {
-        for (int i = 0; i < winModeRadios.size(); i++) {
-            if (winModeRadios.get(i).isSelected()) {
-                return i;
-            }
+    public WinMode getSelectedWinModeRadio() {
+        int radioId = winModeRadios.indexOf(winModeGroup.getSelectedToggle());
+        if (radioId == 0) {
+            return WinMode.BORDERS;
+        } else {
+            return WinMode.CORNERS;
         }
-        return 0;
     }
 
     public void reEnableValidButton() {

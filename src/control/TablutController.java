@@ -38,14 +38,14 @@ public class TablutController extends Controller {
             Logger.debug("COMPUTER PLAYS");
 
             Move bestMove = null;
-            final int COOLDOWN = 300; // in ms. Don't put more than 3 seconds or OS thinks app doesn't respond
+            final int COOLDOWN = 500; // in ms. Don't put more than 3 seconds or OS thinks app doesn't respond
 
             Decider decider = getDeciderType(TablutOptionModel.getGamemode(), TablutOptionModel.getAiMode());
 
             long timestamp = System.nanoTime();
 
+            // FIXME: Use an action player that takes the decider as parameter to prevent animation bug
             ActionList actionList = decider.decide();
-
 
             waitMinimumCooldown(COOLDOWN, timestamp);
 
@@ -59,8 +59,6 @@ public class TablutController extends Controller {
             addAfterPlayActions(bestMove, actionList);
 
             ActionPlayer play = new ActionPlayer(model, this, actionList);
-
-            waitMinimumCooldown(COOLDOWN, timestamp);
 
             play.start();
 
@@ -151,21 +149,16 @@ public class TablutController extends Controller {
      * @param timestamp the timestamp taken before deciding best move
      */
     public void waitMinimumCooldown(int cooldown, long timestamp) {
-
         if (cooldown <= 0) return;
 
-        long timeElapsed = System.nanoTime() - timestamp;
+        long timeElapsedMs = (System.nanoTime() - timestamp) / 1_000_000L;
 
-        // from nanosecond to milisecond
-        timeElapsed *= 10e-6;
-
-        if (timeElapsed < cooldown) {
+        if (timeElapsedMs < cooldown) {
             try {
-                Thread.sleep(cooldown - timeElapsed);
+                Thread.sleep(cooldown - timeElapsedMs);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
         }
-
     }
 }

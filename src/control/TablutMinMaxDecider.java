@@ -7,16 +7,7 @@ import boardifier.model.Model;
 import boardifier.model.action.ActionList;
 import boardifier.model.animation.AnimationTypes;
 
-import model.Coordinate;
-import model.CoordinateByte;
-import model.KingMoveMode;
-import model.SmallTablutBoard;
-import model.TablutBoard;
-import model.TablutStageModel;
-import model.Pawn;
-import model.Move;
-import model.MoveByte;
-import model.Team;
+import model.*;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -49,7 +40,7 @@ public class TablutMinMaxDecider extends Decider {
         TablutStageModel stage = (TablutStageModel)model.getGameStage();
         TablutBoard board = stage.getBoard();
 
-        this.kingMode = stage.getKingMoveMode();
+        this.kingMode = TablutOptionModel.getKingMode();
 
         this.winCoords = new ArrayList<>();
         for (Coordinate coord : board.getWinCoords()) {

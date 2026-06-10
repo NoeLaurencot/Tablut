@@ -40,13 +40,6 @@ public class TablutStageModel extends GameStageModel {
     public static final int STATE_SELECT_PAWN = 1;
     public static final int STATE_SELECT_DEST = 2;
 
-    // define stage state variables
-    private WinMode winMode;
-    private KingMoveMode kingMoveMode;
-    // 0 for no AI, 1 for one AI, 2 for two AIs. Used in getDeciderType
-    private int mode;
-    private ArrayList<AIMode> aiModesUsed;
-
     // define stage game elements
     private TablutBoard board;
     private Pawn[] pawns;
@@ -59,16 +52,9 @@ public class TablutStageModel extends GameStageModel {
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
-        this.kingMoveMode = KingMoveMode.LIMITLESS;
-        this.winMode = WinMode.BORDERS;
-        this.aiModesUsed = new ArrayList<>();
 
         setState(STATE_SELECT_PAWN);
         setupCallbacks();
-    }
-
-    public void setAIModes() {
-        this.aiModesUsed = TablutOptionModel.getAiMode();
     }
 
     public TablutBoard getBoard() {
@@ -256,22 +242,8 @@ public class TablutStageModel extends GameStageModel {
         return false;
     }
 
-    public WinMode getWinMode() {
-        return winMode;
-    }
-
-    public KingMoveMode getKingMoveMode() {
-        return kingMoveMode;
-    }
-
     public void setWinMode(WinMode winMode) {
-        this.winMode = winMode;
-
-        this.board.setWinCoords(this.winMode.winCoords(this.board));
-    }
-
-    public void setKingMoveMode(KingMoveMode kingMoveMode) {
-        this.kingMoveMode = kingMoveMode;
+        this.board.setWinCoords(TablutOptionModel.getWinMode().winCoords(this.board));
     }
 
     public void addMoveInHistory(Move move) {

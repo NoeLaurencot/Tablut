@@ -13,12 +13,8 @@ public class TablutOptionModel {
     // mode 2 : Computer vs Human
     // mode 3 : Computer vs Computer
     private static int gamemode = 1;
-    // mode 0 edges
-    // mode 1 corners
-    private static int winMode = 0;
-    // mode 0 long move
-    // mode 1 short move
-    private static int kingMode = 0;
+    private static WinMode winMode = WinMode.BORDERS;
+    private static KingMoveMode kingMode = KingMoveMode.LIMITLESS;
 
     private static ArrayList<AIMode> aiMode = new ArrayList<>(List.of(AIMode.SIMPLE_EVAL));
 
@@ -48,11 +44,11 @@ public class TablutOptionModel {
         return oddColor;
     }
 
-    public static int getKingMode() {
+    public static KingMoveMode getKingMode() {
         return kingMode;
     }
 
-    public static int getWinMode() {
+    public static WinMode getWinMode() {
         return winMode;
     }
 
@@ -68,13 +64,11 @@ public class TablutOptionModel {
         TablutOptionModel.oddColor = oddColor;
     }
 
-    public static void setKingMode(int kingMode) throws InvalidIntegerOptionException {
-        if (kingMode < 0 || kingMode > 1) throw new InvalidIntegerOptionException("King Mode",kingMode);
+    public static void setKingMode(KingMoveMode kingMode) throws InvalidIntegerOptionException {
         TablutOptionModel.kingMode = kingMode;
     }
 
-    public static void setWinMode(int winMode) throws InvalidIntegerOptionException {
-        if (winMode < 0 || winMode > 1) throw new InvalidIntegerOptionException("Win Mode",winMode);
+    public static void setWinMode(WinMode winMode) throws InvalidIntegerOptionException {
         TablutOptionModel.winMode = winMode;
     }
 }
