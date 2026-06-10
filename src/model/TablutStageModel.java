@@ -140,7 +140,16 @@ public class TablutStageModel extends GameStageModel {
             if (containerDest != board) return;
 
 
-            // TODO : do something to check for raichi and tuichi
+            int cnt = 0;
+            for (Coordinate winCoord : board.getWinCoords()) {
+                if (board.canSeeCoordinate(board.getKingPosition(), winCoord) && board.isEmptyAt(winCoord.getX(), winCoord.getY()))
+                    cnt++;
+            }
+            if (cnt == 1) {
+                System.out.println("Raichi");
+            } else if (cnt >= 2) {
+                System.out.println("Tuichi");
+            }
             
             if (board.areSwedishWinning()) {
                 showGameResult(true);
@@ -187,7 +196,7 @@ public class TablutStageModel extends GameStageModel {
         // set the winner
         model.setIdWinner(idWinner);
         // stop de the game
-        model.stopStage();
+        model.stopGame();
     }
 
     @Override
