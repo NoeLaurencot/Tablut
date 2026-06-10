@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TablutOptionView {
-    private TablutOptionModel tablutOptionModel;
-
     private List<RadioButton> kingMoveRadios;
     private List<RadioButton> winModeRadios;
     private ComboBox<String> swedishPlayer;
@@ -29,14 +27,13 @@ public class TablutOptionView {
     private Button validButton;
 
 
-    public TablutOptionView(TablutOptionModel tablutOptionModel) {
-        this.tablutOptionModel = tablutOptionModel;
+    public TablutOptionView() {
         this.initWidget();
         this.initController();
     }
 
     private void initController() {
-        validButton.setOnAction(new TablutOptionController(tablutOptionModel,this));
+        validButton.setOnAction(new TablutOptionController(this));
     }
 
     private void initWidget() {
@@ -111,9 +108,9 @@ public class TablutOptionView {
     }
 
     private void setModelValue() {
-        winModeRadios.get(tablutOptionModel.getWinMode()).setSelected(true);
-        kingMoveRadios.get(tablutOptionModel.getKingMode()).setSelected(true);
-        switch (tablutOptionModel.getGamemode()){
+        winModeRadios.get(TablutOptionModel.getWinMode()).setSelected(true);
+        kingMoveRadios.get(TablutOptionModel.getKingMode()).setSelected(true);
+        switch (TablutOptionModel.getGamemode()){
             case 0:
                 swedishPlayer.setValue("Human");
                 muscovitesPlayer.setValue("Human");
@@ -131,8 +128,8 @@ public class TablutOptionView {
                 muscovitesPlayer.setValue("Computer");
                 break;
         }
-        oddColorPicker.setValue(tablutOptionModel.getOddColor());
-        evenColorPicker.setValue(tablutOptionModel.getEvenColor());
+        oddColorPicker.setValue(TablutOptionModel.getOddColor());
+        evenColorPicker.setValue(TablutOptionModel.getEvenColor());
     }
 
     public Button getValidButton() {

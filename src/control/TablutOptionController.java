@@ -9,24 +9,24 @@ import view.TablutOptionView;
 
 
 public class TablutOptionController implements EventHandler<ActionEvent> {
-    private TablutOptionModel tablutOptionModel;
     private TablutOptionView tablutOptionView;
 
 
-    public TablutOptionController(TablutOptionModel tablutOptionModel,TablutOptionView tablutOptionView) {
-        this.tablutOptionModel = tablutOptionModel;
+    public TablutOptionController(TablutOptionView tablutOptionView) {
         this.tablutOptionView = tablutOptionView;
     }
+
+
 
 
     @Override
     public void handle(ActionEvent event) {
         try{
-            tablutOptionModel.setGamemode(getGamemode(tablutOptionView.getSwedishPlayer().getValue(),tablutOptionView.getMuscovitesPlayer().getValue()));
-            tablutOptionModel.setKingMode(tablutOptionView.getSelectedKingMoveRadio());
-            tablutOptionModel.setWinMode(tablutOptionView.getSelectedWinModeRadio());
-            tablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
-            tablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
+            TablutOptionModel.setGamemode(getGamemode(tablutOptionView.getSwedishPlayer().getValue(),tablutOptionView.getMuscovitesPlayer().getValue()));
+            TablutOptionModel.setKingMode(tablutOptionView.getSelectedKingMoveRadio());
+            TablutOptionModel.setWinMode(tablutOptionView.getSelectedWinModeRadio());
+            TablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
+            TablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
         } catch (InvalidIntegerOptionException e) {
             throw new RuntimeException(e);
         }

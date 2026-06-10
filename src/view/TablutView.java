@@ -36,8 +36,7 @@ public class TablutView extends View {
         menuIntro = new MenuItem("Intro");
         menuQuit = new MenuItem("Quit");
         menuOption = new MenuItem("Option");
-        TablutOptionModel tablutOptionModel = new TablutOptionModel();
-        tablutOptionView = new TablutOptionView(tablutOptionModel);
+        tablutOptionView = new TablutOptionView();
         menu1.getItems().add(menuStart);
         menu1.getItems().add(menuIntro);
         menu1.getItems().add(menuOption);
@@ -64,6 +63,7 @@ public class TablutView extends View {
         rootPane.getChildren().addAll(tablutOptionView.getOptionMenu());
     }
 
-
-
+    public TablutOptionView getTablutOptionView() {
+        return tablutOptionView;
+    }
 }
