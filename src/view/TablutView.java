@@ -33,13 +33,13 @@ public class TablutView extends View {
         menuBar = new MenuBar();
         Menu menu1 = new Menu("Game");
         menuStart = new MenuItem("New game");
-        menuIntro = new MenuItem("Intro");
+        menuOption = new MenuItem("Settings");
+        menuIntro = new MenuItem("Main menu");
         menuQuit = new MenuItem("Quit");
-        menuOption = new MenuItem("Option");
         tablutOptionView = new TablutOptionView();
         menu1.getItems().add(menuStart);
-        menu1.getItems().add(menuIntro);
         menu1.getItems().add(menuOption);
+        menu1.getItems().add(menuIntro);
         menu1.getItems().add(menuQuit);
         menuBar.getMenus().add(menu1);
     }

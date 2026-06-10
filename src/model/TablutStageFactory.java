@@ -39,7 +39,7 @@ public class TablutStageFactory extends StageElementsFactory {
         text.setVisible(false);
         stageModel.setPlayerName(text);
 
-        RaichiTuichiMessage message = new RaichiTuichiMessage(300, 600, stageModel);
+        RaichiTuichiMessage message = new RaichiTuichiMessage(300, 610, stageModel);
         stageModel.setMessage(message);
 
         TablutBoard board = new TablutBoard(0, 1, stageModel);
