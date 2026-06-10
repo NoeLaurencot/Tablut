@@ -12,6 +12,7 @@ public class TablutView extends View {
 
     private MenuItem menuStart;
     private MenuItem menuIntro;
+    private MenuItem menuOption;
     private MenuItem menuQuit;
 
     public TablutView(Model model, Stage stage, RootPane rootPane) {
@@ -25,8 +26,10 @@ public class TablutView extends View {
         menuStart = new MenuItem("New game");
         menuIntro = new MenuItem("Intro");
         menuQuit = new MenuItem("Quit");
+        menuOption = new MenuItem("Option");
         menu1.getItems().add(menuStart);
         menu1.getItems().add(menuIntro);
+        menu1.getItems().add(menuOption);
         menu1.getItems().add(menuQuit);
         menuBar.getMenus().add(menu1);
     }
@@ -43,6 +46,7 @@ public class TablutView extends View {
         return menuQuit;
     }
 
+    public MenuItem getMenuOption() {return  menuOption;}
 
 
 }
