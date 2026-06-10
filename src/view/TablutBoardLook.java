@@ -29,12 +29,13 @@ public class TablutBoardLook extends ClassicBoardLook {
         selectedCellCircles = new Circle[nbRows][nbCols];
         for (int i = 0; i < nbRows; i++) {
             for (int j = 0; j < nbCols; j++) {
-                Color c = Color.GREY;
+                Color b = Color.BLACK;
 
-                selectedCellCircles[i][j] = new Circle(j * colWidth + gapXToCells + colWidth / 2.0, i * rowHeight + gapYToCells + rowHeight / 2.0, 15);
+                selectedCellCircles[i][j] = new Circle(j * colWidth + gapXToCells + colWidth / 2.0, i * rowHeight + gapYToCells + rowHeight / 2.0, 12);
                 selectedCellCircles[i][j].setSmooth(false);
-                selectedCellCircles[i][j].setStroke(c);
-                selectedCellCircles[i][j].setFill(c);
+                selectedCellCircles[i][j].setStroke(b);
+                selectedCellCircles[i][j].setFill(b);
+                selectedCellCircles[i][j].setOpacity(0.3);
                 selectedCellCircles[i][j].setStrokeWidth(0);
                 addShape(selectedCellCircles[i][j]);
             }
