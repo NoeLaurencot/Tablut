@@ -260,9 +260,9 @@ public class TablutBoard extends ContainerElement {
 
         for (Coordinate adjCoord : adjacentCoords) {
             // Only add if not empty and team is different and not a fortress
-            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY()) && this.getElement(adjCoord.getX(), adjCoord.getY()) instanceof Pawn) {
-                GameElement element = getElement(adjCoord.getX(), adjCoord.getY());
-                if (((Pawn) element).getTeam() != team) {
+            if (!this.isEmptyAt(adjCoord.getX(), adjCoord.getY())) {
+                GameElement element = getLastElement(adjCoord.getX(), adjCoord.getY());
+                if ((element instanceof Pawn && ((Pawn) element).getTeam() != team) || element instanceof Fortress) {
                     enemyCoords.add(adjCoord);
                 }
             }

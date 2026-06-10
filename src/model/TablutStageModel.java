@@ -140,17 +140,25 @@ public class TablutStageModel extends GameStageModel {
             if (containerDest != board) return;
 
 
-            int cnt = 0;
-            for (Coordinate winCoord : board.getWinCoords()) {
-                if (board.canSeeCoordinate(board.getKingPosition(), winCoord) && board.isEmptyAt(winCoord.getX(), winCoord.getY()))
-                    cnt++;
+            if (element instanceof King) {
+                int cnt = 0;
+                boolean done = false;
+                for (Coordinate winCoord : board.getWinCoords()) {
+                    if (winCoord.getX() == rowDest && winCoord.getY() == colDest) {
+                        done = true;
+                        break;
+                    }
+                    if (board.canSeeCoordinate(board.getKingPosition(), winCoord) && board.isEmptyAt(winCoord.getX(), winCoord.getY()))
+                        cnt++;
+                }
+
+                if (cnt == 1 && !done) {
+                    System.out.println("Raichi");
+                } else if (cnt >= 2 && !done) {
+                    System.out.println("Tuichi");
+                }
             }
-            if (cnt == 1) {
-                System.out.println("Raichi");
-            } else if (cnt >= 2) {
-                System.out.println("Tuichi");
-            }
-            
+
             if (board.areSwedishWinning()) {
                 showGameResult(true);
             }

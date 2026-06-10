@@ -83,9 +83,8 @@ public class TablutSimpleDecider extends Decider {
         addMoveToHistory(bestMove);
         repetitiveScore = computeRepetitiveScore();
 
-        System.out.println("Repetition score: " + repetitiveScore);
-
-        System.out.println("Best move: " + bestMove.humanReadable());
+//        System.out.println("Repetition score: " + repetitiveScore);
+//        System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(control, model, bestPawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
         actionList.setDoEndOfTurn(true);
 

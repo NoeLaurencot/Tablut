@@ -1,6 +1,7 @@
 package control;
 
 import boardifier.control.*;
+import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -37,7 +38,7 @@ public class TablutController extends Controller {
             Logger.debug("COMPUTER PLAYS");
 
             Move bestMove = null;
-            final int COOLDOWN = 0; // Don't put more than 3 seconds or OS thinks app doesn't respond
+            final int COOLDOWN = 300; // in ms. Don't put more than 3 seconds or OS thinks app doesn't respond
 
             Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
 
@@ -93,8 +94,10 @@ public class TablutController extends Controller {
 
             if (board.outOfBounds(new Coordinate(beyondRow, beyondCol))) continue;
 
-            boolean hasFriendlyPawnBeyond = board.getElement(beyondRow, beyondCol) instanceof Pawn
-                    && ((Pawn) board.getLastElement(beyondRow, beyondCol)).getTeam() == movedPawn.getTeam();
+            GameElement pawnBeyond = board.getLastElement(beyondRow, beyondCol);
+
+            boolean hasFriendlyPawnBeyond = pawnBeyond instanceof Pawn
+                    && ((Pawn) pawnBeyond).getTeam() == movedPawn.getTeam();
             boolean hasFortressBeyond = board.isFortressAt(beyondRow, beyondCol);
 
             if ((hasFriendlyPawnBeyond || hasFortressBeyond) && enemyPawn.wouldBeSurroundedIfEnemyAt(new Coordinate(move.destX, move.destY))) {
