@@ -17,6 +17,7 @@ public class RaichiTuichiMessage extends TextElement {
 
     public RaichiTuichiMessage(int x, int y, GameStageModel gameStageModel) {
         super("", gameStageModel);
+        setLocation(x, y);
     }
 
     public void setRaichi() {

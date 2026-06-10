@@ -20,7 +20,7 @@ public class MoveHistory extends ContainerElement {
     private int insertRow = 0;
 
     public MoveHistory(int x, int y, GameStageModel gameStageModel) {
-        super("movehistory", x, y, 99, 2, gameStageModel);
+        super("movehistory", x, y, 20, 2, gameStageModel);
     }
 
     public void addMove(Move move) {

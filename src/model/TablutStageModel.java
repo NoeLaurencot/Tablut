@@ -48,6 +48,7 @@ public class TablutStageModel extends GameStageModel {
     private Pawn[] pawns;
     private ArrayList<Fortress> fortresses;
     private TextElement playerName;
+    private RaichiTuichiMessage message;
     private MoveHistory moveHistory;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
 
@@ -90,6 +91,10 @@ public class TablutStageModel extends GameStageModel {
         return playerName;
     }
 
+    public RaichiTuichiMessage getMessage() {
+        return message;
+    }
+
     public MoveHistory getMoveHistory() {
         return moveHistory;
     }
@@ -118,6 +123,11 @@ public class TablutStageModel extends GameStageModel {
     public void setPlayerName(TextElement pn) {
         playerName = pn;
         addElement(playerName);
+    }
+
+    public void setMessage(RaichiTuichiMessage m) {
+        message = m;
+        addElement(m);
     }
 
     public void setMoveHistory(MoveHistory mh) {
@@ -153,10 +163,14 @@ public class TablutStageModel extends GameStageModel {
                 }
 
                 if (cnt == 1 && !done) {
-                    System.out.println("Raichi");
+                    message.setText("Raichi !");
                 } else if (cnt >= 2 && !done) {
-                    System.out.println("Tuichi");
+                    message.setText("Tuichi !");
+                } else {
+                    message.setText("");
                 }
+            } else {
+                updateRaichiMessage();
             }
 
             if (board.areSwedishWinning()) {
@@ -186,6 +200,25 @@ public class TablutStageModel extends GameStageModel {
 
             if (getBoard().areMuscovitesWinning()) showGameResult(false);
         });
+    }
+
+    private void updateRaichiMessage() {
+        Coordinate kingPos = board.getKingPosition();
+
+        int cnt = 0;
+        boolean done = false;
+        for (Coordinate winCoord : board.getWinCoords()) {
+            if (kingPos == winCoord) {
+                done = true;
+                break;
+            }
+            if (board.canSeeCoordinate(kingPos, winCoord) && board.isEmptyAt(winCoord.getX(), winCoord.getY()))
+                cnt++;
+        }
+
+        if (cnt == 0 || done) {
+            message.setText("");
+        }
     }
 
     private void showGameResult(boolean swedishWon) {
