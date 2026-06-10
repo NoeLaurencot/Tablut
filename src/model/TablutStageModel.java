@@ -50,6 +50,7 @@ public class TablutStageModel extends GameStageModel {
     private TextElement playerName;
     private MoveHistory moveHistory;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
+    private TablutOptionModel tablutOptionModel;
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
@@ -276,5 +277,13 @@ public class TablutStageModel extends GameStageModel {
 
     public void addMoveInHistory(MoveElement moveElement) {
         moveHistory.addMove(moveElement);
+    }
+
+    public void setTablutOptionModel(TablutOptionModel tablutOptionModel) {
+        this.tablutOptionModel = tablutOptionModel;
+    }
+
+    public TablutOptionModel getTablutOptionModel() {
+        return tablutOptionModel;
     }
 }
