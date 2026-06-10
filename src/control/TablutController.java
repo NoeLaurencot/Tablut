@@ -40,7 +40,7 @@ public class TablutController extends Controller {
             Move bestMove = null;
             final int COOLDOWN = 300; // in ms. Don't put more than 3 seconds or OS thinks app doesn't respond
 
-            Decider decider = getDeciderType(stageModel.getMode(), stageModel.getAIModesUsed());
+            Decider decider = getDeciderType(TablutOptionModel.getGamemode(), TablutOptionModel.getAiMode());
 
             long timestamp = System.nanoTime();
 
@@ -121,14 +121,14 @@ public class TablutController extends Controller {
 
     public Decider getDeciderType(int mode, ArrayList<AIMode> aiModes) {
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-        Decider decider = new TablutMinMaxDecider(this.model, this); // defaults to minmax
+        Decider decider = new TablutSimpleDecider(this.model, this); // defaults to simple eval
 
         if (mode == 1 || mode == 2) {
             switch (aiModes.getFirst()) {
                 case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
                 case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
             }
-        } else {
+        } else if (mode == 3) {
             if (stageModel.getPlayerName().getText().equals("swedish computer")) {
                 switch (aiModes.get(0)) { // first AI is swedish AI
                     case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);

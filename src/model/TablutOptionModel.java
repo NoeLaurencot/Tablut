@@ -1,6 +1,10 @@
 package model;
 
+import control.TablutOptionController;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TablutOptionModel {
 
@@ -16,7 +20,9 @@ public class TablutOptionModel {
     // mode 1 short move
     private static int kingMode = 0;
 
-    private static Color  oddColor = Color.rgb(194,172,151);
+    private static ArrayList<AIMode> aiMode = new ArrayList<>(List.of(AIMode.SIMPLE_EVAL));
+
+    private static Color oddColor = Color.rgb(194,172,151);
     private static Color evenColor = Color.BEIGE;
 
 
@@ -28,6 +34,10 @@ public class TablutOptionModel {
     public static void setGamemode(int gamemode) throws InvalidIntegerOptionException  {
         if (gamemode < 0 || gamemode > 3) throw new InvalidIntegerOptionException("Gamemode",gamemode);
         TablutOptionModel.gamemode = gamemode;
+    }
+
+    public static ArrayList<AIMode> getAiMode() {
+        return aiMode;
     }
 
     public static Color getEvenColor() {
@@ -44,6 +54,10 @@ public class TablutOptionModel {
 
     public static int getWinMode() {
         return winMode;
+    }
+
+    public static void setAiMode(ArrayList<AIMode> aiMode) {
+        TablutOptionModel.aiMode = aiMode;
     }
 
     public static void setEvenColor(Color evenColor) {
