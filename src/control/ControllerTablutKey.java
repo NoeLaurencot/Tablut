@@ -17,25 +17,28 @@ import model.*;
 import java.security.Key;
 import java.util.List;
 
-/**
- * A basic mouse controller that just grabs the mouse clicks and prints out some informations.
- * It gets the elements of the scene that are at the clicked position and prints them.
- */
+
 public class ControllerTablutKey extends ControllerKey implements EventHandler<KeyEvent> {
+    private static boolean paused = false;
 
     public ControllerTablutKey(Model model, View view, Controller control) {
         super(model, view, control);
+        view.getRootPane().setOnKeyReleased(null);
     }
 
     public void handle(KeyEvent event) {
-        if (event.getCode().equals(KeyCode.SPACE)) {
-            try {
-                System.out.println("Paused 10 seconds");
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        // to pause, buggy
+//        if (event.getCode().equals(KeyCode.SPACE)) {
+//            if (!paused) {
+//                model.pauseGame();
+//                System.out.println("Paused");
+//                paused = true;
+//            } else {
+//                model.resumeGame();
+//                System.out.println("Resumed");
+//                paused = false;
+//            }
+//        }
     }
 }
 
