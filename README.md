@@ -45,7 +45,6 @@ java <compiled file>
 - Jules Jeanrot
 - Pierre Lamour
 - Idrissa Barry
-<<<<<<< HEAD
 
 ### Context
 
