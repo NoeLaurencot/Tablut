@@ -107,6 +107,8 @@ public class TablutOptionView {
 
         VBox main = new VBox();
 
+        ScrollPane scrollPane = new ScrollPane();
+
         /// Title
 
         title = new Label("Tablut settings");
@@ -188,7 +190,12 @@ public class TablutOptionView {
         styleElements();
         styleCategories(catPlayer, catRules, catColors);
 
-        return main;
+        scrollPane.setContent(main);
+
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPannable(true);
+
+        return scrollPane;
     }
 
     private void initFromModelValue() {
