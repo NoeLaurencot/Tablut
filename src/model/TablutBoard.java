@@ -118,6 +118,19 @@ public class TablutBoard extends ContainerElement {
         return lst;
     }
 
+    public List<Coordinate> getFortresses() {
+        List<Coordinate> list = new ArrayList<>();
+
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                if (getFirstElement(i, j) instanceof Fortress) {
+                    list.add(new Coordinate(i, j));
+                }
+            }
+        }
+        return list;
+    }
+
     public boolean isFortressAt(int i, int j) {
         if (grid[i][j].size() == 0) {
             return false;
