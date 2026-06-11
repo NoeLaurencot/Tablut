@@ -69,10 +69,12 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
         EventHandler<ActionEvent> handlerQuit = event -> System.exit(0);
 
         EventHandler<ActionEvent> handlerSetting = event -> {
+            control.stopGame();
             tablutView.resetView();
             tablutView.showOptionMenu();
         };
         EventHandler<ActionEvent> handlerRules = event -> {
+            control.stopGame();
             tablutView.resetView();
             tablutView.showRulesMenu();
         };
