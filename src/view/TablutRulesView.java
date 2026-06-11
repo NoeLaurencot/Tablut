@@ -1,18 +1,7 @@
 package view;
 
-import control.TablutOptionController;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import model.KingMoveMode;
-import model.TablutOptionModel;
-import model.WinMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TablutRulesView {
 
@@ -32,15 +21,19 @@ public class TablutRulesView {
             },
             {
                     "Standard Movement",
-                    "The first player is the Swedish player. On their turn, a player moves a pawn any number of squares, horizontally or vertically (like the rook in chess). The traversed squares and the destination square must be free.\n" +
-                            "Clarification: The central square (E5, Throne) is occupied by the King at the start of the game. It is strictly forbidden to access or pass through for all other pawns (Swedish soldiers and Muscovites)."
+                    """
+                    The first player is the Swedish player. On their turn, a player moves a pawn any number of squares, horizontally or vertically (like the rook in chess). The traversed squares and the destination square must be free.
+                    Clarification: The central square (E5, Throne) is occupied by the King at the start of the game. It is strictly forbidden to access or pass through for all other pawns (Swedish soldiers and Muscovites).
+                    """
             },
             {
                     "Capturing a Pawn",
-                    "To capture an enemy pawn (Swedish or Muscovite), you must surround it by occupying two opposite adjacent squares, either horizontally or vertically. The captured pawn is removed from the game.\n" +
-                            "Clarification: If a pawn voluntarily moves between two enemy pawns, it is not captured. The capture is only active for the player who has just played their turn.\n" +
-                            "King: The King can actively participate in capturing an enemy pawn, exactly as if he were an ordinary soldier.\n" +
-                            "Finally, it is possible to capture multiple enemy pawns in a single move if the played pawn simultaneously locks down multiple surroundings."
+                    """
+                    To capture an enemy pawn (Swedish or Muscovite), you must surround it by occupying two opposite adjacent squares, either horizontally or vertically. The captured pawn is removed from the game.
+                    Clarification: If a pawn voluntarily moves between two enemy pawns, it is not captured. The capture is only active for the player who has just played their turn.
+                    King: The King can actively participate in capturing an enemy pawn, exactly as if he were an ordinary soldier.
+                    Finally, it is possible to capture multiple enemy pawns in a single move if the played pawn simultaneously locks down multiple surroundings.
+                    """
             },
             {
                     "Capturing the King",
@@ -53,17 +46,31 @@ public class TablutRulesView {
             },
             {
                     "Tuichi Announcement",
-                    "When the King simultaneously has two free paths to the periphery, the game announces 'Tuichi'. Victory is immediate or assured on the next turn because the opponent cannot block two exits at the same time."
+                    "When the King simultaneously has two free paths to the periphery, the game announces 'Tuichi'. Victory is assured on the next turn because the opponent cannot block two exits at the same time."
             },
 
             {
-                    "Variant 1: Escape to the Corners",
-                    "To win, the King must reach a corner square. These corners become fortresses.\n" +
-                            "Fortresses : they can capture a pawn like two enemy pawn,and only the king go on them(to escape)."
+                    "Variant : Escape to the Corners",
+                    """
+                    To win, the King must reach a corner square. These corners become fortresses.
+                    
+                    Fortresses : they can capture a pawn like two enemy pawn, and only the king go on them (to escape).
+                    """
             },
             {
-                    "Variant 2: Snail King",
+                    "Variant : Snail King",
                     "The King can only move a maximum of 1 square per turn."
+            },
+            {
+                    "Cheats",
+                    """
+                    There are a few cheats available in the options.
+                    
+                    Move anywhere: the pawns can freely move at any empty cell
+                    Disable captures: the captures are disabled
+                    Play any pawn: the player can play any pawn, including its opponent's
+                    Builder mode: the player can move pawns around and delete pawns with right click
+                    """
             }
     };
     private ListView<String> rulesOption;
