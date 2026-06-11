@@ -1,10 +1,10 @@
 package model;
 
-public class InvalidIntegerOptionException extends Exception {
+public class InvalidOptionException extends Exception {
     private final String invalidOption;
     private final int integerOption;
 
-    public InvalidIntegerOptionException(String invalidOption,int integerOption) {
+    public InvalidOptionException(String invalidOption, int integerOption) {
         this.integerOption = integerOption;
         this.invalidOption = invalidOption;
     }
