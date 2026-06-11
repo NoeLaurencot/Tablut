@@ -21,7 +21,7 @@ public class TablutBoard extends ContainerElement {
     private ArrayList<Coordinate> winCoords;
     private List<GameElement>[][] storedGrid;
 
-
+    // TODO: change the default winCoords using the option model
     public TablutBoard(int x, int y, GameStageModel gameStageModel) {
         // call the super-constructor to create a 9x9 grid, named "Tablutboard", and in x,y in space
         super("tablutboard", x, y, 9, 9, gameStageModel);
@@ -292,6 +292,11 @@ public class TablutBoard extends ContainerElement {
 
     public ArrayList<Coordinate> getFarthestVisibleCoords(Coordinate coord) {
         ArrayList<Coordinate> farthestVisibleCells = new ArrayList<>();
+
+        boolean kingShortMove = (getLastElement(coord.getX(), coord.getY()) instanceof King && TablutOptionModel.getKingMode() == KingMoveMode.LIMITED);
+
+        if (kingShortMove)
+            return getAdjacentCoords(coord);
 
         for (final int[] VECT : DIRECTIONS) {
             Coordinate visibleCoord = getFarthestVisibleCoord(coord, VECT);

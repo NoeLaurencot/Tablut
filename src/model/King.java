@@ -34,7 +34,7 @@ public class King extends Pawn {
             int[] position = {getXInBoard() + vect[0] * inc, getYInBoard() + vect[1] * inc};
             //System.out.println(position[0] + " " + position[1]);
 
-            if (((TablutStageModel) this.gameStageModel).getKingMoveMode() == KingMoveMode.LIMITLESS) {
+            if (TablutOptionModel.getKingMode() == KingMoveMode.LIMITLESS) {
                 while (position[0] >= 0 && position[0] < 9
                         && position[1] >= 0 && position[1] < 9
                         && !board.isPawnAt(position[0], position[1])) {

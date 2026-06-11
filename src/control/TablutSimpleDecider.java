@@ -160,7 +160,7 @@ public class TablutSimpleDecider extends Decider {
         // To move in the king's path
         if (!board.canSeeKing(sourceCoord) && isBetweenKingAndWinCoords(destCoord, kingX, kingY)) {
             score += BIG_SCORE;
-        } else if (((TablutStageModel) model.getGameStage()).getWinMode() == WinMode.CORNERS && !board.canSeeKing(sourceCoord)
+        } else if (TablutOptionModel.getWinMode() == WinMode.CORNERS && !board.canSeeKing(sourceCoord)
                 && isBetweenKingAndBorders(destCoord, kingX, kingY)) {
             score += 400;
         } else if (!board.canSeeKing(sourceCoord) && board.canSeeKing(destCoord)) {
@@ -368,8 +368,11 @@ public class TablutSimpleDecider extends Decider {
         int counter = 0;
 
         for (Coordinate enemyCoord : board.getAdjacentEnemyPawnsCoords(coord, team)) {
-            Coordinate acrossCoord = new Coordinate(enemyCoord.getX() - coord.getX(), enemyCoord.getY() - coord.getY());
-            if (board.isAnyEnemyVisible(acrossCoord, team))
+            Coordinate acrossCoord = new Coordinate(
+                    enemyCoord.getX()*2 - coord.getX(),
+                    enemyCoord.getY()*2 - coord.getY()
+            );
+            if (!board.outOfBounds(acrossCoord) && board.isAnyEnemyVisible(acrossCoord, team))
                 counter++;
         }
 

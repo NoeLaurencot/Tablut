@@ -90,7 +90,7 @@ public class TablutStageModelUnitTest {
     public void testSetKingMoveMode_ShouldStoreMode() {
         tablutStageModel.setKingMoveMode(KingMoveMode.LIMITED);
 
-        assertEquals(KingMoveMode.LIMITED, tablutStageModel.getKingMoveMode());
+        assertEquals(KingMoveMode.LIMITED, TablutOptionModel.getKingMode());
     }
 
     @Test

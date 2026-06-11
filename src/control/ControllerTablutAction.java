@@ -43,6 +43,8 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
         tablutView.getMenuStart().setOnAction(e -> {
             try {
+                model.getPlayers().clear();
+                model.reset();
                 setPlayers();
 
                 control.startGame();
