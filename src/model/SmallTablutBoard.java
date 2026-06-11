@@ -15,8 +15,8 @@ public class SmallTablutBoard {
         kingMode = mode;
 
         fortresses = new ArrayList<>();
-        for (Fortress fortress : board.getGameStage().getFortresses()) {
-            fortresses.add(new CoordinateByte((byte)fortress.getX(), (byte)fortress.getY()));
+        for (Coordinate fortress : board.getFortresses()) {
+            fortresses.add(new CoordinateByte(fortress));
         }
     }
 

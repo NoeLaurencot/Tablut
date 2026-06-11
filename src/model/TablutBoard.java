@@ -21,18 +21,27 @@ public class TablutBoard extends ContainerElement {
     private ArrayList<Coordinate> winCoords;
     private List<GameElement>[][] storedGrid;
 
-    // TODO: change the default winCoords using the option model
     public TablutBoard(int x, int y, GameStageModel gameStageModel) {
         // call the super-constructor to create a 9x9 grid, named "Tablutboard", and in x,y in space
         super("tablutboard", x, y, 9, 9, gameStageModel);
         this.winCoords = new ArrayList<>();
-        // default win coordinates
-        for (int i = 0; i < nbCols; i++) {
-            for (int j = 0; j < nbRows; j++) {
-                if (j == 0 || i == 0 || j == nbRows - 1 || i == nbCols - 1) {
-                    winCoords.add(new Coordinate(i, j));
+
+        // Borders
+        if (TablutOptionModel.getWinMode() == WinMode.BORDERS) {
+            for (int i = 0; i < nbCols; i++) {
+                for (int j = 0; j < nbRows; j++) {
+                    if (j == 0 || i == 0 || j == nbRows - 1 || i == nbCols - 1) {
+                        winCoords.add(new Coordinate(i, j));
+                    }
                 }
             }
+        } 
+        // Corners
+        else if (TablutOptionModel.getWinMode() == WinMode.CORNERS) {
+            winCoords.add(new Coordinate(0, 0));
+            winCoords.add(new Coordinate(nbRows-1, 0));
+            winCoords.add(new Coordinate(0, nbCols-1));
+            winCoords.add(new Coordinate(nbRows-1, nbCols-1));
         }
     }
 
@@ -116,6 +125,19 @@ public class TablutBoard extends ContainerElement {
         lst = pawn.getLegalMoves();
 
         return lst;
+    }
+
+    public List<Coordinate> getFortresses() {
+        List<Coordinate> list = new ArrayList<>();
+
+        for (int i = 0; i < nbRows; i++) {
+            for (int j = 0; j < nbCols; j++) {
+                if (getFirstElement(i, j) instanceof Fortress) {
+                    list.add(new Coordinate(i, j));
+                }
+            }
+        }
+        return list;
     }
 
     public boolean isFortressAt(int i, int j) {

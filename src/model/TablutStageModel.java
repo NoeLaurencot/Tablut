@@ -133,28 +133,7 @@ public class TablutStageModel extends GameStageModel {
 
             playSound("move.wav");
 
-            if (element instanceof King) {
-                int cnt = 0;
-                boolean done = false;
-                for (Coordinate winCoord : board.getWinCoords()) {
-                    if (winCoord.getX() == rowDest && winCoord.getY() == colDest) {
-                        done = true;
-                        break;
-                    }
-                    if (board.canSeeCoordinate(board.getKingPosition(), winCoord) && board.isEmptyAt(winCoord.getX(), winCoord.getY()))
-                        cnt++;
-                }
-
-                if (cnt == 1 && !done) {
-                    message.setText("Raichi !");
-                } else if (cnt >= 2 && !done) {
-                    message.setText("Tuichi !");
-                } else {
-                    message.setText("");
-                }
-            } else {
-                updateRaichiMessage();
-            }
+            updateRaichiMessage();
 
             if (board.areSwedishWinning()) {
                 playSound("victory.wav");
@@ -204,7 +183,11 @@ public class TablutStageModel extends GameStageModel {
                 cnt++;
         }
 
-        if (cnt == 0 || done) {
+        if (cnt == 1 && !done) {
+            message.setText("Raichi !");
+        } else if (cnt >= 2 && !done) {
+            message.setText("Tuichi !");
+        } else {
             message.setText("");
         }
     }

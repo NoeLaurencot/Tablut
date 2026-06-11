@@ -1,10 +1,6 @@
 # Tablut game
 
-<<<<<<< HEAD
-Project realized during computer science BUT1 SAÉ 
-=======
 Project realized during the computer science BUT1 SAÉ 1-2-6
->>>>>>> 5e3f700c082b04dded34a080d97ec7c0ae15d8f6
 
 ## Presentation
 
@@ -25,11 +21,7 @@ Two different AIs have been developped in order to offer mutliple play styles an
 
 ### Functionalities
 
-<<<<<<< HEAD
-- Interface using Boardifier
-=======
-- Console interface using Boardifier
->>>>>>> 5e3f700c082b04dded34a080d97ec7c0ae15d8f6
+- Interface using Boardifier and JavaFX
 - Player VS AI mode
 - AI vs AI mode
 - Two different AIs
@@ -37,20 +29,9 @@ Two different AIs have been developped in order to offer mutliple play styles an
 
 ## How to use
 
-<<<<<<< HEAD
-
 ```
 java <compiled file>
 ```
-=======
-```
-java <compiled file> [play mode] [first AI] [second AI]
-```
-
-The move input is in a single line (ex: A1C1)
-
-You can type `options` to open the options menu 
->>>>>>> 5e3f700c082b04dded34a080d97ec7c0ae15d8f6
 
 ## Technologies used
 
@@ -64,10 +45,7 @@ You can type `options` to open the options menu
 - Jules Jeanrot
 - Pierre Lamour
 - Idrissa Barry
-<<<<<<< HEAD
 
 ### Context
 
 University project realized during computer science BUT1 SAÉ 
-=======
->>>>>>> 5e3f700c082b04dded34a080d97ec7c0ae15d8f6
