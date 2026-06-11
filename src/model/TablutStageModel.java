@@ -5,6 +5,7 @@ import boardifier.model.*;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,12 +132,12 @@ public class TablutStageModel extends GameStageModel {
         onMoveInContainer( (element, containerDest, rowDest, colDest) -> {
             if (containerDest != board) return;
 
-            playSound("move.wav");
+            playSound("audio/move.wav");
 
             updateRaichiMessage();
 
             if (board.areSwedishWinning()) {
-                playSound("victory.wav");
+                playSound("audio/victory.wav");
                 showGameResult(true);
             }
 
@@ -146,24 +147,12 @@ public class TablutStageModel extends GameStageModel {
             // Checks if the team that just played put the opposite team in stalemate
             Team pawnTeam = ((Pawn) element).getTeam();
             if (board.isStalemate(pawnTeam)) {
-                System.out.println(pawnTeam + " was put in a stalemate");
                 showGameResult(pawnTeam.oppositeTeam() == Team.SWEDISH);
-//            } else {
-//              // print to debug
-//
-//                System.out.println(pawnTeam.oppositeTeam() + " didn't put " + pawnTeam + " into a stalemate");
-//                System.out.println(pawnTeam + " can still play :");
-//
-//                List<Move> moveList = board.computeAllValidCells(pawnTeam);
-//
-//                for (Move move : moveList) {
-//                    System.out.println("From x:" + move.sourceX + " y:" + move.sourceY + " to x:" + move.destX + " y:" + move.destY);
-//                }
             }
 
             if (getBoard().areMuscovitesWinning()) {
 
-                playSound("explosion.wav");
+                playSound("audio/explosion.wav");
                 showGameResult(false);
             }
         });
@@ -245,6 +234,13 @@ public class TablutStageModel extends GameStageModel {
 
             Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
+
+            // to close the clip when the sound is done
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
 
             clip.start();
 

@@ -5,11 +5,8 @@ import boardifier.view.ElementLook;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 
 import model.Fortress;
-import model.Team;
 
 public class ThroneLook extends ElementLook {
     private ImageView imageView;
@@ -22,7 +19,7 @@ public class ThroneLook extends ElementLook {
         Image image;
 
 
-        image = new Image(getClass().getResource("/throne.png").toExternalForm());
+        image = new Image(getClass().getResource("/images/throne.png").toExternalForm());
 
 
         imageView = new ImageView(image);

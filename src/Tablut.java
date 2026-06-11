@@ -1,21 +1,13 @@
 import boardifier.control.StageFactory;
-import boardifier.model.GameException;
 import boardifier.model.Model;
-import boardifier.view.View;
 import control.TablutController;
 import javafx.scene.image.Image;
-import model.AIMode;
-import model.TablutStageModel;
 
 import view.TablutView;
-import view.TablutStageView;
 import view.TablutRootPane;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-
-import java.util.Arrays;
 
 public class Tablut extends Application {
 
@@ -44,7 +36,7 @@ public class Tablut extends Application {
         control.setFirstStageName("tablut");
 
         stage.setTitle("Tablut");
-        stage.getIcons().add(new Image(getClass().getResource("/king.png").toExternalForm()));
+        stage.getIcons().add(new Image(getClass().getResource("/images/king.png").toExternalForm()));
         stage.show();
     }
 }

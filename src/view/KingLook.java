@@ -1,10 +1,8 @@
 package view;
 
 import boardifier.model.GameElement;
-import boardifier.view.ElementLook;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
 import model.King;
 
 public class KingLook extends PawnLook {
@@ -15,7 +13,7 @@ public class KingLook extends PawnLook {
         super(element);
 
         Image image = new Image(
-                getClass().getResource("/king.png").toExternalForm()
+                getClass().getResource("/images/king.png").toExternalForm()
         );
 
         imageView = new ImageView(image);

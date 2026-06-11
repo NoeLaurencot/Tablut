@@ -108,7 +108,7 @@ public class TablutRulesView {
         rulesOption.setMaxHeight(500);
         rulesOption.setMinHeight(500);
         rulesOption.getSelectionModel().clearSelection();
-        main.getStylesheets().add(getClass().getResource("/rules.css").toExternalForm());
+        main.getStylesheets().add(getClass().getResource("/css/rules.css").toExternalForm());
 
         return main;
     }

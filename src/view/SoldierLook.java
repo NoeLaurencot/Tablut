@@ -1,11 +1,8 @@
 package view;
 
 import boardifier.model.GameElement;
-import boardifier.view.ElementLook;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import model.Soldier;
 import model.Team;
 
@@ -19,9 +16,9 @@ public class SoldierLook extends PawnLook {
         Image image;
 
         if (soldier.getTeam() == Team.MUSCOVITES) {
-            image = new Image(getClass().getResource("/sword.png").toExternalForm());
+            image = new Image(getClass().getResource("/images/sword.png").toExternalForm());
         } else {
-            image = new Image(getClass().getResource("/shield.png").toExternalForm());
+            image = new Image(getClass().getResource("/images/shield.png").toExternalForm());
         }
 
         imageView = new ImageView(image);

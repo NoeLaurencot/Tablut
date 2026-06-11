@@ -5,17 +5,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 public class TablutRootPane extends RootPane {
 
@@ -42,7 +37,7 @@ public class TablutRootPane extends RootPane {
 //        group.getChildren().clear();
 //        group.getChildren().addAll(frame, text);
 
-        this.getStylesheets().add(getClass().getResource("/menu.css").toExternalForm());
+        this.getStylesheets().add(getClass().getResource("/css/menu.css").toExternalForm());
         Rectangle frame = new Rectangle(800, 500, Color.LIGHTGREY);
 
         HBox root = new HBox();

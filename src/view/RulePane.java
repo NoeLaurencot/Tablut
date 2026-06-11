@@ -36,7 +36,6 @@ public class RulePane extends BorderPane {
         );
 
         Label rules = new Label(rulesStr);
-        rules.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 15));
         rules.setStyle("-fx-text-fill: #4a4a4a;");
         rules.setWrapText(true);
         rules.setLineSpacing(6.0);
