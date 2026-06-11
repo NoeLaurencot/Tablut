@@ -52,6 +52,10 @@ public class MoveHistory extends ContainerElement {
         } else {
             insertCol++;
         }
+
+        if (insertRow >= getNbRows()) {
+            resetInsertMove();
+        }
     }
 
     public void resetInsertMove() {
