@@ -34,6 +34,11 @@ public class TablutOptionView {
     private ColorPicker evenColorPicker;
     private ColorPicker oddColorPicker;
 
+    private CheckBox moveCheckBox;
+    private CheckBox captureCheckBox;
+    private CheckBox anyPlayCheckBox;
+    private CheckBox builderMode;
+
     private Button validButton;
     private Button doneButton;
 
@@ -73,6 +78,18 @@ public class TablutOptionView {
         oddColorPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
             reEnableValidButton();
         });
+        moveCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            reEnableValidButton();
+        });
+        captureCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            reEnableValidButton();
+        });
+        anyPlayCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            reEnableValidButton();
+        });
+        builderMode.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            reEnableValidButton();
+        });
     }
 
     private void initWidget() {
@@ -94,6 +111,11 @@ public class TablutOptionView {
         muscovitesAI = new ComboBox<>(FXCollections.observableArrayList("Simple", "Minmax"));
         evenColorPicker = new ColorPicker();
         oddColorPicker = new ColorPicker();
+
+        moveCheckBox = new CheckBox("Move anywhere ");
+        captureCheckBox = new CheckBox("Disable captures ");
+        anyPlayCheckBox = new CheckBox("Play any pawn ");
+        builderMode = new CheckBox("Builder mode ");
 
         validButton = new Button("Apply");
         doneButton = new Button("Done");
@@ -149,13 +171,13 @@ public class TablutOptionView {
 
         HBox kingMoveHbox = new HBox();
         kingMoveHbox.setSpacing(10);
-        Label kingMoveLabel = new Label("King movement :");
+        Label kingMoveLabel = new Label("King movement ");
         kingMoveHbox.getChildren().add(kingMoveLabel);
         kingMoveRadios.forEach(radioButton -> kingMoveHbox.getChildren().add(radioButton));
 
         HBox winModeHbox = new HBox();
         winModeHbox.setSpacing(10);
-        Label winModeLabel = new Label("Win condition: ");
+        Label winModeLabel = new Label("Win condition ");
         winModeHbox.getChildren().add(winModeLabel);
         winModeRadios.forEach(radioButton -> winModeHbox.getChildren().add(radioButton));
 
@@ -171,6 +193,15 @@ public class TablutOptionView {
         colorGridPane.add(evenColorPicker, 1, 0);
         colorGridPane.add(oddColorPicker, 1, 1);
 
+        /// Cheats ///
+
+        Label catCheats = new Label("Cheats");
+
+        FlowPane cheatFlowPane = new FlowPane();
+
+        cheatFlowPane.setHgap(10);
+        cheatFlowPane.getChildren().addAll(moveCheckBox, captureCheckBox, anyPlayCheckBox, builderMode);
+
         /// Buttons ///
 
         FlowPane buttonFlowPane = new FlowPane();
@@ -180,7 +211,7 @@ public class TablutOptionView {
 
         ///////////////
 
-        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, buttonFlowPane);
+        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, catCheats, cheatFlowPane, buttonFlowPane);
 
         main.setPrefWidth(800);
 
@@ -188,7 +219,7 @@ public class TablutOptionView {
         main.setPadding(new Insets(10));
 
         styleElements();
-        styleCategories(catPlayer, catRules, catColors);
+        styleCategories(catPlayer, catRules, catColors, catCheats);
 
         scrollPane.setContent(main);
 
@@ -253,6 +284,11 @@ public class TablutOptionView {
 
         oddColorPicker.setValue(TablutOptionModel.getOddColor());
         evenColorPicker.setValue(TablutOptionModel.getEvenColor());
+
+        moveCheckBox.setSelected(TablutOptionModel.isMoveAnywhere());
+        captureCheckBox.setSelected(TablutOptionModel.isCapturesDisabled());
+        anyPlayCheckBox.setSelected(TablutOptionModel.isMoveAnyPawn());
+        builderMode.setSelected(TablutOptionModel.isBuilderMode());
     }
 
     public Button getValidButton() {
@@ -285,6 +321,22 @@ public class TablutOptionView {
 
     public ComboBox<String> getSwedishPlayer() {
         return swedishPlayer;
+    }
+
+    public CheckBox getMoveCheckBox() {
+        return moveCheckBox;
+    }
+
+    public CheckBox getCaptureCheckBox() {
+        return captureCheckBox;
+    }
+
+    public CheckBox getAnyPlayCheckBox() {
+        return anyPlayCheckBox;
+    }
+
+    public CheckBox getBuilderMode() {
+        return builderMode;
     }
 
     private void styleElements() {

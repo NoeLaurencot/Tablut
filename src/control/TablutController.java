@@ -28,15 +28,17 @@ public class TablutController extends Controller {
 
     public void endOfTurn() {
 
-        // use the default method to compute next player
-        model.setNextPlayer();
+        // use the default method to compute next player (only if cheat disabled)
+        if (!TablutOptionModel.isMoveAnyPawn())
+            model.setNextPlayer();
+
         // get the new player
         Player p = model.getCurrentPlayer();
         // change the text of the TextElement
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
         addLastMoveToHistory();
-        if (p.getType() == Player.COMPUTER) {
+        if (p.getType() == Player.COMPUTER && !TablutOptionModel.isMoveAnyPawn()) {
             Logger.debug("COMPUTER PLAYS");
 
             Decider decider = getDeciderType(TablutOptionModel.getGamemode(), TablutOptionModel.getAiMode());
@@ -56,6 +58,10 @@ public class TablutController extends Controller {
      * @param actionList
      */
     public void addAfterPlayActions(Move move, ActionList actionList) {
+        if (TablutOptionModel.isCapturesDisabled()) {
+            return;
+        }
+
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
         TablutBoard board = gameStage.getBoard();

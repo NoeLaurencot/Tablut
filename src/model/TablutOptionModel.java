@@ -1,6 +1,5 @@
 package model;
 
-import control.TablutOptionController;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -21,14 +20,20 @@ public class TablutOptionModel {
     private static Color oddColor = Color.rgb(194,172,151);
     private static Color evenColor = Color.BEIGE;
 
+    // cheats
+    private static boolean captureDisabled = false;
+    private static boolean moveAnywhere = false;
+    private static boolean moveAnyPawn = false;
+    private static boolean builderMode = false;
+
 
 
     public static int getGamemode() {
         return TablutOptionModel.gamemode;
     }
 
-    public static void setGamemode(int gamemode) throws InvalidIntegerOptionException  {
-        if (gamemode < 0 || gamemode > 3) throw new InvalidIntegerOptionException("Gamemode",gamemode);
+    public static void setGamemode(int gamemode) throws InvalidOptionException {
+        if (gamemode < 0 || gamemode > 3) throw new InvalidOptionException("Gamemode",gamemode);
         TablutOptionModel.gamemode = gamemode;
     }
 
@@ -52,6 +57,30 @@ public class TablutOptionModel {
         return winMode;
     }
 
+    public static boolean isCapturesDisabled() {
+        return captureDisabled;
+    }
+
+    public static boolean isMoveAnywhere() {
+        return moveAnywhere;
+    }
+
+    public static boolean isMoveAnyPawn() {
+        return moveAnyPawn;
+    }
+
+    public static void setCaptureDisabled(boolean captureDisabled) {
+        TablutOptionModel.captureDisabled = captureDisabled;
+    }
+
+    public static void setMoveAnywhere(boolean moveAnywhere) {
+        TablutOptionModel.moveAnywhere = moveAnywhere;
+    }
+
+    public static void setMoveAnyPawn(boolean moveAnyPawn) {
+        TablutOptionModel.moveAnyPawn = moveAnyPawn;
+    }
+
     public static void setAiMode(ArrayList<AIMode> aiMode) {
         TablutOptionModel.aiMode = aiMode;
     }
@@ -64,11 +93,19 @@ public class TablutOptionModel {
         TablutOptionModel.oddColor = oddColor;
     }
 
-    public static void setKingMode(KingMoveMode kingMode) throws InvalidIntegerOptionException {
+    public static void setKingMode(KingMoveMode kingMode) throws InvalidOptionException {
         TablutOptionModel.kingMode = kingMode;
     }
 
-    public static void setWinMode(WinMode winMode) throws InvalidIntegerOptionException {
+    public static void setWinMode(WinMode winMode) throws InvalidOptionException {
         TablutOptionModel.winMode = winMode;
+    }
+
+    public static boolean isBuilderMode() {
+        return builderMode;
+    }
+
+    public static void setBuilderMode(boolean builderMode) {
+        TablutOptionModel.builderMode = builderMode;
     }
 }

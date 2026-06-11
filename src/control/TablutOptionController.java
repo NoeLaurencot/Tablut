@@ -3,9 +3,8 @@ package control;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tab;
 import model.AIMode;
-import model.InvalidIntegerOptionException;
+import model.InvalidOptionException;
 import model.TablutOptionModel;
 import view.TablutOptionView;
 import view.TablutView;
@@ -61,7 +60,11 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
             TablutOptionModel.setWinMode(tablutOptionView.getSelectedWinModeRadio());
             TablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
             TablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
-        } catch (InvalidIntegerOptionException e) {
+            TablutOptionModel.setMoveAnywhere(tablutOptionView.getMoveCheckBox().isSelected());
+            TablutOptionModel.setCaptureDisabled(tablutOptionView.getCaptureCheckBox().isSelected());
+            TablutOptionModel.setMoveAnyPawn(tablutOptionView.getAnyPlayCheckBox().isSelected());
+            TablutOptionModel.setBuilderMode(tablutOptionView.getBuilderMode().isSelected());
+        } catch (InvalidOptionException e) {
             throw new RuntimeException(e);
         }
     }

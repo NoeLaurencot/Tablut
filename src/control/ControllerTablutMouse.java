@@ -3,17 +3,11 @@ package control;
 import boardifier.control.*;
 import boardifier.model.*;
 import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
-import boardifier.model.action.PutInContainerAction;
-import boardifier.model.action.RemoveFromContainerAction;
 import boardifier.model.animation.AnimationTypes;
-import boardifier.view.ElementLook;
 import boardifier.view.GridLook;
 import boardifier.view.View;
 
 import javafx.event.*;
-import javafx.geometry.Point2D;
-import javafx.scene.control.Tab;
 import javafx.scene.input.*;
 
 import model.*;
@@ -35,6 +29,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
     public void handle(MouseEvent event) {
         // if mouse event capture is disabled in the model, just return
         if (!model.isCaptureMouseEvent()) return;
+        if (!event.isPrimaryButtonDown() && !event.isSecondaryButtonDown()) return;
 
         // get the clic x,y in the whole scene (this includes the menu bar if it exists)
         Coord2D click = new Coord2D(event.getSceneX(),event.getSceneY());
@@ -63,13 +58,13 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 
         if (fortressInList) {
             if (elementsClicked == 3) {
-                handlePawnClick(list);
+                handlePawnClick(list, event);
             } else if (elementsClicked == 2 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
                 handleBoardClick(list, click);
             }
         } else {
             if (elementsClicked == 2) {
-                handlePawnClick(list);
+                handlePawnClick(list, event);
             } else if (elementsClicked == 1 && stageModel.getState() == TablutStageModel.STATE_SELECT_DEST) {
                 handleBoardClick(list, click);
             }
@@ -89,7 +84,7 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
         boolean[][] reach = board.getReachableCells();
 
         if (dest != null) {
-            if (reach[dest[0]][dest[1]]) {
+            if (reach[dest[0]][dest[1]] || TablutOptionModel.isBuilderMode()) {
                 Move move = new Move(this.selectedCoords.getX(), this.selectedCoords.getY(), dest[0], dest[1]);
                 
                 tablutController.setLastMove(move);
@@ -129,19 +124,32 @@ public class ControllerTablutMouse extends ControllerMouse implements EventHandl
 //        }
     }
 
-    private void handlePawnClick(List<GameElement> list) {
+    private void handlePawnClick(List<GameElement> list, MouseEvent event) {
         TablutBoard board = (TablutBoard) list.getFirst();
         Pawn pawn = (Pawn) list.getLast();
         TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
 
         Team curTeam;
 
+        if (event.isSecondaryButtonDown()) {
+            ActionList deleteAction = ActionFactory.generateRemoveFromContainer(this.model, pawn);
+            pawn.setVisible(false);
+            if (selectedPawn != null) {
+                selectedPawn.unselect();
+                selectedPawn = null;
+            }
+            board.resetReachableCells(false);
+            ActionPlayer play = new ActionPlayer(this.model, this.control, deleteAction);
+            play.start();
+            return;
+        }
+
         if (this.model.getCurrentPlayer().getName().equals("swedish player"))
             curTeam = Team.SWEDISH;
         else
             curTeam = Team.MUSCOVITES;
 
-        if (pawn.getTeam().equals(curTeam)) {
+        if (pawn.getTeam().equals(curTeam) || TablutOptionModel.isMoveAnyPawn()) {
             if (selectedPawn != null) {
                 selectedPawn.unselect();
                 selectedPawn = null;

@@ -30,6 +30,17 @@ public class Soldier extends Pawn {
         TablutBoard board = (TablutBoard) getContainer();
         List<Coordinate> lst = new ArrayList<>();
 
+        if (TablutOptionModel.isMoveAnywhere()) {
+            for (int i = 0; i < board.getNbRows(); i++) {
+                for (int j = 0; j < board.getNbCols(); j++) {
+                    if (board.isEmptyAt(i, j)) {
+                        lst.add(new Coordinate(i , j));
+                    }
+                }
+            }
+            return lst;
+        }
+
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         for (int[] vect : directions) {
             int inc = 1;
