@@ -28,6 +28,7 @@ public class TablutSimpleDecider extends Decider {
     private List<Coordinate> winCoords;
     private Team currentTeam;
     private TablutBoard board;
+    private final int COOLDOWN = 500; // cooldown in ms, don't put more than ~3s as the os thinks the app isn't responding
     public Move bestMove;
 
     public TablutSimpleDecider(Model model, Controller control) {
@@ -45,7 +46,6 @@ public class TablutSimpleDecider extends Decider {
 
     @Override
     public ActionList decide() {
-        final int COOLDOWN = 500; // cooldown in ms, don't put more than ~3s as the os thinks the app isn't responding
         TablutStageModel stage = (TablutStageModel) model.getGameStage();
         board = stage.getBoard();
 
@@ -56,7 +56,7 @@ public class TablutSimpleDecider extends Decider {
         List<Move> moves = board.computeAllValidCells(currentTeam);
 
 
-        return TablutController.getActionListAfterCooldown(COOLDOWN, this::simpleStrategy, moves);
+        return simpleStrategy(moves);
     }
 
     public ActionList simpleStrategy(List<Move> moves) {
@@ -66,6 +66,8 @@ public class TablutSimpleDecider extends Decider {
         Pawn bestPawn = pawn;
         int bestScore = Integer.MIN_VALUE;
         int score = Integer.MIN_VALUE;
+
+        long timestamp = System.currentTimeMillis();
 
         for (Move move : moves) {
 
@@ -81,6 +83,8 @@ public class TablutSimpleDecider extends Decider {
                 bestMove = move;
             }
         }
+
+        TablutController.waitCooldown(COOLDOWN, timestamp);
 
         addMoveToHistory(bestMove);
         repetitiveScore = computeRepetitiveScore();
@@ -375,8 +379,8 @@ public class TablutSimpleDecider extends Decider {
 
         for (Coordinate enemyCoord : board.getAdjacentEnemyPawnsCoords(coord, team)) {
             Coordinate acrossCoord = new Coordinate(
-                    enemyCoord.getX()*2 - coord.getX(),
-                    enemyCoord.getY()*2 - coord.getY()
+                    enemyCoord.getX() * 2 - coord.getX(),
+                    enemyCoord.getY() * 2 - coord.getY()
             );
             if (!board.outOfBounds(acrossCoord) && board.isAnyEnemyVisible(acrossCoord, team))
                 counter++;
