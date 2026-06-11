@@ -3,6 +3,7 @@ import boardifier.model.GameException;
 import boardifier.model.Model;
 import boardifier.view.View;
 import control.TablutController;
+import javafx.scene.image.Image;
 import model.AIMode;
 import model.TablutStageModel;
 
@@ -43,6 +44,7 @@ public class Tablut extends Application {
         control.setFirstStageName("tablut");
 
         stage.setTitle("Tablut");
+        stage.getIcons().add(new Image(getClass().getResource("/king.png").toExternalForm()));
         stage.show();
     }
 }
