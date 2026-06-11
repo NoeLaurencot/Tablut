@@ -25,6 +25,7 @@ public class TablutRootPane extends RootPane {
 
     private Button btnNewGame;
     private Button btnSettings;
+    private Button btnRules;
     private Button btnQuit;
 
 
@@ -68,12 +69,17 @@ public class TablutRootPane extends RootPane {
             btnSettings.getStyleClass().add("menu-button");
             btnSettings.setMaxWidth(Double.MAX_VALUE);
         }
+        if (btnRules == null) {
+            btnRules = new Button("Show Rules");
+            btnRules.getStyleClass().add("menu-button");
+            btnRules.setMaxWidth(Double.MAX_VALUE);
+        }
         if (btnQuit == null) {
             btnQuit = new Button("Quit ?");
             btnQuit.getStyleClass().add("menu-button");
             btnQuit.setMaxWidth(Double.MAX_VALUE);
         }
-        vBoxRight.getChildren().addAll(btnNewGame, btnSettings, btnQuit);
+        vBoxRight.getChildren().addAll(btnNewGame, btnSettings,btnRules, btnQuit);
         vBoxRight.setSpacing(25);
         vBoxRight.setPadding(new Insets(30));
         vBoxRight.setAlignment(Pos.CENTER);
@@ -101,5 +107,9 @@ public class TablutRootPane extends RootPane {
 
     public Button getBtnSettings() {
         return btnSettings;
+    }
+
+    public Button getBtnRules() {
+        return btnRules;
     }
 }

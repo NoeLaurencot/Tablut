@@ -72,17 +72,25 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
             tablutView.resetView();
             tablutView.showOptionMenu();
         };
+        EventHandler<ActionEvent> handlerRules = event -> {
+            tablutView.resetView();
+            tablutView.showRulesMenu();
+        };
+
+
 
 
         tablutView.getMenuStart().setOnAction(handlerNewGame);
         tablutView.getMenuIntro().setOnAction(handlerIntro);
         tablutView.getMenuQuit().setOnAction(handlerQuit);
         tablutView.getMenuOption().setOnAction(handlerSetting);
+        tablutView.getMenuRules().setOnAction(handlerRules);
 
         TablutRootPane rootPane = (TablutRootPane) tablutView.getRootPane();
         rootPane.getBtnNewGame().setOnAction(handlerNewGame);
         rootPane.getBtnSettings().setOnAction(handlerSetting);
         rootPane.getBtnQuit().setOnAction(handlerQuit);
+        rootPane.getBtnRules().setOnAction(handlerRules);
 
 
     }
