@@ -101,7 +101,7 @@ public class TablutMinMaxDecider extends Decider {
                 }
             }
 
-            if (bestScore == ((maxing) ? 10000 : -10000)) {
+            if (bestScore == ((maxing) ? 11000 : -11000)) {
                 break;
             }
             //System.out.println("score " + score);
@@ -117,8 +117,8 @@ public class TablutMinMaxDecider extends Decider {
 
     public int minmax(SmallTablutBoard board, int d, int alpha, int beta, boolean maxing) {
 
-            int quick = smallEvaluate(board);
-        if (quick != 0) return quick + d;
+        int quick = smallEvaluate(board);
+        if (quick != 0) return quick;
 
         String id = board.toString();
         if (seenBoards.containsKey(id)) {
@@ -143,14 +143,16 @@ public class TablutMinMaxDecider extends Decider {
             int score = minmax(newBoard, d - 1, alpha, beta, !maxing);
             score -= score % 10;
 
+            if (bestScore == ((maxing) ? 11000 : -11000)) return score;
+
             if (maxing) {
                 bestScore = Math.max(bestScore, score);
                 alpha = Math.max(alpha, bestScore);
-                if (bestScore >= beta) break; // ← beta cutoff, prune remaining siblings
+                if (bestScore >= beta) break;
             } else {
                 bestScore = Math.min(bestScore, score);
                 beta = Math.min(beta, bestScore);
-                if (bestScore <= alpha) break; // ← alpha cutoff, prune remaining siblings
+                if (bestScore <= alpha) break;
             }
         }
         return bestScore;
@@ -158,8 +160,8 @@ public class TablutMinMaxDecider extends Decider {
 
 
     private int smallEvaluate(SmallTablutBoard board) {
-        if (winSwedish(board)) return -10000;
-        if (winMuscovites(board)) return 10000;
+        if (winSwedish(board)) return -11000;
+        if (winMuscovites(board)) return 11000;
 
         short[][] grid = board.getGrid();
         CoordinateByte pos = board.getKingPosition();
@@ -183,8 +185,8 @@ public class TablutMinMaxDecider extends Decider {
     }
 
     private int evaluate(SmallTablutBoard board) {
-        if (winSwedish(board)) return -10000;
-        if (winMuscovites(board)) return 10000;
+        if (winSwedish(board)) return -11000;
+        if (winMuscovites(board)) return 11000;
 
         short[][] grid = board.getGrid();
         CoordinateByte pos = board.getKingPosition();
