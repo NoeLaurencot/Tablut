@@ -182,7 +182,7 @@ public class TablutOptionView {
 
         main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, buttonFlowPane);
 
-        main.setPrefWidth(600);
+        main.setPrefWidth(800);
 
         main.setSpacing(20);
         main.setPadding(new Insets(10));
@@ -194,6 +194,7 @@ public class TablutOptionView {
 
         scrollPane.setFitToWidth(true);
         scrollPane.setPannable(true);
+        scrollPane.setPrefHeight(500);
 
         return scrollPane;
     }
