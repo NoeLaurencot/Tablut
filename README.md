@@ -50,5 +50,3 @@ java <compiled file>
 ### Context
 
 University project realized during computer science BUT1 SAÉ 
-=======
->>>>>>> 5e3f700c082b04dded34a080d97ec7c0ae15d8f6
