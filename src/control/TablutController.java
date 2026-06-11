@@ -10,6 +10,8 @@ import boardifier.view.View;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class TablutController extends Controller {
 
@@ -37,28 +39,9 @@ public class TablutController extends Controller {
         if (p.getType() == Player.COMPUTER) {
             Logger.debug("COMPUTER PLAYS");
 
-            Move bestMove = null;
-            final int COOLDOWN = 500; // in ms. Don't put more than 3 seconds or OS thinks app doesn't respond
-
             Decider decider = getDeciderType(TablutOptionModel.getGamemode(), TablutOptionModel.getAiMode());
 
-            long timestamp = System.nanoTime();
-
-            // FIXME: Use an action player that takes the decider as parameter to prevent animation bug
-            ActionList actionList = decider.decide();
-
-            waitMinimumCooldown(COOLDOWN, timestamp);
-
-            if (decider instanceof TablutMinMaxDecider) {
-                bestMove = ((TablutMinMaxDecider) decider).bestMove;
-            } else if (decider instanceof TablutSimpleDecider) {
-                bestMove = ((TablutSimpleDecider) decider).bestMove;
-            }
-            lastMove = bestMove;
-
-            addAfterPlayActions(bestMove, actionList);
-
-            ActionPlayer play = new ActionPlayer(model, this, actionList);
+            ActionPlayer play = new ActionPlayer(model, this, decider, null);
 
             play.start();
 
@@ -67,6 +50,11 @@ public class TablutController extends Controller {
         }
     }
 
+    /**
+     * Adds an after play action in the actionList
+     * @param move
+     * @param actionList
+     */
     public void addAfterPlayActions(Move move, ActionList actionList) {
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
         TablutStageModel gameStage = (TablutStageModel) model.getGameStage();
@@ -126,6 +114,7 @@ public class TablutController extends Controller {
                 case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
                 case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
             }
+            // TODO: see if better way to check player type
         } else if (mode == 3) {
             if (stageModel.getPlayerName().getText().equals("swedish computer")) {
                 switch (aiModes.get(0)) { // first AI is swedish AI
@@ -144,21 +133,30 @@ public class TablutController extends Controller {
     }
 
     /**
-     * Makes the AI turn take at least a certain amount of time before ending turn
-     * @param cooldown the minimum time before the turn ends
-     * @param timestamp the timestamp taken before deciding best move
+     * Execute the function that searches the best move and gives the ActionList generated in a certain minimum amount of time
+     * @param cooldown the minimum time required before playing
+     * @param function the function that searches for the best move
+     * @param moves the move list
+     * @return the ActionList containing the bestMove
      */
-    public void waitMinimumCooldown(int cooldown, long timestamp) {
-        if (cooldown <= 0) return;
+    public static ActionList getActionListAfterCooldown(int cooldown, Function<List<Move>, ActionList> function, List<Move> moves) {
 
-        long timeElapsedMs = (System.nanoTime() - timestamp) / 1_000_000L;
 
-        if (timeElapsedMs < cooldown) {
+        long timestamp = System.currentTimeMillis();
+
+        ActionList actions = function.apply(moves);
+
+        long timeElapsed = System.currentTimeMillis() - timestamp;
+
+        if (timeElapsed < cooldown) {
             try {
-                Thread.sleep(cooldown - timeElapsedMs);
+                Thread.sleep(cooldown - timeElapsed);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
+
+        return actions;
     }
+
 }

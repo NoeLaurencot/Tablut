@@ -45,6 +45,7 @@ public class TablutSimpleDecider extends Decider {
 
     @Override
     public ActionList decide() {
+        final int COOLDOWN = 500; // cooldown in ms, don't put more than ~3s as the os thinks the app isn't responding
         TablutStageModel stage = (TablutStageModel) model.getGameStage();
         board = stage.getBoard();
 
@@ -54,7 +55,8 @@ public class TablutSimpleDecider extends Decider {
 
         List<Move> moves = board.computeAllValidCells(currentTeam);
 
-        return simpleStrategy(moves);
+
+        return TablutController.getActionListAfterCooldown(COOLDOWN, this::simpleStrategy, moves);
     }
 
     public ActionList simpleStrategy(List<Move> moves) {
@@ -86,6 +88,10 @@ public class TablutSimpleDecider extends Decider {
 //        System.out.println("Repetition score: " + repetitiveScore);
 //        System.out.println("Best move: " + bestMove.humanReadable());
         actionList = ActionFactory.generateMoveWithinContainer(control, model, bestPawn, bestMove.destX, bestMove.destY, AnimationTypes.MOVE_LINEARPROP, 10);
+
+        ((TablutController) control).addAfterPlayActions(bestMove, actionList);
+        ((TablutController) control).setLastMove(bestMove);
+
         actionList.setDoEndOfTurn(true);
 
         return actionList;
