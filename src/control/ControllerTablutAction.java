@@ -41,58 +41,60 @@ public class ControllerTablutAction extends ControllerAction implements EventHan
 
     private void setMenuHandlers() {
 
-        tablutView.getMenuStart().setOnAction(e -> {
-            try {
-                model.getPlayers().clear();
-                model.reset();
-                setPlayers();
+      EventHandler<ActionEvent> handlerNewGame = new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+              try {
+                  model.getPlayers().clear();
+                  model.reset();
+                  setPlayers();
 
-                control.startGame();
+                  control.startGame();
 
 
-                System.out.println(TablutOptionModel.getGamemode());
+                  System.out.println(TablutOptionModel.getGamemode());
 
-                if (TablutOptionModel.getGamemode() >= 2) {
-                    model.setNextPlayer();
-                    control.endOfTurn();
-                }
-            } catch (GameException err) {
-                System.err.println(err.getMessage());
-                System.exit(1);
+                  if (TablutOptionModel.getGamemode() >= 2) {
+                      model.setNextPlayer();
+                      control.endOfTurn();
+                  }
+              } catch (GameException err) {
+                  System.err.println(err.getMessage());
+                  System.exit(1);
+              }
+          }
+      };
+
+        EventHandler<ActionEvent> handlerIntro = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                control.stopGame();
+                tablutView.resetView();
             }
-        });
-        // set event handler on the MenuIntro item
-        tablutView.getMenuIntro().setOnAction(e -> {
-            control.stopGame();
-            tablutView.resetView();
-        });
-        // set event handler on the MenuQuit item
-        tablutView.getMenuQuit().setOnAction(e -> {
-            System.exit(0);
-        });
-        tablutView.getMenuOption().setOnAction(e -> {
-            tablutView.showOptionMenu();
-        });
+        };
+        EventHandler<ActionEvent> handlerQuit = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
+            }
+        };
+        EventHandler<ActionEvent> handlerSetting = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                tablutView.showOptionMenu();
+            }
+        };
+
+
+        tablutView.getMenuStart().setOnAction(handlerNewGame);
+        tablutView.getMenuIntro().setOnAction(handlerIntro);
+        tablutView.getMenuQuit().setOnAction(handlerQuit);
+        tablutView.getMenuOption().setOnAction(handlerSetting);
         TablutRootPane rootPane = (TablutRootPane) tablutView.getRootPane();
 
-        rootPane.getBtnNewGame().setOnAction(e -> {
-            try {
-                setPlayers();
-
-                control.startGame();
-
-
-                System.out.println(TablutOptionModel.getGamemode());
-
-                if (TablutOptionModel.getGamemode() >= 2) {
-                    model.setNextPlayer();
-                    control.endOfTurn();
-                }
-            } catch (GameException err) {
-                System.err.println(err.getMessage());
-                System.exit(1);
-            }
-        });
+        rootPane.getBtnNewGame().setOnAction(handlerNewGame);
+        rootPane.getBtnSettings().setOnAction(handlerSetting);
+        rootPane.getBtnQuit().setOnAction(handlerQuit);
 
 
     }
