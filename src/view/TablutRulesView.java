@@ -58,7 +58,8 @@ public class TablutRulesView {
 
             {
                     "Variant 1: Escape to the Corners",
-                    "To win, the King must reach a corner square. These corners become fortresses."
+                    "To win, the King must reach a corner square. These corners become fortresses.\n" +
+                            "Fortresses : they can capture a pawn like two enemy pawn,and only the king go on them(to escape)."
             },
             {
                     "Variant 2: Snail King",
