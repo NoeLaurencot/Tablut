@@ -2,15 +2,22 @@ package control;
 
 import boardifier.control.*;
 import boardifier.model.GameElement;
+import boardifier.model.GameException;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.RemoveFromContainerAction;
 import boardifier.view.View;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.StageStyle;
 import model.*;
+import view.TablutView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class TablutController extends Controller {
@@ -54,6 +61,7 @@ public class TablutController extends Controller {
 
     /**
      * Adds an after play action in the actionList
+     *
      * @param move
      * @param actionList
      */
@@ -120,7 +128,6 @@ public class TablutController extends Controller {
                 case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
                 case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
             }
-            // TODO: see if better way to check player type
         } else if (mode == 3) {
             if (stageModel.getPlayerName().getText().equals("swedish computer")) {
                 switch (aiModes.get(0)) { // first AI is swedish AI
@@ -138,19 +145,7 @@ public class TablutController extends Controller {
         return decider;
     }
 
-    /**
-     * Execute the function that searches the best move and gives the ActionList generated in a certain minimum amount of time
-     * @param cooldown the minimum time required before playing
-     * @param function the function that searches for the best move
-     * @param moves the move list
-     * @return the ActionList containing the bestMove
-     */
-    public static ActionList getActionListAfterCooldown(int cooldown, Function<List<Move>, ActionList> function, List<Move> moves) {
-
-
-        long timestamp = System.currentTimeMillis();
-
-        ActionList actions = function.apply(moves);
+    public static void waitCooldown(int cooldown, long timestamp) {
 
         long timeElapsed = System.currentTimeMillis() - timestamp;
 
@@ -161,8 +156,81 @@ public class TablutController extends Controller {
                 Thread.currentThread().interrupt();
             }
         }
-
-        return actions;
     }
 
+    @Override
+    public void endGame() {
+        //Logger.traceln("END THE GAME");
+
+        String message = "";
+        if (model.getIdWinner() != -1) {
+            Team winTeam;
+            TablutBoard board = ((TablutStageModel) model.getGameStage()).getBoard();
+            Player winPlayer = model.getPlayers().get((model.getIdWinner()));
+            Player lostPlayer = model.getPlayers().get((model.getIdWinner() + 1) % model.getPlayers().size());
+
+            if (model.getPlayers().get(model.getIdWinner()).getName().contains("swedish"))
+                winTeam = Team.SWEDISH;
+            else
+                winTeam = Team.MUSCOVITES;
+
+            if (board.isStalemate(winTeam.oppositeTeam())) {
+
+                message = lostPlayer.getName() + " was put in a stalemate, " + winPlayer.getName() + " wins";
+            } else {
+                message = winPlayer.getName() + " wins";
+            }
+
+
+        } else {
+            message = "Draw game";
+        }
+        // disable all events
+        model.setCaptureEvents(false);
+        // create a dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        // remove the frame around the dialog
+        alert.initStyle(StageStyle.UNDECORATED);
+        // make it a children of the main game window => it appears centered
+        alert.initOwner(view.getStage());
+        // set the message displayed
+        alert.setHeaderText(message);
+        // define new ButtonType to fit with our needs => one type is for Quit, one for New Game
+        ButtonType quit = new ButtonType("Quit");
+        ButtonType settings = new ButtonType("Settings");
+        ButtonType newGame = new ButtonType("New Game");
+        // remove default ButtonTypes
+        alert.getButtonTypes().clear();
+        // add the new ones
+        alert.getButtonTypes().addAll(quit, settings, newGame);
+        // show the dialog and wait for the result
+        Optional<ButtonType> option = alert.showAndWait();
+        // check if result is quit
+        if (option.get() == quit) {
+            System.exit(0);
+        }
+        // check if result is new game
+        else if (option.get() == newGame) {
+            try {
+                startGame();
+                if (TablutOptionModel.getGamemode() >= 2) {
+                    model.setNextPlayer();
+                    this.endOfTurn();
+                }
+            } catch (GameException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        // open settings
+        else if (option.get() == settings) {
+            view.resetView();
+            ((TablutView) view).showOptionMenu();
+        }
+        // abnormal case :-)
+        else {
+            System.err.println("Abnormal case: dialog closed with not choice");
+            System.exit(1);
+        }
+    }
 }
