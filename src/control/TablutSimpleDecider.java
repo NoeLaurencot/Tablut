@@ -62,7 +62,7 @@ public class TablutSimpleDecider extends Decider {
     public ActionList simpleStrategy(List<Move> moves) {
         ActionList actionList;
         bestMove = moves.getFirst();
-        Pawn pawn = (Pawn) board.getElement(moves.getFirst().sourceX, moves.getFirst().sourceY);
+        Pawn pawn = (Pawn) board.getLastElement(moves.getFirst().sourceX, moves.getFirst().sourceY);
         Pawn bestPawn = pawn;
         int bestScore = Integer.MIN_VALUE;
         int score = Integer.MIN_VALUE;
