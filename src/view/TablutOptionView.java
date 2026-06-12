@@ -8,7 +8,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import model.KingMoveMode;
 import model.TablutOptionModel;
@@ -152,7 +155,8 @@ public class TablutOptionView {
         ObjectProperty<Integer> valueProperty = new SimpleObjectProperty<>(0);
         TextFormatter<Integer> textFormatter = new TextFormatter<>(
                 new IntegerStringConverter() {
-                    @Override public Integer fromString(String s) {
+                    @Override
+                    public Integer fromString(String s) {
                         Integer val = super.fromString(s);
                         return val == null ? 0 : Math.abs(val);
                     }
@@ -275,7 +279,7 @@ public class TablutOptionView {
         FlowPane minmaxFlowPane = new FlowPane(15, 5);
         Label depth = new Label("Depth : ");
 
-        minmaxFlowPane.getChildren().addAll(depth,minmaxDepth);
+        minmaxFlowPane.getChildren().addAll(depth, minmaxDepth);
 
         /// Buttons ///
 
@@ -286,16 +290,14 @@ public class TablutOptionView {
 
         ///////////////
 
-        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorVBox, catCheats, cheatFlowPane, buttonFlowPane);
-        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, catCheats, cheatFlowPane,catMinMaxDepth,minmaxFlowPane, buttonFlowPane);
-
+        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorVBox, catCheats, cheatFlowPane, catMinMaxDepth, minmaxFlowPane, buttonFlowPane);
         main.setPrefWidth(800);
 
         main.setSpacing(20);
         main.setPadding(new Insets(10));
 
         styleElements();
-        styleCategories(catPlayer, catRules, catColors, catCheats,catMinMaxDepth);
+        styleCategories(catPlayer, catRules, catColors, catCheats, catMinMaxDepth);
 
         scrollPane.setContent(main);
 
@@ -474,7 +476,7 @@ public class TablutOptionView {
     }
 
     private void styleCategories(Label... labels) {
-        for (Label label: labels) {
+        for (Label label : labels) {
             label.setStyle("-fx-font-weight: bold;");
         }
     }
