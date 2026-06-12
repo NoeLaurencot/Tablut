@@ -11,7 +11,7 @@ public class TablutOptionModel {
     // mode 1 : Human vs Computer
     // mode 2 : Computer vs Human
     // mode 3 : Computer vs Computer
-    private static int gamemode = 1;
+    private static int gamemode = 0;
     private static WinMode winMode = WinMode.BORDERS;
     private static KingMoveMode kingMode = KingMoveMode.LIMITLESS;
 
