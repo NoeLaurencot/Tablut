@@ -83,7 +83,6 @@ public class TablutMinMaxDecider extends Decider {
                 // beta
 
                 if (score > bestScore) {
-                    System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = new Move(move);
 
@@ -93,7 +92,6 @@ public class TablutMinMaxDecider extends Decider {
                 // alpha
 
                 if (score < bestScore) {
-                    System.out.println(score + " " + move);
                     bestScore = score;
                     bestMove = new Move(move);
 

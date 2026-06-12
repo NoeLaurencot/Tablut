@@ -94,8 +94,8 @@ public class TablutOptionView {
 
     private void initWidget() {
         kingMoveRadios = new ArrayList<>();
-        kingMoveRadios.add(new RadioButton("Long move king"));
-        kingMoveRadios.add(new RadioButton("Short move king"));
+        kingMoveRadios.add(new RadioButton("Normal king"));
+        kingMoveRadios.add(new RadioButton("Snail king"));
         kingMoveGroup = new ToggleGroup();
         kingMoveRadios.forEach(radioButton -> radioButton.setToggleGroup(kingMoveGroup));
 
