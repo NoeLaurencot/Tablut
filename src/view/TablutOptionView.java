@@ -256,7 +256,7 @@ public class TablutOptionView {
         switch (TablutOptionModel.getGamemode()) {
             case 0 -> {
                 swedishAI.setValue("Simple");
-                swedishAI.setValue("Simple");
+                muscovitesAI.setValue("Simple");
             }
             case 1 -> {
                 swedishAI.setValue("Simple");

@@ -1,12 +1,10 @@
 package model;
 
-import boardifier.model.GameStageModel;
 import boardifier.model.ElementTypes;
+import boardifier.model.GameStageModel;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 public class King extends Pawn {
 
@@ -32,7 +30,7 @@ public class King extends Pawn {
             for (int i = 0; i < board.getNbRows(); i++) {
                 for (int j = 0; j < board.getNbCols(); j++) {
                     if (board.isEmptyAt(i, j) || board.getFirstElement(i, j) instanceof Fortress) {
-                        lst.add(new Coordinate(i , j));
+                        lst.add(new Coordinate(i, j));
                     }
                 }
             }
@@ -56,7 +54,8 @@ public class King extends Pawn {
                     position[1] = getYInBoard() + vect[1] * inc;
                 }
             } else {
-                if (position[0] >= 0 && position[0] < 9 && position[1] >= 0 && position[1] < 9 && board.isEmptyAt(position[0], position[1])) {
+                if (position[0] >= 0 && position[0] < 9 && position[1] >= 0 && position[1] < 9 &&
+                        (board.isEmptyAt(position[0], position[1]) || board.getFirstElement(position[0], position[1]) instanceof Fortress)) {
                     lst.add(new Coordinate(position[0], position[1]));
                 }
             }
