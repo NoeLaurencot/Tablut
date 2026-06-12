@@ -1,10 +1,7 @@
 package view;
 
 import boardifier.model.GameStageModel;
-import boardifier.view.ClassicBoardLook;
-import boardifier.view.GridLook;
-import boardifier.view.GameStageView;
-import boardifier.view.TextLook;
+import boardifier.view.*;
 
 import javafx.scene.paint.Color;
 import model.*;
@@ -49,8 +46,21 @@ public class TablutStageView extends GameStageView {
         TablutStageModel model = (TablutStageModel) gameStageModel;
         TablutBoard board = model.getBoard();
 
-        TextLook text = new TextLook(3, "0x000000", model.getPlayerName());
-        addLook(text);
+        // background
+//        Color backColor = TablutOptionModel.getMainColor();
+//        String hex = String.format("0x%02X%02X%02X",
+//                (int)(backColor.getRed()   * 255),
+//                (int)(backColor.getGreen() * 255),
+//                (int)(backColor.getBlue()  * 255));
+//        BackgroundLook bgLook = new BackgroundLook(width, height,
+//                BackgroundLook.BACKGROUND_COLOR, hex, model.getBackground());
+//        bgLook.setDepth(-100);
+//        addLook(bgLook);
+
+        PlayerNameLook swedishName = new PlayerNameLook(25, "0x000000", model.getPlayerName()[0], model.getModel().getPlayers().get(0));
+        PlayerNameLook muscoviteName = new PlayerNameLook(25, "0x000000", model.getPlayerName()[1], model.getModel().getPlayers().get(1));
+        addLook(swedishName);
+        addLook(muscoviteName);
 
         ClassicBoardLook boardLook = new TablutBoardLook(this.cellSize, board, 1, TablutOptionModel.getOddColor(), TablutOptionModel.getEvenColor(), 0, Color.TRANSPARENT, 2, Color.BLACK, true);
         addLook(boardLook);
@@ -63,6 +73,7 @@ public class TablutStageView extends GameStageView {
                 if (i == r / 2 && j == c / 2) { // king position
                     King king = (King) board.getElement(i, j, 1);
                     KingLook look = new KingLook((int) (this.cellSize * SCALE), king);
+                    look.setDepth(10);
                     addLook(look);
 
                     Fortress fortress = (Fortress) board.getElement(i, j, 0);
@@ -71,6 +82,7 @@ public class TablutStageView extends GameStageView {
                 } else if (board.getElement(i, j) instanceof Soldier) {
                     Soldier soldier = (Soldier) board.getElement(i, j);
                     SoldierLook look = new SoldierLook((int) (this.cellSize * SCALE), soldier);
+                    look.setDepth(10);
                     addLook(look);
                 } else if (board.getElement(i, j) instanceof Fortress) {
                     Fortress fortress = (Fortress) board.getElement(i, j);

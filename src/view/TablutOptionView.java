@@ -31,6 +31,14 @@ public class TablutOptionView {
     private ComboBox<String> swedishAI;
     private ComboBox<String> muscovitesAI;
 
+    private ComboBox<String> themeComboBox;
+    private CheckBox advancedColorsCheckBox;
+
+    private ArrayList<ColorPicker> colorPickers;
+    private GridPane advancedColorGridPane;
+    private ColorPicker mainColorPicker;
+    private ColorPicker secondColorPicker;
+    private ColorPicker fontColorPicker;
     private ColorPicker evenColorPicker;
     private ColorPicker oddColorPicker;
 
@@ -53,6 +61,8 @@ public class TablutOptionView {
         doneButton.setOnAction(new TablutOptionController(this, tablutView));
         swedishPlayer.setOnAction(new TablutOptionController(this, tablutView));
         muscovitesPlayer.setOnAction(new TablutOptionController(this, tablutView));
+        themeComboBox.setOnAction(new TablutOptionController(this, tablutView));
+        advancedColorsCheckBox.setOnAction(new TablutOptionController(this, tablutView));
 
         kingMoveGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             reEnableValidButton();
@@ -109,13 +119,27 @@ public class TablutOptionView {
         muscovitesPlayer = new ComboBox<>(FXCollections.observableArrayList("Human", "Computer"));
         swedishAI = new ComboBox<>(FXCollections.observableArrayList("Simple", "Minmax"));
         muscovitesAI = new ComboBox<>(FXCollections.observableArrayList("Simple", "Minmax"));
-        evenColorPicker = new ColorPicker();
-        oddColorPicker = new ColorPicker();
 
         moveCheckBox = new CheckBox("Move anywhere ");
         captureCheckBox = new CheckBox("Disable captures ");
         anyPlayCheckBox = new CheckBox("Play any pawn ");
         builderMode = new CheckBox("Builder mode ");
+
+        themeComboBox = new ComboBox<>(FXCollections.observableArrayList("Dark", "Light"));
+        advancedColorsCheckBox = new CheckBox("Advanced colors");
+
+        advancedColorGridPane = new GridPane(5, 5);
+        colorPickers = new ArrayList<>();
+        mainColorPicker = new ColorPicker();
+        colorPickers.add(mainColorPicker);
+        secondColorPicker = new ColorPicker();
+        colorPickers.add(secondColorPicker);
+        fontColorPicker = new ColorPicker();
+        colorPickers.add(fontColorPicker);
+        evenColorPicker = new ColorPicker();
+        colorPickers.add(evenColorPicker);
+        oddColorPicker = new ColorPicker();
+        colorPickers.add(oddColorPicker);
 
         validButton = new Button("Apply");
         doneButton = new Button("Done");
@@ -181,17 +205,38 @@ public class TablutOptionView {
         winModeHbox.getChildren().add(winModeLabel);
         winModeRadios.forEach(radioButton -> winModeHbox.getChildren().add(radioButton));
 
-        /// Color pickers ///
+        /// Color ///
 
         Label catColors = new Label("Theme");
 
-        Label labelOddColor = new Label("Odd Color");
-        Label labelEvenColor = new Label("Even Color");
-        GridPane colorGridPane = new GridPane(5, 5);
-        colorGridPane.add(labelEvenColor, 0, 0);
-        colorGridPane.add(labelOddColor, 0, 1);
-        colorGridPane.add(evenColorPicker, 1, 0);
-        colorGridPane.add(oddColorPicker, 1, 1);
+        VBox colorVBox = new VBox();
+
+        colorVBox.setSpacing(10);
+
+        advancedColorGridPane = new GridPane(5, 5);
+
+        Label labelMainColor = new Label("Main color");
+        Label labelSecondColor = new Label("Secondary color");
+        Label labelFontColor = new Label("Font color");
+        Label labelOddColor = new Label("Board odd color");
+        Label labelEvenColor = new Label("Board even Color");
+        advancedColorGridPane.add(labelMainColor, 0, 0);
+        advancedColorGridPane.add(labelSecondColor, 0, 1);
+        advancedColorGridPane.add(labelFontColor, 0, 2);
+        advancedColorGridPane.add(labelEvenColor, 0, 3);
+        advancedColorGridPane.add(labelOddColor, 0, 4);
+        advancedColorGridPane.add(mainColorPicker, 1, 0);
+        advancedColorGridPane.add(secondColorPicker, 1, 1);
+        advancedColorGridPane.add(fontColorPicker, 1, 2);
+        advancedColorGridPane.add(evenColorPicker, 1, 3);
+        advancedColorGridPane.add(oddColorPicker, 1, 4);
+
+        if (TablutOptionModel.isAdvancedColors())
+            advancedColorGridPane.setDisable(false);
+        else
+            advancedColorGridPane.setDisable(true);
+
+        colorVBox.getChildren().addAll(themeComboBox, advancedColorsCheckBox, advancedColorGridPane);
 
         /// Cheats ///
 
@@ -211,7 +256,7 @@ public class TablutOptionView {
 
         ///////////////
 
-        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, catCheats, cheatFlowPane, buttonFlowPane);
+        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorVBox, catCheats, cheatFlowPane, buttonFlowPane);
 
         main.setPrefWidth(800);
 
@@ -282,11 +327,18 @@ public class TablutOptionView {
             case KingMoveMode.LIMITED -> kingMoveRadios.getLast().setSelected(true);
         }
 
+        themeComboBox.setValue(TablutOptionModel.getColorTheme().toString());
+        advancedColorsCheckBox.setSelected(TablutOptionModel.isAdvancedColors());
+
+        advancedColorGridPane.setDisable(!TablutOptionModel.isAdvancedColors());
+        mainColorPicker.setValue(TablutOptionModel.getMainColor());
+        secondColorPicker.setValue(TablutOptionModel.getSecondColor());
+        fontColorPicker.setValue(TablutOptionModel.getFontColor());
         oddColorPicker.setValue(TablutOptionModel.getOddColor());
         evenColorPicker.setValue(TablutOptionModel.getEvenColor());
 
         moveCheckBox.setSelected(TablutOptionModel.isMoveAnywhere());
-        captureCheckBox.setSelected(TablutOptionModel.isCapturesDisabled());
+        captureCheckBox.setSelected(TablutOptionModel.isCaptureDisabled());
         anyPlayCheckBox.setSelected(TablutOptionModel.isMoveAnyPawn());
         builderMode.setSelected(TablutOptionModel.isBuilderMode());
     }
@@ -333,6 +385,14 @@ public class TablutOptionView {
 
     public CheckBox getAnyPlayCheckBox() {
         return anyPlayCheckBox;
+    }
+
+    public CheckBox getAdvancedColorsCheckBox() {
+        return advancedColorsCheckBox;
+    }
+
+    public ComboBox<String> getThemeComboBox() {
+        return themeComboBox;
     }
 
     public CheckBox getBuilderMode() {
@@ -402,6 +462,54 @@ public class TablutOptionView {
         } else {
             return WinMode.CORNERS;
         }
+    }
+
+    public ColorPicker getMainColorPicker() {
+        return mainColorPicker;
+    }
+
+    public void setMainColorPicker(ColorPicker mainColorPicker) {
+        this.mainColorPicker = mainColorPicker;
+    }
+
+    public ColorPicker getSecondColorPicker() {
+        return secondColorPicker;
+    }
+
+    public void setSecondColorPicker(ColorPicker secondColorPicker) {
+        this.secondColorPicker = secondColorPicker;
+    }
+
+    public ColorPicker getFontColorPicker() {
+        return fontColorPicker;
+    }
+
+    public void setFontColorPicker(ColorPicker fontColorPicker) {
+        this.fontColorPicker = fontColorPicker;
+    }
+
+    public void setEvenColorPicker(ColorPicker evenColorPicker) {
+        this.evenColorPicker = evenColorPicker;
+    }
+
+    public void setOddColorPicker(ColorPicker oddColorPicker) {
+        this.oddColorPicker = oddColorPicker;
+    }
+
+    public ArrayList<ColorPicker> getColorPickers() {
+        return colorPickers;
+    }
+
+    public void setColorPickers(ArrayList<ColorPicker> colorPickers) {
+        this.colorPickers = colorPickers;
+    }
+
+    public GridPane getAdvancedColorGridPane() {
+        return advancedColorGridPane;
+    }
+
+    public void setAdvancedColorGridPane(GridPane advancedColorGridPane) {
+        this.advancedColorGridPane = advancedColorGridPane;
     }
 
     public void reEnableValidButton() {

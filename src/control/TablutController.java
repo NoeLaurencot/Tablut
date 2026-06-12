@@ -12,13 +12,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.StageStyle;
 import model.*;
+import view.PlayerNameLook;
 import view.TablutView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class TablutController extends Controller {
 
@@ -36,14 +34,25 @@ public class TablutController extends Controller {
     public void endOfTurn() {
 
         // use the default method to compute next player (only if cheat disabled)
-        if (!TablutOptionModel.isMoveAnyPawn())
+        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
+
+        if (!TablutOptionModel.isMoveAnyPawn()) {
             model.setNextPlayer();
+
+            // swap name highlight
+            PlayerName[] names = stageModel.getPlayerName();
+            for (int i = 0; i < names.length; i++) {
+                PlayerNameLook look = (PlayerNameLook) getElementLook(names[i]);
+                if (look != null) {
+                    look.highlightCurName(i == model.getIdPlayer());
+                }
+            }
+        }
+
 
         // get the new player
         Player p = model.getCurrentPlayer();
         // change the text of the TextElement
-        TablutStageModel stageModel = (TablutStageModel) model.getGameStage();
-        stageModel.getPlayerName().setText(p.getName());
         addLastMoveToHistory();
         if (p.getType() == Player.COMPUTER && !TablutOptionModel.isMoveAnyPawn()) {
             Logger.debug("COMPUTER PLAYS");
@@ -66,7 +75,7 @@ public class TablutController extends Controller {
      * @param actionList
      */
     public void addAfterPlayActions(Move move, ActionList actionList) {
-        if (TablutOptionModel.isCapturesDisabled()) {
+        if (TablutOptionModel.isCaptureDisabled()) {
             return;
         }
 
@@ -129,7 +138,7 @@ public class TablutController extends Controller {
                 case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);
             }
         } else if (mode == 3) {
-            if (stageModel.getPlayerName().getText().equals("swedish computer")) {
+            if (stageModel.getCurrentPlayer().getName().equals("swedish computer")) {
                 switch (aiModes.get(0)) { // first AI is swedish AI
                     case MINMAX -> decider = new TablutMinMaxDecider(this.model, this);
                     case SIMPLE_EVAL -> decider = new TablutSimpleDecider(this.model, this);

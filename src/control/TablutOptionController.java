@@ -2,10 +2,13 @@ package control;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
+import javafx.scene.paint.Color;
 import model.AIMode;
 import model.InvalidOptionException;
 import model.TablutOptionModel;
+import model.Theme;
 import view.TablutOptionView;
 import view.TablutView;
 
@@ -25,14 +28,19 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent event) {
-        if (event.getSource().equals(this.tablutOptionView.getDoneButton())) {
+        Object src = event.getSource();
+        if (src.equals(this.tablutOptionView.getDoneButton())) {
             applyOptions();
             this.tablutView.resetView();
-        } else if (event.getSource().equals(this.tablutOptionView.getValidButton())) {
+        } else if (src.equals(this.tablutOptionView.getValidButton())) {
             applyOptions();
             this.tablutOptionView.getValidButton().setDisable(true);
-        } else if (event.getSource().equals(this.tablutOptionView.getSwedishPlayer()) || event.getSource().equals(this.tablutOptionView.getMuscovitesPlayer())) {
+        } else if (src.equals(this.tablutOptionView.getSwedishPlayer())
+                || src.equals(this.tablutOptionView.getMuscovitesPlayer())
+                || src.equals(this.tablutOptionView.getThemeComboBox())) {
             handleComboBox(event);
+        } else if (src.equals(this.tablutOptionView.getAdvancedColorsCheckBox())) {
+            handleAdvancedCheckBox();
         }
     }
 
@@ -49,7 +57,23 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
             } else {
                 this.tablutOptionView.getMuscovitesAI().setDisable(false);
             }
+        } else if (event.getSource().equals(tablutOptionView.getThemeComboBox())) {
+            if (tablutOptionView.getThemeComboBox().getValue().equals("Dark")) {
+                tablutOptionView.getMainColorPicker().setValue(Color.rgb(27, 32, 39));
+                tablutOptionView.getSecondColorPicker().setValue(Color.rgb(65, 70, 80));
+                tablutOptionView.getFontColorPicker().setValue(Color.WHITE);
+            } else {
+                tablutOptionView.getMainColorPicker().setValue(Color.rgb(170, 170, 170));
+                tablutOptionView.getSecondColorPicker().setValue(Color.rgb(90, 90, 90));
+                tablutOptionView.getFontColorPicker().setValue(Color.BLACK);
+            }
         }
+    }
+
+    private void handleAdvancedCheckBox() {
+        boolean isAdvanced = tablutOptionView.getAdvancedColorsCheckBox().isSelected();
+
+        tablutOptionView.getAdvancedColorGridPane().setDisable(!isAdvanced);
     }
 
     private void applyOptions() {
@@ -58,12 +82,17 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
             TablutOptionModel.setGamemode(getGamemode(tablutOptionView.getSwedishPlayer(), tablutOptionView.getMuscovitesPlayer()));
             TablutOptionModel.setKingMode(tablutOptionView.getSelectedKingMoveRadio());
             TablutOptionModel.setWinMode(tablutOptionView.getSelectedWinModeRadio());
-            TablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
-            TablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
             TablutOptionModel.setMoveAnywhere(tablutOptionView.getMoveCheckBox().isSelected());
             TablutOptionModel.setCaptureDisabled(tablutOptionView.getCaptureCheckBox().isSelected());
             TablutOptionModel.setMoveAnyPawn(tablutOptionView.getAnyPlayCheckBox().isSelected());
             TablutOptionModel.setBuilderMode(tablutOptionView.getBuilderMode().isSelected());
+            TablutOptionModel.setColorTheme(tablutOptionView.getThemeComboBox().getValue().equals("Dark") ? Theme.DARK : Theme.LIGHT);
+            TablutOptionModel.setAdvancedColors(tablutOptionView.getAdvancedColorsCheckBox().isSelected());
+            TablutOptionModel.setMainColor(tablutOptionView.getMainColorPicker().getValue());
+            TablutOptionModel.setSecondColor(tablutOptionView.getSecondColorPicker().getValue());
+            TablutOptionModel.setFontColor(tablutOptionView.getFontColorPicker().getValue());
+            TablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
+            TablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
         } catch (InvalidOptionException e) {
             throw new RuntimeException(e);
         }

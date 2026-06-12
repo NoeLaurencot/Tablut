@@ -45,11 +45,12 @@ public class TablutStageModel extends GameStageModel {
     private TablutBoard board;
     private Pawn[] pawns;
     private ArrayList<Fortress> fortresses;
-    private TextElement playerName;
     private RaichiTuichiMessage message;
     private MoveHistory moveHistory;
+    private PlayerName[] playerName;
     // Uncomment next line if the example with a main container is used. see end of TablutStageFactory and TablutStageView
     private TablutOptionModel tablutOptionModel;
+//    private BackgroundElement background;
 
     public TablutStageModel(String name, Model model) {
         super(name, model);
@@ -70,7 +71,7 @@ public class TablutStageModel extends GameStageModel {
         return fortresses;
     }
 
-    public TextElement getPlayerName() {
+    public PlayerName[] getPlayerName() {
         return playerName;
     }
 
@@ -103,9 +104,11 @@ public class TablutStageModel extends GameStageModel {
         }
     }
 
-    public void setPlayerName(TextElement pn) {
+    public void setPlayerName(PlayerName[] pn) {
         playerName = pn;
-        addElement(playerName);
+        for (PlayerName playerName : pn) {
+            addElement(playerName);
+        }
     }
 
     public void setMessage(RaichiTuichiMessage m) {
@@ -213,6 +216,16 @@ public class TablutStageModel extends GameStageModel {
         }
         return false;
     }
+
+//
+//    public BackgroundElement getBackground() {
+//        return background;
+//    }
+//
+//    public void setBackground(BackgroundElement b) {
+//        background = b;
+//        addElement(b);
+//    }
 
     public void setWinMode(WinMode winMode) {
         this.board.setWinCoords(TablutOptionModel.getWinMode().winCoords(this.board));

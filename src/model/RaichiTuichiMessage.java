@@ -19,12 +19,4 @@ public class RaichiTuichiMessage extends TextElement {
         super("", gameStageModel);
         setLocation(x, y);
     }
-
-    public void setRaichi() {
-        this.text = "RAICHI";
-    }
-
-    public void setTuichi() {
-        this.text = "TUICHI";
-    }
 }

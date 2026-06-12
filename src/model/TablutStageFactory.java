@@ -1,8 +1,6 @@
 package model;
 
-import boardifier.model.GameStageModel;
-import boardifier.model.StageElementsFactory;
-import boardifier.model.TextElement;
+import boardifier.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +31,14 @@ public class TablutStageFactory extends StageElementsFactory {
 
     @Override
     public void setup() {
+//        BackgroundElement background = new BackgroundElement(0, 0, stageModel);
+//        stageModel.setBackground(background);
+
         TextElement text = new TextElement(stageModel.getCurrentPlayerName(), stageModel);
         text.setLocation(0, 0);
         text.setVisible(false);
-        stageModel.setPlayerName(text);
 
-        RaichiTuichiMessage message = new RaichiTuichiMessage(630, 670, stageModel);
+        RaichiTuichiMessage message = new RaichiTuichiMessage(630, 690, stageModel);
         stageModel.setMessage(message);
 
         TablutBoard board = new TablutBoard(0, 60, stageModel);
@@ -47,7 +47,7 @@ public class TablutStageFactory extends StageElementsFactory {
         setupFortresses();
         setupPawns();
         setupMoveHistory();
-
+        setupPlayerNames();
     }
 
     private void setupPawns() {
@@ -107,6 +107,38 @@ public class TablutStageFactory extends StageElementsFactory {
         fortressList.add(new Fortress(y / 2.0, x / 2.0, stageModel));
 
         stageModel.setFortresses(fortressList);
+    }
+
+    private void setupPlayerNames() {
+        PlayerName[] playerNames = new PlayerName[2];
+
+        double topX = 90;
+        double topY = 40;
+        double bottomX = 90;
+        double bottomY = 690;
+
+        List<Player> players = stageModel.getModel().getPlayers();
+
+        int bottomId = 0;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getType() == Player.HUMAN) {
+                bottomId = i;
+                break;
+            }
+        }
+
+        int topId;
+        if (bottomId == 0)
+            topId = 1;
+        else
+            topId = 0;
+
+        playerNames[topId] = new PlayerName(topX, topY,
+                players.get(topId).getName(), stageModel);
+        playerNames[bottomId] = new PlayerName(bottomX, bottomY,
+                players.get(bottomId).getName(), stageModel);
+
+        stageModel.setPlayerName(playerNames);
     }
 
     private void setupMoveHistory() {

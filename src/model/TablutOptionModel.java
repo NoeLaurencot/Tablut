@@ -17,6 +17,12 @@ public class TablutOptionModel {
 
     private static ArrayList<AIMode> aiMode = new ArrayList<>(List.of(AIMode.SIMPLE_EVAL));
 
+
+    private static Theme colorTheme = Theme.DARK;
+    private static boolean advancedColors = false;
+    private static Color mainColor = Color.rgb(30, 40, 50);
+    private static Color secondColor = Color.rgb(86,103,132);
+    private static Color fontColor = Color.WHITE;
     private static Color oddColor = Color.rgb(194,172,151);
     private static Color evenColor = Color.BEIGE;
 
@@ -45,6 +51,18 @@ public class TablutOptionModel {
         return evenColor;
     }
 
+    public static Color getMainColor() {
+        return mainColor;
+    }
+
+    public static Color getFontColor() {
+        return fontColor;
+    }
+
+    public static Color getSecondColor() {
+        return secondColor;
+    }
+
     public static Color getOddColor() {
         return oddColor;
     }
@@ -57,7 +75,7 @@ public class TablutOptionModel {
         return winMode;
     }
 
-    public static boolean isCapturesDisabled() {
+    public static boolean isCaptureDisabled() {
         return captureDisabled;
     }
 
@@ -67,6 +85,10 @@ public class TablutOptionModel {
 
     public static boolean isMoveAnyPawn() {
         return moveAnyPawn;
+    }
+
+    public static boolean isAdvancedColors() {
+        return advancedColors;
     }
 
     public static void setCaptureDisabled(boolean captureDisabled) {
@@ -85,12 +107,28 @@ public class TablutOptionModel {
         TablutOptionModel.aiMode = aiMode;
     }
 
+    public static void setMainColor(Color mainColor) {
+        TablutOptionModel.mainColor = mainColor;
+    }
+
+    public static void setFontColor(Color fontColor) {
+        TablutOptionModel.fontColor = fontColor;
+    }
+
+    public static void setSecondColor(Color secondColor) {
+        TablutOptionModel.secondColor = secondColor;
+    }
+
     public static void setEvenColor(Color evenColor) {
         TablutOptionModel.evenColor = evenColor;
     }
 
     public static void setOddColor(Color oddColor) {
         TablutOptionModel.oddColor = oddColor;
+    }
+
+    public static void setAdvancedColors(boolean advancedColors) {
+        TablutOptionModel.advancedColors = advancedColors;
     }
 
     public static void setKingMode(KingMoveMode kingMode) throws InvalidOptionException {
@@ -107,5 +145,13 @@ public class TablutOptionModel {
 
     public static void setBuilderMode(boolean builderMode) {
         TablutOptionModel.builderMode = builderMode;
+    }
+
+    public static Theme getColorTheme() {
+        return colorTheme;
+    }
+
+    public static void setColorTheme(Theme colorTheme) {
+        TablutOptionModel.colorTheme = colorTheme;
     }
 }
