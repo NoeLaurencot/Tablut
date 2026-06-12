@@ -93,6 +93,7 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
             TablutOptionModel.setFontColor(tablutOptionView.getFontColorPicker().getValue());
             TablutOptionModel.setEvenColor(tablutOptionView.getEvenColorPicker().getValue());
             TablutOptionModel.setOddColor(tablutOptionView.getOddColorPicker().getValue());
+            TablutOptionModel.setMinmaxDepth(tablutOptionView.getMinmaxDepth());
         } catch (InvalidOptionException e) {
             throw new RuntimeException(e);
         }

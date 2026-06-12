@@ -21,7 +21,6 @@ import java.util.Map;
 public class TablutMinMaxDecider extends Decider {
 
     private static final Random loto = new Random(Calendar.getInstance().getTimeInMillis());
-    private static final int depth = 3;
     private static final int depthDifferenceAcceptance = 0;
 
     private Map<String, Integer> seenBoards;
@@ -76,7 +75,7 @@ public class TablutMinMaxDecider extends Decider {
             newBoard = new SmallTablutBoard(board, kingMode);
             newBoard.applyMove(move);
 
-            int score = minmax(newBoard, depth, alpha, beta, !maxing);
+            int score = minmax(newBoard, TablutOptionModel.getMinmaxDepth()-1, alpha, beta, !maxing);
             score -= score % 10;
 
             if (maxing) {
