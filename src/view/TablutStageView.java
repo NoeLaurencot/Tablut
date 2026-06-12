@@ -34,13 +34,13 @@ import model.*;
 
 public class TablutStageView extends GameStageView {
     int cellSize;
-    private TablutOptionModel tablutOptionModel;
 
 
     public TablutStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
         cellSize = 60;
-
+        height = 730;
+        width = 800;
     }
 
     @Override

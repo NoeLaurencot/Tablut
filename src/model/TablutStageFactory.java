@@ -38,10 +38,10 @@ public class TablutStageFactory extends StageElementsFactory {
         text.setVisible(false);
         stageModel.setPlayerName(text);
 
-        RaichiTuichiMessage message = new RaichiTuichiMessage(300, 610, stageModel);
+        RaichiTuichiMessage message = new RaichiTuichiMessage(630, 670, stageModel);
         stageModel.setMessage(message);
 
-        TablutBoard board = new TablutBoard(0, 1, stageModel);
+        TablutBoard board = new TablutBoard(0, 60, stageModel);
         stageModel.setBoard(board);
 
         setupFortresses();
@@ -110,7 +110,7 @@ public class TablutStageFactory extends StageElementsFactory {
     }
 
     private void setupMoveHistory() {
-        MoveHistory moveHistory = new MoveHistory(600, 0, stageModel);
+        MoveHistory moveHistory = new MoveHistory(580, 88, stageModel);
 
         int r = moveHistory.getNbRows();
         int c = moveHistory.getNbCols();
