@@ -64,6 +64,7 @@ public class TablutOptionController implements EventHandler<ActionEvent> {
             TablutOptionModel.setCaptureDisabled(tablutOptionView.getCaptureCheckBox().isSelected());
             TablutOptionModel.setMoveAnyPawn(tablutOptionView.getAnyPlayCheckBox().isSelected());
             TablutOptionModel.setBuilderMode(tablutOptionView.getBuilderMode().isSelected());
+            TablutOptionModel.setMinmaxDepth(tablutOptionView.getMinmaxDepth());
         } catch (InvalidOptionException e) {
             throw new RuntimeException(e);
         }

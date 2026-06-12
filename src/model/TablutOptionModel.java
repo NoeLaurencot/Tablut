@@ -12,6 +12,7 @@ public class TablutOptionModel {
     // mode 2 : Computer vs Human
     // mode 3 : Computer vs Computer
     private static int gamemode = 1;
+    private static int minmaxDepth = 4;
     private static WinMode winMode = WinMode.BORDERS;
     private static KingMoveMode kingMode = KingMoveMode.LIMITLESS;
 
@@ -107,5 +108,13 @@ public class TablutOptionModel {
 
     public static void setBuilderMode(boolean builderMode) {
         TablutOptionModel.builderMode = builderMode;
+    }
+
+    public static void setMinmaxDepth(int minmaxDepth) {
+        TablutOptionModel.minmaxDepth = minmaxDepth;
+    }
+
+    public static int getMinmaxDepth() {
+        return minmaxDepth;
     }
 }

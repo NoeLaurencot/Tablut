@@ -1,12 +1,15 @@
 package view;
 
 import control.TablutOptionController;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.util.converter.IntegerStringConverter;
 import model.KingMoveMode;
 import model.TablutOptionModel;
 import model.WinMode;
@@ -21,6 +24,7 @@ public class TablutOptionView {
     VBox swedishVBox;
     VBox muscoviteVBox;
 
+
     private List<RadioButton> kingMoveRadios;
     private ToggleGroup kingMoveGroup;
     private List<RadioButton> winModeRadios;
@@ -30,6 +34,7 @@ public class TablutOptionView {
     private ComboBox<String> muscovitesPlayer;
     private ComboBox<String> swedishAI;
     private ComboBox<String> muscovitesAI;
+    private TextField minmaxDepth;
 
     private ColorPicker evenColorPicker;
     private ColorPicker oddColorPicker;
@@ -54,6 +59,7 @@ public class TablutOptionView {
         swedishPlayer.setOnAction(new TablutOptionController(this, tablutView));
         muscovitesPlayer.setOnAction(new TablutOptionController(this, tablutView));
 
+        minmaxDepth.setOnAction(event -> reEnableValidButton());
         kingMoveGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             reEnableValidButton();
         });
@@ -90,6 +96,7 @@ public class TablutOptionView {
         builderMode.selectedProperty().addListener((observable, oldValue, newValue) -> {
             reEnableValidButton();
         });
+
     }
 
     private void initWidget() {
@@ -116,6 +123,19 @@ public class TablutOptionView {
         captureCheckBox = new CheckBox("Disable captures ");
         anyPlayCheckBox = new CheckBox("Play any pawn ");
         builderMode = new CheckBox("Builder mode ");
+
+        minmaxDepth = new TextField();
+        ObjectProperty<Integer> valueProperty = new SimpleObjectProperty<>(0);
+        TextFormatter<Integer> textFormatter = new TextFormatter<>(
+                new IntegerStringConverter() {
+                    @Override public Integer fromString(String s) {
+                        Integer val = super.fromString(s);
+                        return val == null ? 0 : Math.abs(val);
+                    }
+                }
+        );
+        textFormatter.valueProperty().bindBidirectional(valueProperty);
+        minmaxDepth.setTextFormatter(textFormatter);
 
         validButton = new Button("Apply");
         doneButton = new Button("Done");
@@ -202,6 +222,16 @@ public class TablutOptionView {
         cheatFlowPane.setHgap(10);
         cheatFlowPane.getChildren().addAll(moveCheckBox, captureCheckBox, anyPlayCheckBox, builderMode);
 
+
+        /// minMax Config
+
+        Label catMinMaxDepth = new Label("MinMax Config");
+
+        FlowPane minmaxFlowPane = new FlowPane(15, 5);
+        Label depth = new Label("Depth : ");
+
+        minmaxFlowPane.getChildren().addAll(depth,minmaxDepth);
+
         /// Buttons ///
 
         FlowPane buttonFlowPane = new FlowPane();
@@ -211,7 +241,7 @@ public class TablutOptionView {
 
         ///////////////
 
-        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, catCheats, cheatFlowPane, buttonFlowPane);
+        main.getChildren().addAll(titleVBox, catPlayer, playersFlowPane, catRules, kingMoveHbox, winModeHbox, catColors, colorGridPane, catCheats, cheatFlowPane,catMinMaxDepth,minmaxFlowPane, buttonFlowPane);
 
         main.setPrefWidth(800);
 
@@ -219,7 +249,7 @@ public class TablutOptionView {
         main.setPadding(new Insets(10));
 
         styleElements();
-        styleCategories(catPlayer, catRules, catColors, catCheats);
+        styleCategories(catPlayer, catRules, catColors, catCheats,catMinMaxDepth);
 
         scrollPane.setContent(main);
 
@@ -289,6 +319,8 @@ public class TablutOptionView {
         captureCheckBox.setSelected(TablutOptionModel.isCapturesDisabled());
         anyPlayCheckBox.setSelected(TablutOptionModel.isMoveAnyPawn());
         builderMode.setSelected(TablutOptionModel.isBuilderMode());
+
+        minmaxDepth.setText(Integer.toString(TablutOptionModel.getMinmaxDepth()));
     }
 
     public Button getValidButton() {
@@ -408,5 +440,9 @@ public class TablutOptionView {
         if (validButton.isDisabled()) {
             validButton.setDisable(false);
         }
+    }
+
+    public int getMinmaxDepth() {
+        return Integer.parseInt(minmaxDepth.getText());
     }
 }
