@@ -89,7 +89,12 @@ public class TablutStageView extends GameStageView {
         for (int i = 0; i < r; i++) {
             for (int j = 0 ; j < c; j++) {
                 MoveElement moveElement = (MoveElement) moveHistory.getElement(i, j);
-                TextLook moveLook = new MoveLook(moveElement);
+                String color;
+                if (j == 0)
+                    color = "0xffffff";
+                else
+                    color = "0x000";
+                TextLook moveLook = new MoveLook(moveElement, j, color);
                 addLook(moveLook);
             }  
         }

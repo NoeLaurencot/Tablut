@@ -16,7 +16,16 @@ public class MoveElement extends TextElement {
         this.move = move;
     }
 
+    public MoveElement(String string, GameStageModel gameStageModel) {
+        super(string, gameStageModel);
+        this.move = new Move();
+    }
+
     public Move getMove() {
         return move;
+    }
+
+    public void clear() {
+        this.setText("");
     }
 }
