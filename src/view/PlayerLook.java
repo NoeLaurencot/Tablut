@@ -16,7 +16,7 @@ public class PlayerLook extends TextLook {
     }
 
     public void amogus() {
-        if (player.getName().charAt(0) == 's') {
+        if (player.getName().contains("swedish")) {
             DropShadow boldHighlight = new DropShadow();
             boldHighlight.setRadius(2.0);
             boldHighlight.setSpread(0.8);
