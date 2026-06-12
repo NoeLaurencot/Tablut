@@ -50,6 +50,12 @@ public class MoveHistory extends ContainerElement {
         }
     }
 
+    public void reset() {
+        ((MoveElement) getElement(0, 0)).setText("");
+        insertCol = 0;
+        insertRow = 0;
+    }
+
     public void shiftHistoryUp() {
         for (int i = 0; i < this.nbRows - 1; i++) {
             for (int j = 0; j < this.nbCols; j++) {

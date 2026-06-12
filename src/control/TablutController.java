@@ -233,4 +233,8 @@ public class TablutController extends Controller {
             System.exit(1);
         }
     }
+
+    public void resetHistory() {
+        ((TablutStageModel) model.getGameStage()).getMoveHistory().reset();
+    }
 }
