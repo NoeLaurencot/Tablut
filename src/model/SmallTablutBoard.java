@@ -229,13 +229,13 @@ public class SmallTablutBoard {
 
     @Override
     public String toString() {
-        String st = "";
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                st += grid[i][j];
+        StringBuilder sb = new StringBuilder(81);
+        for (short[] row : grid) {
+            for (short cell : row) {
+                sb.append(cell);
             }
         }
-        return st;
+        return sb.toString();
     }
 
 
