@@ -36,6 +36,7 @@ java <compiled file>
 ## Technologies used
 
 - Java
+- JavaFX
 - Boardifier
 - Junit5 and Mockito
  
